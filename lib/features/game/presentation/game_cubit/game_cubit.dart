@@ -9,7 +9,7 @@ class GameCubit extends Cubit<GameState> {
   GameCubit() : super(GameState(petAnimation: PetAnimation.idle, message: null));
 
   void playPetSuccess({String? message, int? num}) {
-    playAnimation(PetAnimation.success, 'You draw $num number!');
+    playAnimation(PetAnimation.success, 'It looks like a $num!');
   }
 
   void playPetThinking({String? message}) {

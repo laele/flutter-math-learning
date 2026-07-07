@@ -29,7 +29,7 @@ class InputRecognitionCubit extends Cubit<InputRecognitionState> {
 
   void initNotifier() {
     notifier.setColor(Color.fromARGB(255, 255, 255, 255));
-    notifier.setStrokeWidth(8.0);
+    notifier.setStrokeWidth(10.0);
   }
 
   void ensureModelDownloaded() async {

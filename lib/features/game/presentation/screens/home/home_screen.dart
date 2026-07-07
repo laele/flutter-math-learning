@@ -14,7 +14,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Froggy Math'),
+        //title: const Text('Froggy Math'),
         centerTitle: true,
       ),
       body: Stack(
