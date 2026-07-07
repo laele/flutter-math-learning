@@ -4,19 +4,25 @@ enum PetAnimation { idle, thinking, failed, success }
 
 class GameState extends Equatable {
   final PetAnimation petAnimation;
-  final Uint8List? imageBytes;
-  const GameState({required this.petAnimation, this.imageBytes});
+  final String? message;
+  const GameState({
+    required this.petAnimation,
+    this.message,
+  });
 
   GameState copyWith({
     PetAnimation? petAnimation,
-    Uint8List? imageBytes,
+    String? message,
   }) {
     return GameState(
       petAnimation: petAnimation ?? this.petAnimation,
-      imageBytes: imageBytes ?? this.imageBytes,
+      message: message,
     );
   }
 
   @override
-  List<Object?> get props => [petAnimation, imageBytes];
+  List<Object?> get props => [
+    petAnimation,
+    message,
+  ];
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_math_app/core/theme/app_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   static ThemeData light() {
-    const backgroundColor = Color.fromRGBO(47, 81, 91, 1);
     final textTheme = GoogleFonts.rubikSprayPaintTextTheme().apply(
       displayColor: Colors.white,
       bodyColor: Colors.white,
@@ -11,19 +11,17 @@ class AppTheme {
     return ThemeData(
       brightness: Brightness.dark,
       useMaterial3: true,
-      scaffoldBackgroundColor: backgroundColor,
+      scaffoldBackgroundColor: AppColors.appBackground,
       textTheme: textTheme,
       colorScheme: ColorScheme.fromSeed(
         brightness: Brightness.dark,
-        seedColor: backgroundColor,
-        primary: Colors.red,
-        onPrimary: Colors.white,
+        seedColor: AppColors.appBackground,
         primaryContainer: Colors.yellow,
-        onPrimaryContainer: backgroundColor,
+        onPrimaryContainer: AppColors.appBackground,
       ),
 
       appBarTheme: AppBarTheme(
-        color: backgroundColor,
+        color: AppColors.appBackgroundGradientVariant,
       ),
     );
   }

@@ -6,28 +6,28 @@ import 'package:equatable/equatable.dart';
 part 'game_state.dart';
 
 class GameCubit extends Cubit<GameState> {
-  GameCubit() : super(GameState(petAnimation: PetAnimation.idle));
+  GameCubit() : super(GameState(petAnimation: PetAnimation.idle, message: null));
 
-  void clearCanvas() {
-    playPetSuccess();
+  void playPetSuccess({String? message, int? num}) {
+    playAnimation(PetAnimation.success, 'You draw $num number!');
   }
 
-  void submitResult() async {
-    playPetSuccess();
+  void playPetThinking({String? message}) {
+    playAnimation(PetAnimation.thinking, message);
   }
 
-  void playPetSuccess() {
-    emit(state.copyWith(petAnimation: PetAnimation.success));
-    emit(state.copyWith(petAnimation: PetAnimation.idle));
+  void playPetFailed({String? message}) {
+    playAnimation(PetAnimation.failed, message);
   }
 
-  void playPetThinking() {
-    emit(state.copyWith(petAnimation: PetAnimation.thinking));
-    emit(state.copyWith(petAnimation: PetAnimation.idle));
+  void playAnimation(PetAnimation animation, String? message) {
+    emit(
+      state.copyWith(petAnimation: animation, message: message),
+    );
+    //emit(state.copyWith(petAnimation: PetAnimation.idle));
   }
 
-  void playPetFailed() {
-    emit(state.copyWith(petAnimation: PetAnimation.failed));
-    emit(state.copyWith(petAnimation: PetAnimation.idle));
+  void clearMessage() {
+    emit(state.copyWith(petAnimation: PetAnimation.idle, message: null));
   }
 }

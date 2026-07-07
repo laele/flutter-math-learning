@@ -1,5 +1,8 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_math_app/core/theme/app_colors.dart';
+import 'package:flutter_math_app/core/theme/app_gradients.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
 import 'package:rive/rive.dart';
 
@@ -60,6 +63,52 @@ class _HomeMascotBackgroundState extends State<HomeMascotBackground> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
+          Expanded(
+            child: Stack(
+              children: [
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: AppGradients.background,
+                  ),
+                ),
+                BlocBuilder<GameCubit, GameState>(
+                  buildWhen: (previous, current) {
+                    if (previous.message != current.message) {
+                      return true;
+                    }
+                    return false;
+                  },
+                  builder: (context, state) => state.message != null
+                      ? Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Align(
+                            alignment: AlignmentGeometry.bottomCenter,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: AnimatedTextKit(
+                                key: ValueKey(state.message),
+                                //repeatForever: true,
+                                totalRepeatCount: 1,
+                                onFinished: () async {
+                                  await Future.delayed(Duration(seconds: 2));
+                                  context.read<GameCubit>().clearMessage();
+                                },
+                                animatedTexts: [
+                                  TyperAnimatedText(
+                                    state.message!,
+                                    textStyle: Theme.of(context).textTheme.displayMedium,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        )
+                      : SizedBox.shrink(),
+                ),
+              ],
+            ),
+          ),
           SizedBox(
             width: double.infinity,
             child: AspectRatio(

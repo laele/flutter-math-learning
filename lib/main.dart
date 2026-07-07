@@ -23,8 +23,9 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => sl<GameCubit>()),
         BlocProvider(
-          create: (context) =>
-              sl<InputRecognitionCubit>()..ensureModelDownloaded(),
+          create: (context) => sl<InputRecognitionCubit>()
+            ..ensureModelDownloaded()
+            ..initNotifier(),
         ),
       ],
       child: MaterialApp(

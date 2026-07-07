@@ -37,8 +37,6 @@ class HomePlayCanvasState extends State<HomePlayCanvas> with SingleTickerProvide
 
   Future<void> playOutAnimation() async {
     await controller.forward();
-    //context.read<GameCubit>().clearCanvas();
-    //controller.reset();
   }
 
   void resetAnimation() async {
@@ -48,26 +46,36 @@ class HomePlayCanvasState extends State<HomePlayCanvas> with SingleTickerProvide
   @override
   Widget build(BuildContext context) {
     final inputRecognitionCubit = context.read<InputRecognitionCubit>();
-    return Column(
-      children: [
-        Expanded(
-          child: AnimatedBuilder(
-            animation: controller,
-            builder: (context, child) {
-              return Opacity(
-                opacity: _fade.value,
-                child: Transform.scale(
-                  scale: _scale.value,
-                  child: Scribble(
-                    notifier: inputRecognitionCubit.notifier,
-                    drawPen: true,
+    return BlocListener<InputRecognitionCubit, InputRecognitionState>(
+      listener: (context, state) {
+        if (state.isStatusFailure) {
+          context.read<GameCubit>().playPetFailed(message: state.errorMessage);
+        }
+        if (state.status == InputRecognitionStatus.success) {
+          context.read<GameCubit>().playPetSuccess(num: state.numberRecognized);
+        }
+      },
+      child: Column(
+        children: [
+          Expanded(
+            child: AnimatedBuilder(
+              animation: controller,
+              builder: (context, child) {
+                return Opacity(
+                  opacity: _fade.value,
+                  child: Transform.scale(
+                    scale: _scale.value,
+                    child: Scribble(
+                      notifier: inputRecognitionCubit.notifier,
+                      drawPen: true,
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -4,9 +4,11 @@ import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart' hide Ink;
+import 'package:flutter_math_app/core/error/failure.dart';
 import 'package:flutter_math_app/core/usecase/usecase.dart';
 import 'package:flutter_math_app/features/input_recognition/domain/entities/drawn_point_entity.dart';
 import 'package:flutter_math_app/features/input_recognition/domain/entities/drawn_stroke_entity.dart';
+import 'package:flutter_math_app/features/input_recognition/domain/failures/input_recognition_failure.dart';
 import 'package:flutter_math_app/features/input_recognition/domain/usecases/ensure_model_downloaded_usecase.dart';
 import 'package:flutter_math_app/features/input_recognition/domain/usecases/recognize_number_usecase.dart';
 import 'package:scribble/scribble.dart';
@@ -23,7 +25,7 @@ class InputRecognitionCubit extends Cubit<InputRecognitionState> {
     required EnsureModelDownloadedUseCase ensureModelDownloaded,
   }) : _recognizeNumberUseCase = recognizeNumberUseCase,
        _ensureModelDownloadedUseCase = ensureModelDownloaded,
-       super(InputRecognitionInitial());
+       super(InputRecognitionState());
 
   void initNotifier() {
     notifier.setColor(Color.fromARGB(255, 255, 255, 255));
@@ -31,16 +33,19 @@ class InputRecognitionCubit extends Cubit<InputRecognitionState> {
   }
 
   void ensureModelDownloaded() async {
+    emit(
+      state.copyWith(
+        status: InputRecognitionStatus.processing,
+      ),
+    );
     final ensuremodelDownloaded = await _ensureModelDownloadedUseCase(
       NoParams(),
     );
     ensuremodelDownloaded.fold(
       (failure) {
-        print(failure.runtimeType);
+        emit(state.copyWith(status: InputRecognitionStatus.failed, errorMessage: _errorMessageFromFailure(failure)));
       },
-      (_) {
-        print('success');
-      },
+      (_) {},
     );
   }
 
@@ -48,6 +53,8 @@ class InputRecognitionCubit extends Cubit<InputRecognitionState> {
     required double canvasWidth,
     required double canvasHeight,
   }) async {
+    emit(state.copyWith(status: InputRecognitionStatus.processing));
+
     final strokes = notifier.currentSketch.lines.map(
       (line) {
         return DrawnStrokeEntity(
@@ -73,13 +80,23 @@ class InputRecognitionCubit extends Cubit<InputRecognitionState> {
 
     result.fold(
       (failure) {
-        print(failure.runtimeType);
+        emit(state.copyWith(status: InputRecognitionStatus.failed, errorMessage: _errorMessageFromFailure(failure)));
       },
       (number) {
-        print(number);
+        emit(state.copyWith(numberRecognized: number, status: InputRecognitionStatus.success));
       },
     );
+
+    emit(state.copyWith(status: InputRecognitionStatus.idle));
   }
+
+  String _errorMessageFromFailure(Failure failure) => switch (failure) {
+    ModelNotDownloadedFailure() => 'Hold on, getting ready..',
+    EmptyInputFailure() => 'Draw a number first!',
+    UnrecognizedInputFailure() => 'I couldn\'t read that, want to try again?',
+    UnknownInputRecognitionFailure() => 'Something went wrong, try again',
+    (_) => 'Something went wrong, try again',
+  };
 
   void clearCanvas() {
     notifier.clear();
