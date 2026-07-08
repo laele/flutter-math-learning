@@ -1,7 +1,7 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:bloc/bloc.dart';
-import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart' hide Ink;
 import 'package:flutter_math_app/core/error/failure.dart';
@@ -17,8 +17,11 @@ part 'input_recognition_state.dart';
 
 class InputRecognitionCubit extends Cubit<InputRecognitionState> {
   final ScribbleNotifier notifier = ScribbleNotifier();
+  Timer? _timer;
   final RecognizeNumberUseCase _recognizeNumberUseCase;
   final EnsureModelDownloadedUseCase _ensureModelDownloadedUseCase;
+
+  static const _submitTime = Duration(milliseconds: 1400);
 
   InputRecognitionCubit({
     required RecognizeNumberUseCase recognizeNumberUseCase,
@@ -30,6 +33,20 @@ class InputRecognitionCubit extends Cubit<InputRecognitionState> {
   void initNotifier() {
     notifier.setColor(Color.fromARGB(255, 255, 255, 255));
     notifier.setStrokeWidth(10.0);
+  }
+
+  void onStartedStroke() {
+    _timer?.cancel();
+  }
+
+  void onFinishedStroke({required double canvasWidth, required double canvasHeight}) {
+    _timer?.cancel();
+    _timer = Timer(
+      _submitTime,
+      () {
+        submitResult(canvasWidth: canvasWidth, canvasHeight: canvasHeight);
+      },
+    );
   }
 
   void ensureModelDownloaded() async {
@@ -105,6 +122,7 @@ class InputRecognitionCubit extends Cubit<InputRecognitionState> {
   @override
   Future<void> close() {
     notifier.dispose();
+    _timer?.cancel();
     return super.close();
   }
 }

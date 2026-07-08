@@ -46,8 +46,15 @@ class HomePlayCanvasState extends State<HomePlayCanvas> with SingleTickerProvide
   @override
   Widget build(BuildContext context) {
     final inputRecognitionCubit = context.read<InputRecognitionCubit>();
+    final canvasWidth = MediaQuery.sizeOf(context).width;
+    final canvasHeight = MediaQuery.sizeOf(context).height;
     return BlocListener<InputRecognitionCubit, InputRecognitionState>(
-      listener: (context, state) {
+      listener: (context, state) async {
+        if (state.status == InputRecognitionStatus.processing) {
+          await playOutAnimation();
+          context.read<InputRecognitionCubit>().clearCanvas();
+          resetAnimation();
+        }
         if (state.isStatusFailure) {
           context.read<GameCubit>().playPetFailed(message: state.errorMessage);
         }
@@ -55,26 +62,37 @@ class HomePlayCanvasState extends State<HomePlayCanvas> with SingleTickerProvide
           context.read<GameCubit>().playPetSuccess(num: state.numberRecognized);
         }
       },
-      child: Column(
-        children: [
-          Expanded(
-            child: AnimatedBuilder(
-              animation: controller,
-              builder: (context, child) {
-                return Opacity(
-                  opacity: _fade.value,
-                  child: Transform.scale(
-                    scale: _scale.value,
-                    child: Scribble(
-                      notifier: inputRecognitionCubit.notifier,
-                      drawPen: true,
+      child: Listener(
+        onPointerDown: (_) {
+          print('point down');
+          inputRecognitionCubit.onStartedStroke();
+        },
+        onPointerUp: (_) {
+          print('point up');
+
+          inputRecognitionCubit.onFinishedStroke(canvasHeight: canvasHeight, canvasWidth: canvasWidth);
+        },
+        child: Column(
+          children: [
+            Expanded(
+              child: AnimatedBuilder(
+                animation: controller,
+                builder: (context, child) {
+                  return Opacity(
+                    opacity: _fade.value,
+                    child: Transform.scale(
+                      scale: _scale.value,
+                      child: Scribble(
+                        notifier: inputRecognitionCubit.notifier,
+                        drawPen: true,
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

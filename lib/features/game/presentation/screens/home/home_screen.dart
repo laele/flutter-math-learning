@@ -25,13 +25,13 @@ class HomeScreen extends StatelessWidget {
       ),
       floatingActionButton: HomeFloatingActionButtons(
         submitOnTap: () async {
-          context.read<InputRecognitionCubit>().submitResult(
+          /*context.read<InputRecognitionCubit>().submitResult(
             canvasWidth: MediaQuery.sizeOf(context).width,
             canvasHeight: MediaQuery.sizeOf(context).height,
           );
           await homePlayCanvasKey.currentState?.playOutAnimation();
           context.read<InputRecognitionCubit>().clearCanvas();
-          homePlayCanvasKey.currentState?.resetAnimation();
+          homePlayCanvasKey.currentState?.resetAnimation();*/
         },
       ),
     );
