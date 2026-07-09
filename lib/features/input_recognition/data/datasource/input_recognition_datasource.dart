@@ -39,6 +39,7 @@ class InputRecognitionDataSourceImpl extends InputRecognitionDataSource {
     if (strokes.isEmpty) throw const EmptyStrokesException();
     final ink = _inkConverter(strokes);
     final context = DigitalInkRecognitionContext(
+      preContext: '0123456789',
       writingArea: WritingArea(
         width: canvasWidth,
         height: canvasHeight,
@@ -46,6 +47,7 @@ class InputRecognitionDataSourceImpl extends InputRecognitionDataSource {
     );
     final candidates = await _recognizer.recognize(ink, context: context);
     if (candidates.isEmpty) throw const NoRecognitionCandidateException();
+    //print('Candidato reconocido: "${candidates.first.text}"');
     return candidates.first.text;
   }
 

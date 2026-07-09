@@ -14,7 +14,6 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        //title: const Text('Froggy Math'),
         centerTitle: true,
       ),
       body: Stack(
@@ -23,17 +22,7 @@ class HomeScreen extends StatelessWidget {
           HomePlayCanvas(key: homePlayCanvasKey),
         ],
       ),
-      floatingActionButton: HomeFloatingActionButtons(
-        submitOnTap: () async {
-          /*context.read<InputRecognitionCubit>().submitResult(
-            canvasWidth: MediaQuery.sizeOf(context).width,
-            canvasHeight: MediaQuery.sizeOf(context).height,
-          );
-          await homePlayCanvasKey.currentState?.playOutAnimation();
-          context.read<InputRecognitionCubit>().clearCanvas();
-          homePlayCanvasKey.currentState?.resetAnimation();*/
-        },
-      ),
+      floatingActionButton: HomeFloatingActionButtons(),
     );
   }
 }

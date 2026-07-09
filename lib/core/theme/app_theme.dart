@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   static ThemeData light() {
-    final textTheme = GoogleFonts.rubikSprayPaintTextTheme().apply(
+    final textTheme = GoogleFonts.dynaPuffTextTheme().apply(
       displayColor: Colors.white,
       bodyColor: Colors.white,
     );

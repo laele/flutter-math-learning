@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
+import 'package:flutter_math_app/features/game/presentation/screens/home/widgets/home_learn_numbers.dart';
 import 'package:flutter_math_app/features/input_recognition/presentation/input_recognition_cubit/input_recognition_cubit.dart';
 import 'package:scribble/scribble.dart';
 
@@ -59,7 +60,8 @@ class HomePlayCanvasState extends State<HomePlayCanvas> with SingleTickerProvide
           context.read<GameCubit>().playPetFailed(message: state.errorMessage);
         }
         if (state.status == InputRecognitionStatus.success) {
-          context.read<GameCubit>().playPetSuccess(num: state.numberRecognized);
+          //context.read<GameCubit>().playPetSuccess(num: state.numberRecognized);
+          context.read<GameCubit>().checkResult(state.numberRecognized!);
         }
       },
       child: Listener(
@@ -69,24 +71,29 @@ class HomePlayCanvasState extends State<HomePlayCanvas> with SingleTickerProvide
         onPointerUp: (_) {
           inputRecognitionCubit.onFinishedStroke(canvasHeight: canvasHeight, canvasWidth: canvasWidth);
         },
-        child: Column(
+        child: Stack(
           children: [
-            Expanded(
-              child: AnimatedBuilder(
-                animation: controller,
-                builder: (context, child) {
-                  return Opacity(
-                    opacity: _fade.value,
-                    child: Transform.scale(
-                      scale: _scale.value,
-                      child: Scribble(
-                        notifier: inputRecognitionCubit.notifier,
-                        drawPen: true,
-                      ),
-                    ),
-                  );
-                },
-              ),
+            //HomeLearnNumbers(),
+            Column(
+              children: [
+                Expanded(
+                  child: AnimatedBuilder(
+                    animation: controller,
+                    builder: (context, child) {
+                      return Opacity(
+                        opacity: _fade.value,
+                        child: Transform.scale(
+                          scale: _scale.value,
+                          child: Scribble(
+                            notifier: inputRecognitionCubit.notifier,
+                            drawPen: true,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
           ],
         ),

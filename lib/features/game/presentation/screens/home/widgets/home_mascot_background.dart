@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_math_app/core/theme/app_colors.dart';
 import 'package:flutter_math_app/core/theme/app_gradients.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
+import 'package:flutter_math_app/features/game/presentation/screens/home/widgets/home_learn_numbers.dart';
 import 'package:rive/rive.dart';
 
 class HomeMascotBackground extends StatefulWidget {
@@ -23,7 +24,7 @@ class _HomeMascotBackgroundState extends State<HomeMascotBackground> {
   @override
   void initState() {
     super.initState();
-    fileLoader = FileLoader.fromAsset('assets/greg_the_frog.riv', riveFactory: Factory.rive);
+    fileLoader = FileLoader.fromAsset('lib/core/assets/rive/greg_the_frog.riv', riveFactory: Factory.rive);
   }
 
   @override
@@ -71,6 +72,16 @@ class _HomeMascotBackgroundState extends State<HomeMascotBackground> {
                   decoration: BoxDecoration(
                     gradient: AppGradients.background,
                   ),
+                ),
+
+                BlocBuilder<GameCubit, GameState>(
+                  buildWhen: (previous, current) => previous.gameMode != current.gameMode,
+                  builder: (context, state) {
+                    if (state.gameMode == GameMode.learnNumbers) {
+                      return HomeLearnNumbers();
+                    }
+                    return SizedBox.shrink();
+                  },
                 ),
                 BlocBuilder<GameCubit, GameState>(
                   buildWhen: (previous, current) {
