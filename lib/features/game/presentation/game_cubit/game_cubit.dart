@@ -81,7 +81,7 @@ class GameCubit extends Cubit<GameState> {
       GameMode.learnNumbers => 'Draw ${question.resultNum} number!',
       GameMode.learnLetters => '',
       GameMode.add => 'Let\'s add these numbers! ${question.firstNum} + ${question.secNum}',
-      GameMode.sub => 'Time to subtract! ${question.firstNum} - ${question.secNum}',
+      GameMode.sub => 'Time to substract! ${question.firstNum} - ${question.secNum}',
       GameMode.mult => 'Let\'s multiply!  ${question.firstNum} * ${question.secNum}',
       GameMode.div => 'Can you solve this division? ${question.firstNum} / ${question.secNum} ',
       _ => '',

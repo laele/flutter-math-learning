@@ -52,7 +52,7 @@ class _HomeMascotBackgroundState extends State<HomeMascotBackground> {
   Widget build(BuildContext context) {
     return BlocListener<GameCubit, GameState>(
       listenWhen: (previous, current) {
-        if (previous.petAnimation != current.petAnimation) {
+        if (previous.petAnimation != current.petAnimation || previous.message != current.message) {
           return true;
         }
         return false;
