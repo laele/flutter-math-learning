@@ -26,6 +26,10 @@ class HomeScreen extends StatelessWidget {
                 return true;
               }
 
+              if (previous.result != current.result) return true;
+
+              if (previous.gameMode != current.gameMode) return true;
+
               return false;
             },
             builder: (context, state) => Padding(
