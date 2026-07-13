@@ -5,6 +5,7 @@ class AppGradients {
   static const LinearGradient background = LinearGradient(
     begin: AlignmentGeometry.bottomCenter,
     end: AlignmentDirectional.topCenter,
+
     colors: [
       AppColors.appBackgroundGradient,
       AppColors.appBackgroundGradientVariant,

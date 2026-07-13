@@ -20,7 +20,7 @@ class HomeScreen extends StatelessWidget {
       body: Stack(
         children: [
           HomeMascotBackground(),
-          BlocBuilder<GameCubit, GameState>(
+          /*BlocBuilder<GameCubit, GameState>(
             buildWhen: (previous, current) {
               if (previous.currentGameStats != current.currentGameStats) {
                 return true;
@@ -34,15 +34,20 @@ class HomeScreen extends StatelessWidget {
             },
             builder: (context, state) => Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Column(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('result: ${state.result}'),
-                  Text('Game Mode: ${state.gameMode.name}'),
-                  Text('Game Stats: ${state.currentGameStats}'),
+                  Column(
+                    children: [
+                      Text('result: ${state.result}'),
+                      Text('Game Mode: ${state.gameMode.name}'),
+                      Text('Game Stats: ${state.currentGameStats}'),
+                    ],
+                  ),
                 ],
               ),
             ),
-          ),
+          ),*/
           HomePlayCanvas(key: homePlayCanvasKey),
         ],
       ),

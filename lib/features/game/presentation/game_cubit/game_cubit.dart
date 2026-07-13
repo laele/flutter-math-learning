@@ -14,7 +14,7 @@ class GameCubit extends Cubit<GameState> {
     : super(
         GameState(
           petAnimation: PetAnimation.idle,
-          gameMode: GameMode.learnNumbers,
+          gameMode: GameMode.menu,
         ),
       );
 
@@ -59,7 +59,6 @@ class GameCubit extends Cubit<GameState> {
   }
 
   void generateNextLevel() {
-    // Check gameMode
     final tiers = DifficultyTiers.byMode[state.gameMode];
     if (tiers == null) return;
 
@@ -109,10 +108,8 @@ class GameCubit extends Cubit<GameState> {
 
       if (isChangetoNextLevel) {
         await playAnimationWithMessageAndDelay(PetAnimation.success, 'Excellent! Here comes the next level!');
-        //playAnimation(PetAnimation.success, 'Excellent! Here comes the next level!', clearAfterShow: true);
       } else {
         await playAnimationWithMessageAndDelay(PetAnimation.success, 'Amazing, Let\'s try next number!');
-        //playAnimation(PetAnimation.success, 'Amazing, Let\'s try next number!', clearAfterShow: true);
       }
       generateNextLevel();
     } else {
@@ -166,17 +163,26 @@ class GameCubit extends Cubit<GameState> {
   void playAnimation(PetAnimation animation, String? message, {bool clearAfterShow = false}) async {
     if (clearAfterShow) {
       final String? previousMessage = state.message;
-      print(previousMessage);
 
       emit(state.copyWith(petAnimation: animation, message: message));
       await Future.delayed(Duration(seconds: 4));
-      emit(state.copyWith(message: previousMessage));
+      if (state.gameMode != GameMode.menu) emit(state.copyWith(message: previousMessage));
       return;
     }
     emit(state.copyWith(petAnimation: animation, message: message));
   }
 
+  void startGameBySelectedMode({required GameMode gameMode}) {
+    emit(state.copyWith(gameMode: gameMode, canDraw: true));
+    generateNextLevel();
+  }
+
+  void backToMenu() {
+    emit(state.copyWith(gameMode: GameMode.menu, canDraw: false));
+    clearMessage();
+  }
+
   void clearMessage() {
-    emit(state.copyWith(petAnimation: PetAnimation.idle, message: null));
+    emit(state.copyWith(petAnimation: PetAnimation.idle, message: ''));
   }
 }

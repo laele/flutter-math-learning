@@ -2,7 +2,7 @@ part of 'game_cubit.dart';
 
 enum PetAnimation { idle, thinking, failed, success }
 
-enum GameMode { tutorial, learnNumbers, learnLetters, add, sub, mult, div, mix }
+enum GameMode { tutorial, learnNumbers, learnLetters, add, sub, mult, div, mix, menu }
 
 class GameState extends Equatable {
   final Map<GameMode, GameStatsEntity> stats;
@@ -14,6 +14,7 @@ class GameState extends Equatable {
   final int? secNum;
   final int? result;
   final String? letter;
+  final bool canDraw;
 
   const GameState({
     required this.petAnimation,
@@ -25,6 +26,7 @@ class GameState extends Equatable {
     this.firstNum,
     this.secNum,
     this.letter,
+    this.canDraw = false,
   });
 
   GameStatsEntity get currentGameStats => stats[gameMode] ?? GameStatsEntity();
@@ -39,6 +41,7 @@ class GameState extends Equatable {
     int? secNum,
     String? letter,
     bool? readyToClearMessage,
+    bool? canDraw,
   }) {
     return GameState(
       readyToClearMessage: readyToClearMessage ?? this.readyToClearMessage,
@@ -50,19 +53,10 @@ class GameState extends Equatable {
       firstNum: firstNum ?? this.firstNum,
       secNum: secNum ?? this.secNum,
       letter: letter ?? this.letter,
+      canDraw: canDraw ?? this.canDraw,
     );
   }
 
   @override
-  List<Object?> get props => [
-    readyToClearMessage,
-    stats,
-    petAnimation,
-    gameMode,
-    message,
-    result,
-    firstNum,
-    secNum,
-    letter,
-  ];
+  List<Object?> get props => [readyToClearMessage, stats, petAnimation, gameMode, message, result, firstNum, secNum, letter, canDraw];
 }
