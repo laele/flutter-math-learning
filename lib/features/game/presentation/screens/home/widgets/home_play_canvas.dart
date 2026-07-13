@@ -89,9 +89,16 @@ class HomePlayCanvasState extends State<HomePlayCanvas> with SingleTickerProvide
                         opacity: _fade.value,
                         child: Transform.scale(
                           scale: _scale.value,
-                          child: Scribble(
-                            notifier: inputRecognitionCubit.notifier,
-                            drawPen: true,
+                          child: BlocBuilder<GameCubit, GameState>(
+                            buildWhen: (previous, current) => previous.canDraw != current.canDraw,
+                            builder: (context, state) {
+                              return state.canDraw
+                                  ? Scribble(
+                                      notifier: inputRecognitionCubit.notifier,
+                                      drawPen: true,
+                                    )
+                                  : SizedBox.shrink();
+                            },
                           ),
                         ),
                       );

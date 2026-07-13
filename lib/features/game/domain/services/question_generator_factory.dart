@@ -9,6 +9,7 @@ class QuestionGeneratorFactory {
       GameMode.sub => SubQuestionGenerator(),
       GameMode.mult => MultQuestionGenerator(),
       GameMode.div => DivQuestionGenerator(),
+      GameMode.menu => throw UnimplementedError(),
       GameMode.tutorial || GameMode.learnLetters || GameMode.mix => throw UnimplementedError(),
     };
   }
