@@ -27,16 +27,13 @@ class HomeScreen extends StatelessWidget {
                       .map(
                         (e) => Column(
                           children: [
-                            Text('GameMode: ${e.key.name}'),
-                            Text('Correct Streak: ${e.value.correctStreak}'),
-                            Text('failed Streak: ${e.value.failedStreak}'),
+                            Text('gameMode: ${e.key.name}'),
+                            Text('registry: ${e.value.recentResults}'),
                             Text('attempts Streak: ${e.value.attempts}'),
                             Text('correct count: ${e.value.correctCount}'),
-                            Text('Error Rate: ${e.value.errorRate}'),
-                            Text('Nivel ${e.value.currentTierIndex}'),
-                            SizedBox(
-                              height: 10,
-                            ),
+                            Text('error Rate: ${e.value.errorRate}'),
+                            Text('nivel ${e.value.currentTierIndex}'),
+                            SizedBox(height: 10),
                           ],
                         ),
                       )

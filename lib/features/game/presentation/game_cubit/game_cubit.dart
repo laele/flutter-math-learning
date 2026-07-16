@@ -32,7 +32,7 @@ class GameCubit extends Cubit<GameState> {
     final tiers = DifficultyTiers.byMode[nextGameMode];
     if (tiers == null) return;
 
-    final currentTier = tiers[state.currentGameStats.currentTierIndex];
+    final currentTier = tiers[state.stats[nextGameMode]!.currentTierIndex];
     final generator = QuestionGeneratorFactory.forMode(nextGameMode);
     final question = generator.generate(currentTier);
     emit(
@@ -50,61 +50,34 @@ class GameCubit extends Cubit<GameState> {
   }
 
   void checkResult(int result) async {
-    if (result == state.result) {
-      final tier = DifficultyTiers.byMode[state.currentGameMode];
-      final newCorrectStreaks = state.currentGameStats.correctStreak + 1;
-      final isChangetoNextLevel = tier != null && newCorrectStreaks > 4 && state.currentGameStats.currentTierIndex < tier.length - 1;
+    final wasCorrect = (result == state.result);
+    final gameMode = state.currentGameMode;
+    final tiers = DifficultyTiers.byMode[gameMode];
 
-      final newStats = isChangetoNextLevel
-          ? state.currentGameStats.copyWith(
-              correctStreak: 0,
-              failedStreak: 0,
-              currentTierIndex: state.currentGameStats.currentTierIndex + 1,
-            )
-          : state.currentGameStats
-                .copyWith(
-                  correctStreak: newCorrectStreaks,
-                  failedStreak: 0,
-                )
-                .copyWith(
-                  attempts: state.currentGameStats.attempts + 1,
-                  correctCount: state.currentGameStats.correctCount + 1,
-                );
+    var newStats = state.currentGameStats.recordAttempt(wasCorrect);
 
-      _setNewStats(state.currentGameMode!, newStats);
+    final isLevelUp = wasCorrect && tiers != null && newStats.shouldLevelUp && newStats.currentTierIndex < tiers.length - 1;
+    final isLevelDown = !wasCorrect && tiers != null && newStats.shouldLevelDown && newStats.currentTierIndex > 0;
 
-      if (isChangetoNextLevel) {
-        await playAnimation(animation: PetAnimation.success, 'Excellent! Here comes the next level!');
-      } else {
-        await playAnimation(animation: PetAnimation.success, 'Amazing, Let\'s try next number!');
-      }
-      generateNextLevel();
-    } else {
-      final newFailedStreaks = state.currentGameStats.failedStreak + 1;
-      final isChangeToLowerLevel = newFailedStreaks > 2 && state.currentGameStats.currentTierIndex > 0;
-
-      final newStats = isChangeToLowerLevel
-          ? state.currentGameStats.copyWith(
-              correctStreak: 0,
-              failedStreak: 0,
-              currentTierIndex: state.currentGameStats.currentTierIndex - 1,
-            )
-          : state.currentGameStats
-                .copyWith(
-                  correctStreak: 0,
-                  failedStreak: newFailedStreaks,
-                )
-                .copyWith(attempts: state.currentGameStats.attempts + 1);
-
-      _setNewStats(state.currentGameMode!, newStats);
-
-      if (isChangeToLowerLevel) {
-        await playAnimation('Let\'s try an easier one!', animation: PetAnimation.failed, clearAfterShow: true);
-        generateNextLevel();
-      } else {
-        await playAnimation('Nope, Try it again!', animation: PetAnimation.failed, clearAfterShow: true);
-      }
+    if (isLevelUp) {
+      newStats = newStats.copyWith(currentTierIndex: newStats.currentTierIndex + 1).resetRegistry();
+    } else if (isLevelDown) {
+      newStats = newStats.copyWith(currentTierIndex: newStats.currentTierIndex - 1).resetRegistry();
     }
+
+    _setNewStats(gameMode!, newStats);
+
+    if (isLevelUp) {
+      await playAnimation(animation: PetAnimation.success, 'Excellent! Here comes the next level!');
+    } else if (wasCorrect) {
+      await playAnimation(animation: PetAnimation.success, 'Amazing, Let\'s try next number!');
+    } else if (isLevelDown) {
+      await playAnimation('Let\'s try an easier one!', animation: PetAnimation.failed, clearAfterShow: true);
+    } else {
+      await playAnimation('Nope, Try it again!', animation: PetAnimation.failed, clearAfterShow: true);
+    }
+
+    if (wasCorrect || isLevelDown) generateNextLevel();
   }
 
   String _messageFromNewQuestion({required GameMode gameMode, required GameQuestionEntity question}) {

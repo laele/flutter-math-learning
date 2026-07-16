@@ -10,7 +10,7 @@ class HomeFloatingActionButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<GameCubit, GameState>(
-      buildWhen: (previous, current) => previous.currentGameMode != current.currentGameMode,
+      buildWhen: (previous, current) => previous.showMenu != current.showMenu,
       builder: (context, state) {
         if (state.showMenu) {
           // return Game Menu

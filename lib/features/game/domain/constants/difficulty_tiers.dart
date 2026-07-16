@@ -35,3 +35,8 @@ class DifficultyTiers {
     ],
   };
 }
+
+
+// substract resta el mismo numero,
+// add toma min y max diferentes al nivel en el que se encuentra
+// learn numbers toma otro min y max diferentes al que se encuentra
