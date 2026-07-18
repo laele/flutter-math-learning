@@ -16,7 +16,7 @@ final sl = GetIt.instance;
 Future<void> initDependencies() async {
   await initInputRecognizer();
   await initAudio();
-  sl.registerFactory<GameCubit>(() => GameCubit());
+  sl.registerFactory<GameCubit>(() => GameCubit(audioCubit: sl()));
 }
 
 Future<void> initInputRecognizer() async {

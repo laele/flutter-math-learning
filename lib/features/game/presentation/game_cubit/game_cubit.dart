@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_math_app/features/audio/presentation/cubit/audio_cubit.dart';
 import 'package:flutter_math_app/features/game/domain/constants/difficulty_tiers.dart';
 import 'package:flutter_math_app/features/game/domain/constants/game_modes.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_question_entity.dart';
@@ -11,9 +12,11 @@ part 'game_state.dart';
 
 class GameCubit extends Cubit<GameState> {
   final MixModeSelector _mixModeSelector;
+  final AudioCubit _audioCubit;
 
-  GameCubit({MixModeSelector? mixModeSelector})
+  GameCubit({MixModeSelector? mixModeSelector, required AudioCubit audioCubit})
     : _mixModeSelector = mixModeSelector ?? MixModeSelector(),
+      _audioCubit = audioCubit,
       super(
         GameState(
           petAnimation: PetAnimation.idle,
@@ -75,12 +78,16 @@ class GameCubit extends Cubit<GameState> {
     _setNewStats(gameMode!, newStats);
 
     if (isLevelUp) {
+      _audioCubit.playSfxCorrect();
+
       emit(state.copyWith(hideOperation: true));
       await playAnimation(animation: PetAnimation.success, message: 'Excellent! You are getting better!');
     } else if (wasCorrect) {
+      _audioCubit.playSfxCorrect();
       emit(state.copyWith(hideOperation: true));
       await playAnimation(animation: PetAnimation.success, message: 'Amazing, Let\'s try next number!');
     } else if (isLevelDown) {
+      _audioCubit.playSfxIncorrect();
       emit(state.copyWith(hideOperation: true));
       await playAnimation(
         message: 'Let\'s try an easier one!', // change to lower level message
@@ -88,6 +95,7 @@ class GameCubit extends Cubit<GameState> {
         //clearAfterShow: true,
       );
     } else {
+      _audioCubit.playSfxIncorrect();
       await playAnimation(message: 'Nope, Try it again!', animation: PetAnimation.failed, clearAfterShow: true);
     }
 
