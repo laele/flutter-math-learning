@@ -1,6 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_math_app/features/audio/presentation/cubit/audio_cubit.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
 import 'package:flutter_math_app/features/game/presentation/screens/menu/menu_screen.dart';
 
@@ -25,6 +26,7 @@ class HomeFloatingActionButtons extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 32.0),
                       child: FloatingActionButton(
                         onPressed: () {
+                          context.read<AudioCubit>().playSfxButtonTap();
                           MenuScreen.show(context);
                         },
                         child: Icon(Icons.menu),
@@ -41,6 +43,7 @@ class HomeFloatingActionButtons extends StatelessWidget {
                   children: [
                     FloatingActionButton(
                       onPressed: () {
+                        context.read<AudioCubit>().playSfxButtonTap();
                         context.read<GameCubit>().startGame();
                       },
                       child: Icon(Icons.play_arrow),
@@ -62,6 +65,7 @@ class HomeFloatingActionButtons extends StatelessWidget {
                     child: BounceInDown(
                       child: FloatingActionButton(
                         onPressed: () {
+                          context.read<AudioCubit>().playSfxButtonTap();
                           context.read<GameCubit>().backToMenu();
                         },
                         child: Icon(Icons.arrow_back),
