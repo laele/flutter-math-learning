@@ -37,11 +37,11 @@ class _HomeMascotBackgroundState extends State<HomeMascotBackground> {
     switch (petAnimation) {
       case (PetAnimation.success):
         _triggerSuccess?.fire();
-        context.read<AudioCubit>().playSfxCorrect();
+        //context.read<AudioCubit>().playSfxCorrect();
         break;
       case (PetAnimation.failed):
         _triggerFailed?.fire();
-        context.read<AudioCubit>().playSfxIncorrect();
+        //context.read<AudioCubit>().playSfxIncorrect();
         break;
       case (PetAnimation.thinking):
         _triggerThinking?.fire();
