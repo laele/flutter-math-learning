@@ -9,6 +9,7 @@ class AppTheme {
       bodyColor: Colors.black,
     );
     return ThemeData(
+      materialTapTargetSize: MaterialTapTargetSize.padded,
       brightness: Brightness.light,
       useMaterial3: true,
       scaffoldBackgroundColor: AppColors.appBackground,
@@ -22,6 +23,10 @@ class AppTheme {
 
       appBarTheme: AppBarTheme(
         color: AppColors.appBackgroundGradientVariant,
+      ),
+
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        enableFeedback: false,
       ),
     );
   }

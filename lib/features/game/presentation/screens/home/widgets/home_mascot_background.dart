@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_math_app/core/theme/app_gradients.dart';
+import 'package:flutter_math_app/features/audio/presentation/cubit/audio_cubit.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
 import 'package:flutter_math_app/features/game/presentation/screens/home/widgets/home_animated_text_bubble.dart';
 import 'package:flutter_math_app/features/game/presentation/screens/home/widgets/pencil_sign.dart';
@@ -36,9 +37,11 @@ class _HomeMascotBackgroundState extends State<HomeMascotBackground> {
     switch (petAnimation) {
       case (PetAnimation.success):
         _triggerSuccess?.fire();
+        context.read<AudioCubit>().playSfxCorrect();
         break;
       case (PetAnimation.failed):
         _triggerFailed?.fire();
+        context.read<AudioCubit>().playSfxIncorrect();
         break;
       case (PetAnimation.thinking):
         _triggerThinking?.fire();
