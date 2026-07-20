@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_math_app/features/audio/domain/entities/background_track_entity.dart';
 import 'package:flutter_math_app/features/audio/domain/entities/sound_effect_entity.dart';
 import 'package:flutter_math_app/features/audio/domain/repositories/audio_repository.dart';
 
@@ -36,5 +37,10 @@ class AudioCubit extends Cubit<AudioState> {
 
   void playSfxIncorrect() {
     _audioRepository.playSfx(soundSfx: SoundEffectEntity.incorrect);
+  }
+
+  void playBackgroundMusic() {
+    print('song');
+    _audioRepository.playBackgroundMusic(track: BackgroundTrackEntity.gameplay);
   }
 }

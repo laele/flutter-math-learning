@@ -13,7 +13,9 @@ class AudioRepositoryImpl implements AudioRepository {
   bool _mutedMusic = false;
   bool _mutedSfx = false;
 
-  static const _trackPaths = {};
+  static const _trackPaths = {
+    BackgroundTrackEntity.gameplay: 'music/background_song.mp3',
+  };
 
   Future<void> init() => _datasource.preloadSfx();
 
