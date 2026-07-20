@@ -1,10 +1,11 @@
+import 'package:flutter_math_app/features/audio/domain/entities/background_song_entity.dart';
 import 'package:flutter_math_app/features/audio/domain/entities/sound_effect_entity.dart';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_soloud/flutter_soloud.dart';
 
 abstract interface class AudioDataSource {
-  Future<void> preloadSfx();
-  Future<void> playSfx({required SoundEffectEntity effect, required double volume, required bool muted});
-  Future<void> playMusic({required String trackPath, required double volume, required bool muted});
+  Future<void> init();
+  Future<void> playSfx({required SoundEffectEntity effect, required double volume});
+  Future<void> playMusic({required BackgroundSongEntity song, required double volume});
   Future<void> stopMusic();
   Future<void> pauseMusic();
   Future<void> resumeMusic();
@@ -13,72 +14,74 @@ abstract interface class AudioDataSource {
 }
 
 class AudioDataSourceImpl implements AudioDataSource {
-  final Map<SoundEffectEntity, AudioPool> _pools = {};
-  final AudioPlayer _musicPlayer = AudioPlayer();
+  final SoLoud _soloud = SoLoud.instance;
+  SoundHandle? _musicHandle;
 
-  static const _sfxAssets = {
-    SoundEffectEntity.correct: 'sfx/correct_sound.mp3',
-    SoundEffectEntity.incorrect: 'sfx/error_sound.mp3',
-    SoundEffectEntity.buttonTap: 'sfx/button_tap.mp3',
+  final Map<BackgroundSongEntity, AudioSource> _songs = {};
+  final Map<SoundEffectEntity, AudioSource> _sfx = {};
+
+  static const _songsAssets = {
+    BackgroundSongEntity.gameplay: 'assets/music/background_song.mp3',
   };
-
+  static const _sfxAssets = {
+    SoundEffectEntity.correct: 'assets/sfx/correct_sound.mp3',
+    SoundEffectEntity.incorrect: 'assets/sfx/error_sound.mp3',
+    SoundEffectEntity.buttonTap: 'assets/sfx/button_tap.mp3',
+  };
   @override
-  Future<void> preloadSfx() async {
-    await _configurarContextos();
+  Future<void> init() async {
+    await _soloud.init();
+    await _preloadAssets();
+  }
+
+  Future<void> _preloadAssets() async {
+    for (final entry in _songsAssets.entries) {
+      _songs[entry.key] = await _soloud.loadAsset(entry.value); // load song
+    }
 
     for (final entry in _sfxAssets.entries) {
-      _pools[entry.key] = await AudioPool.createFromAsset(path: entry.value, maxPlayers: 3);
+      _sfx[entry.key] = await _soloud.loadAsset(entry.value); // load sfx
     }
   }
 
-  Future<void> _configurarContextos() async {
-    // Contexto para la MÚSICA: sin pedir audio focus exclusivo,
-    // para que nunca sea ella la que fuerza pausas sobre sí misma
-    await _musicPlayer.setAudioContext(
-      AudioContext(
-        iOS: AudioContextIOS(
-          category: AVAudioSessionCategory.playback,
-          options: {AVAudioSessionOptions.mixWithOthers},
-        ),
-        android: AudioContextAndroid(
-          audioFocus: AndroidAudioFocus.gain, // mantiene el foco de forma estable
-          contentType: AndroidContentType.music,
-        ),
-      ),
-    );
+  @override
+  Future<void> playSfx({required SoundEffectEntity effect, required double volume}) async {
+    final source = _sfx[effect];
+    if (source == null) return;
+    _soloud.play(source, volume: volume);
   }
 
   @override
-  Future<void> pauseMusic() => _musicPlayer.pause();
-
-  @override
-  Future<void> resumeMusic() => _musicPlayer.resume();
-
-  @override
-  Future<void> stopMusic() => _musicPlayer.stop();
-
-  @override
-  Future<void> playMusic({required String trackPath, required double volume, required bool muted}) async {
-    await _musicPlayer.stop();
-    await _musicPlayer.setReleaseMode(ReleaseMode.loop);
-    await _musicPlayer.setVolume(muted ? 0.0 : volume);
-
-    await _musicPlayer.play(AssetSource(trackPath));
+  Future<void> playMusic({required BackgroundSongEntity song, required double volume}) async {
+    final source = _songs[song];
+    if (source == null) return;
+    if (_musicHandle != null) {
+      await stopMusic();
+    }
+    _musicHandle = _soloud.play(source!, looping: true, volume: volume);
   }
 
   @override
-  Future<void> playSfx({required SoundEffectEntity effect, required double volume, required bool muted}) async {
-    if (muted) return;
-    final pool = _pools[effect];
-    if (pool == null) return;
-    await pool.start(volume: volume);
+  Future<void> pauseMusic() async {
+    if (_musicHandle == null) return;
+    _soloud.setPause(_musicHandle!, true);
+  }
+
+  @override
+  Future<void> resumeMusic() async {
+    if (_musicHandle == null) return;
+    _soloud.setPause(_musicHandle!, false);
+  }
+
+  @override
+  Future<void> stopMusic() async {
+    if (_musicHandle == null) return;
+    _soloud.stop(_musicHandle!);
+    _musicHandle = null;
   }
 
   @override
   Future<void> dispose() async {
-    for (final pool in _pools.values) {
-      await pool.dispose();
-    }
-    await _musicPlayer.dispose();
+    await _soloud.disposeAllSources();
   }
 }

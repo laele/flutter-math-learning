@@ -31,7 +31,8 @@ class MyApp extends StatelessWidget {
             ..initNotifier(),
         ),
         BlocProvider(
-          create: (context) => sl<AudioCubit>()..playBackgroundMusic(),
+          create: (context) => sl<AudioCubit>()..initAudio(),
+          //..playBackgroundMusic(),
           lazy: false,
         ), // Lazy false forces to create the instance instantly
       ],

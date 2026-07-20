@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_math_app/features/audio/domain/entities/background_track_entity.dart';
+import 'package:flutter_math_app/features/audio/domain/entities/background_song_entity.dart';
 import 'package:flutter_math_app/features/audio/domain/entities/sound_effect_entity.dart';
 import 'package:flutter_math_app/features/audio/domain/repositories/audio_repository.dart';
 
@@ -9,6 +9,10 @@ part 'audio_state.dart';
 class AudioCubit extends Cubit<AudioState> {
   final AudioRepository _audioRepository;
   AudioCubit({required AudioRepository audioRepository}) : _audioRepository = audioRepository, super(const AudioState());
+
+  void initAudio() {
+    _audioRepository.initAudio();
+  }
 
   void toggleSfxMute() {
     final sfxMuted = !state.sfxMuted;
@@ -28,19 +32,19 @@ class AudioCubit extends Cubit<AudioState> {
   }
 
   void playSfxButtonTap() {
-    _audioRepository.playSfx(soundSfx: SoundEffectEntity.buttonTap);
+    _audioRepository.playSfx(soundSfx: SoundEffectEntity.buttonTap, volume: 1.0);
   }
 
   void playSfxCorrect() {
-    _audioRepository.playSfx(soundSfx: SoundEffectEntity.correct);
+    _audioRepository.playSfx(soundSfx: SoundEffectEntity.correct, volume: 1.0);
   }
 
   void playSfxIncorrect() {
-    _audioRepository.playSfx(soundSfx: SoundEffectEntity.incorrect);
+    _audioRepository.playSfx(soundSfx: SoundEffectEntity.incorrect, volume: 1.0);
   }
 
   void playBackgroundMusic() {
     print('song');
-    _audioRepository.playBackgroundMusic(track: BackgroundTrackEntity.gameplay);
+    _audioRepository.playBackgroundMusic(song: BackgroundSongEntity.gameplay, volume: 1.0);
   }
 }
