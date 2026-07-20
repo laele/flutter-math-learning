@@ -16,7 +16,7 @@ final sl = GetIt.instance;
 Future<void> initDependencies() async {
   await initInputRecognizer();
   await initAudio();
-  sl.registerFactory<GameCubit>(() => GameCubit(audioCubit: sl()));
+  sl.registerFactory<GameCubit>(() => GameCubit());
 }
 
 Future<void> initInputRecognizer() async {
@@ -51,6 +51,6 @@ Future<void> initAudio() async {
       await repo.init(); // load sfx
       return repo;
     })
-    ..registerFactory<AudioCubit>(() => AudioCubit(audioRepository: sl()));
+    ..registerLazySingleton<AudioCubit>(() => AudioCubit(audioRepository: sl()));
   await sl.isReady<AudioRepository>();
 }

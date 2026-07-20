@@ -13,28 +13,43 @@ abstract interface class AudioDataSource {
 }
 
 class AudioDataSourceImpl implements AudioDataSource {
-  AudioDataSourceImpl() {
-    AudioCache.instance = AudioCache(prefix: '');
-  }
-
   final Map<SoundEffectEntity, AudioPool> _pools = {};
   final AudioPlayer _musicPlayer = AudioPlayer();
 
   static const _sfxAssets = {
-    SoundEffectEntity.correct: 'lib/core/assets/sfx/correct_sound.mp3',
-    SoundEffectEntity.incorrect: 'lib/core/assets/sfx/error_sound.mp3',
-    SoundEffectEntity.buttonTap: 'lib/core/assets/sfx/button_tap.mp3',
+    SoundEffectEntity.correct: 'sfx/correct_sound.mp3',
+    SoundEffectEntity.incorrect: 'sfx/error_sound.mp3',
+    SoundEffectEntity.buttonTap: 'sfx/button_tap.mp3',
   };
 
   @override
   Future<void> preloadSfx() async {
+    await _configurarContextos();
+
     for (final entry in _sfxAssets.entries) {
-      _pools[entry.key] = await AudioPool.createFromAsset(path: '${entry.value}', maxPlayers: 3);
+      _pools[entry.key] = await AudioPool.createFromAsset(path: entry.value, maxPlayers: 3);
     }
   }
 
+  Future<void> _configurarContextos() async {
+    // Contexto para la MÚSICA: sin pedir audio focus exclusivo,
+    // para que nunca sea ella la que fuerza pausas sobre sí misma
+    await _musicPlayer.setAudioContext(
+      AudioContext(
+        iOS: AudioContextIOS(
+          category: AVAudioSessionCategory.playback,
+          options: {AVAudioSessionOptions.mixWithOthers},
+        ),
+        android: AudioContextAndroid(
+          audioFocus: AndroidAudioFocus.gain, // mantiene el foco de forma estable
+          contentType: AndroidContentType.music,
+        ),
+      ),
+    );
+  }
+
   @override
-  Future<void> pauseMusic() => _musicPlayer.stop();
+  Future<void> pauseMusic() => _musicPlayer.pause();
 
   @override
   Future<void> resumeMusic() => _musicPlayer.resume();
@@ -47,6 +62,7 @@ class AudioDataSourceImpl implements AudioDataSource {
     await _musicPlayer.stop();
     await _musicPlayer.setReleaseMode(ReleaseMode.loop);
     await _musicPlayer.setVolume(muted ? 0.0 : volume);
+
     await _musicPlayer.play(AssetSource(trackPath));
   }
 

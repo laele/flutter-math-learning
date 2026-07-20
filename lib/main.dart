@@ -30,7 +30,10 @@ class MyApp extends StatelessWidget {
             ..ensureModelDownloaded()
             ..initNotifier(),
         ),
-        BlocProvider(create: (context) => sl<AudioCubit>()),
+        BlocProvider(
+          create: (context) => sl<AudioCubit>()..playBackgroundMusic(),
+          lazy: false,
+        ), // Lazy false forces to create the instance instantly
       ],
       child: MaterialApp(
         title: 'Froggy Math',

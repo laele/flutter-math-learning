@@ -76,9 +76,8 @@ flutter:
   assets:
     - lib/core/assets/images/
     - lib/core/assets/rive/
-    - lib/core/assets/sfx/
-  #- lib/core/assets/music/
-
+    - assets/music/
+    - assets/sfx/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
