@@ -43,14 +43,7 @@ Future<void> initInputRecognizer() async {
 
 Future<void> initAudio() async {
   sl
-    ..registerLazySingleton<AudioDataSource>(
-      () => AudioDataSourceImpl(),
-    )
-    ..registerLazySingletonAsync<AudioRepository>(() async {
-      final repo = AudioRepositoryImpl(datasource: sl());
-      await repo.init(); // load sfx
-      return repo;
-    })
+    ..registerLazySingleton<AudioDataSource>(() => AudioDataSourceImpl())
+    ..registerLazySingleton<AudioRepository>(() => AudioRepositoryImpl(datasource: sl()))
     ..registerLazySingleton<AudioCubit>(() => AudioCubit(audioRepository: sl()));
-  await sl.isReady<AudioRepository>();
 }
