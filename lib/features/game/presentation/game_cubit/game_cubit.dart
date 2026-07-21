@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_math_app/features/game/domain/constants/difficulty_tiers.dart';
 import 'package:flutter_math_app/features/game/domain/constants/game_modes.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_question_entity.dart';
+import 'package:flutter_math_app/features/game/domain/entities/game_sound_event.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_stats_entity.dart';
 import 'package:flutter_math_app/features/game/domain/services/mix_mode_selector.dart';
 import 'package:flutter_math_app/features/game/domain/services/question_generator_factory.dart';
@@ -11,6 +12,7 @@ part 'game_state.dart';
 
 class GameCubit extends Cubit<GameState> {
   final MixModeSelector _mixModeSelector;
+  int _gameSoundEventCounter = 0;
 
   GameCubit({MixModeSelector? mixModeSelector})
     : _mixModeSelector = mixModeSelector ?? MixModeSelector(),
@@ -24,6 +26,10 @@ class GameCubit extends Cubit<GameState> {
           currentExercise: 0,
         ),
       );
+
+  GameSoundEvent _nextGameSound(GameSoundType type) {
+    return GameSoundEvent(type: type, id: _gameSoundEventCounter++);
+  }
 
   void generateNextLevel() async {
     final nextGameMode = _mixModeSelector.pickNext(
@@ -75,20 +81,25 @@ class GameCubit extends Cubit<GameState> {
     _setNewStats(gameMode!, newStats);
 
     if (isLevelUp) {
-      emit(state.copyWith(hideOperation: true));
+      emit(state.copyWith(hideOperation: true, soundEvent: _nextGameSound(GameSoundType.correct)));
       await playAnimation(animation: PetAnimation.success, message: 'Excellent! You are getting better!');
     } else if (wasCorrect) {
-      emit(state.copyWith(hideOperation: true));
+      emit(state.copyWith(hideOperation: true, soundEvent: _nextGameSound(GameSoundType.correct)));
       await playAnimation(animation: PetAnimation.success, message: 'Amazing, Let\'s try next number!');
     } else if (isLevelDown) {
-      emit(state.copyWith(hideOperation: true));
+      emit(state.copyWith(hideOperation: true, soundEvent: _nextGameSound(GameSoundType.incorrect)));
       await playAnimation(
         message: 'Let\'s try an easier one!', // change to lower level message
         animation: PetAnimation.failed,
         //clearAfterShow: true,
       );
     } else {
-      await playAnimation(message: 'Nope, Try it again!', animation: PetAnimation.failed, clearAfterShow: true);
+      emit(state.copyWith(soundEvent: _nextGameSound(GameSoundType.incorrect)));
+      await playAnimation(
+        message: 'Nope, Try it again!',
+        animation: PetAnimation.failed,
+        clearAfterShow: true,
+      );
     }
 
     if ((wasCorrect || isLevelDown) && !state.showMenu) generateNextLevel();

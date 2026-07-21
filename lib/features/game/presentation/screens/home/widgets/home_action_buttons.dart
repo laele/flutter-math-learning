@@ -25,6 +25,7 @@ class HomeFloatingActionButtons extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(left: 32.0),
                       child: FloatingActionButton(
+                        heroTag: 'menuButton',
                         onPressed: () {
                           context.read<AudioCubit>().playSfxButtonTap();
                           MenuScreen.show(context);
@@ -42,6 +43,8 @@ class HomeFloatingActionButtons extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     FloatingActionButton(
+                      heroTag: 'playButton',
+
                       onPressed: () {
                         context.read<AudioCubit>().playSfxButtonTap();
                         context.read<GameCubit>().startGame();
@@ -64,6 +67,8 @@ class HomeFloatingActionButtons extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 32.0),
                     child: BounceInDown(
                       child: FloatingActionButton(
+                        heroTag: 'backHomeButton',
+
                         onPressed: () {
                           context.read<AudioCubit>().playSfxButtonTap();
                           context.read<GameCubit>().backToMenu();
