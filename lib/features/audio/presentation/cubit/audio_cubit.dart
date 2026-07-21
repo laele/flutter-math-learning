@@ -10,8 +10,10 @@ class AudioCubit extends Cubit<AudioState> {
   final AudioRepository _audioRepository;
   AudioCubit({required AudioRepository audioRepository}) : _audioRepository = audioRepository, super(const AudioState());
 
-  void initAudio() {
-    _audioRepository.initAudio();
+  void initAudio() async {
+    await _audioRepository.initAudio();
+    emit(state.copyWith(audioLoaded: true));
+    //playBackgroundMusic();
   }
 
   void toggleSfxMute() {
@@ -36,10 +38,12 @@ class AudioCubit extends Cubit<AudioState> {
   }
 
   void playSfxCorrect() {
+    print('correct');
     _audioRepository.playSfx(soundSfx: SoundEffectEntity.correct, volume: 1.0);
   }
 
   void playSfxIncorrect() {
+    print('incorrect');
     _audioRepository.playSfx(soundSfx: SoundEffectEntity.incorrect, volume: 1.0);
   }
 

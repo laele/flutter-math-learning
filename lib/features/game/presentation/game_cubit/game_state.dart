@@ -5,6 +5,7 @@ enum PetAnimation { idle, thinking, failed, success }
 enum GameMode { learnNumbers, add, sub, mult, div }
 
 class GameState extends Equatable {
+  final GameSoundEvent? soundEvent;
   final Map<GameMode, GameStatsEntity> stats;
   final PetAnimation petAnimation;
   final bool playAnimation;
@@ -25,6 +26,7 @@ class GameState extends Equatable {
   final bool hideOperation;
 
   const GameState({
+    this.soundEvent,
     required this.petAnimation,
     required this.selectedGameModes,
     required this.currentExercise,
@@ -51,6 +53,7 @@ class GameState extends Equatable {
   };
 
   GameState copyWith({
+    GameSoundEvent? soundEvent,
     bool? playAnimation,
     bool? showMenu,
     Map<GameMode, GameStatsEntity>? stats,
@@ -69,6 +72,7 @@ class GameState extends Equatable {
     bool? hideOperation,
   }) {
     return GameState(
+      soundEvent: soundEvent ?? this.soundEvent,
       hideOperation: hideOperation ?? this.hideOperation,
       playAnimation: playAnimation ?? this.playAnimation,
       showMenu: showMenu ?? this.showMenu,
@@ -87,6 +91,7 @@ class GameState extends Equatable {
 
   @override
   List<Object?> get props => [
+    soundEvent,
     hideOperation,
     playAnimation,
     showMenu,

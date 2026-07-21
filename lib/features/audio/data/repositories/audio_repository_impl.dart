@@ -1,3 +1,4 @@
+import 'package:dartz/dartz.dart';
 import 'package:flutter_math_app/features/audio/data/datasource/audio_datasource.dart';
 import 'package:flutter_math_app/features/audio/domain/entities/background_song_entity.dart';
 import 'package:flutter_math_app/features/audio/domain/entities/sound_effect_entity.dart';
@@ -8,7 +9,10 @@ class AudioRepositoryImpl implements AudioRepository {
   AudioRepositoryImpl({required AudioDataSource datasource}) : _datasource = datasource;
 
   @override
-  Future<void> initAudio() async => await _datasource.init();
+  Future<Unit> initAudio() async {
+    await _datasource.init();
+    return unit;
+  }
 
   @override
   Future<void> playBackgroundMusic({required BackgroundSongEntity song, required double volume}) async {
