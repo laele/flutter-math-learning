@@ -24,7 +24,7 @@ class AudioDataSourceImpl implements AudioDataSource {
     BackgroundSongEntity.gameplay: 'assets/music/background_song.mp3',
   };
   static const _sfxAssets = {
-    SoundEffectEntity.correct: 'assets/sfx/correct_sound_1.mp3',
+    SoundEffectEntity.correct: 'assets/sfx/correct_sound_2.mp3',
     SoundEffectEntity.incorrect: 'assets/sfx/error_sound.mp3',
     SoundEffectEntity.buttonTap: 'assets/sfx/tap_button.mp3',
   };
