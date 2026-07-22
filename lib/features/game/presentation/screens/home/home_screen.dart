@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_confetti/flutter_confetti.dart';
@@ -22,11 +21,21 @@ class HomeScreen extends StatelessWidget {
       gravity: 0,
       decay: 0.94,
       startVelocity: 30,
-      colors: [Color(0xffFFE400), Color(0xffFFBD00), Color(0xffE89400), Color(0xffFFCA6C), Color(0xffFDFFB8)],
+      colors: [
+        Color(0xffFFE400),
+        Color(0xffFFBD00),
+        Color(0xffE89400),
+        Color(0xffFFCA6C),
+        Color(0xffFDFFB8),
+      ],
     );
 
     shoot() {
-      Confetti.launch(context, options: options.copyWith(particleCount: 20, scalar: 1.7), particleBuilder: (index) => Star());
+      Confetti.launch(
+        context,
+        options: options.copyWith(particleCount: 20, scalar: 1.7),
+        particleBuilder: (index) => Star(),
+      );
       Confetti.launch(
         context,
         options: options.copyWith(
@@ -39,16 +48,14 @@ class HomeScreen extends StatelessWidget {
 
     Timer(Duration.zero, shoot);
     Timer(const Duration(milliseconds: 100), shoot);
-    //Timer(const Duration(milliseconds: 200), shoot);
+    Timer(const Duration(milliseconds: 200), shoot);
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<GameCubit, GameState>(
       listenWhen: (previous, current) {
-        print('listener previous se: ${previous.soundEvent} , current se: ${current.soundEvent} ');
         if (current.soundEvent != null && current.soundEvent != previous.soundEvent) {
-          print(true);
           return true;
         }
         return false;

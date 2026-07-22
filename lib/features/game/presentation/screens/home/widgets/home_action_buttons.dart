@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_confetti/flutter_confetti.dart';
 import 'package:flutter_math_app/features/audio/presentation/cubit/audio_cubit.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
 import 'package:flutter_math_app/features/game/presentation/screens/menu/menu_screen.dart';
@@ -77,43 +76,6 @@ class HomeFloatingActionButtons extends StatelessWidget {
                           context.read<GameCubit>().backToMenu();
                         },
                         child: Icon(Icons.arrow_back),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 8.0),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 32.0),
-                    child: BounceInDown(
-                      child: FloatingActionButton(
-                        heroTag: 'starsEffectButton',
-
-                        onPressed: () {
-                          /*const options = ConfettiOptions(
-                            spread: 360,
-                            ticks: 50,
-                            gravity: 0,
-                            decay: 0.94,
-                            startVelocity: 30,
-                            colors: [Color(0xffFFE400), Color(0xffFFBD00), Color(0xffE89400), Color(0xffFFCA6C), Color(0xffFDFFB8)],
-                          );
-
-                          shoot() {
-                            Confetti.launch(context, options: options.copyWith(particleCount: 40, scalar: 1.2), particleBuilder: (index) => Star());
-                            Confetti.launch(
-                              context,
-                              options: options.copyWith(
-                                particleCount: 10,
-                                scalar: 0.75,
-                              ),
-                              particleBuilder: (index) => Star(),
-                            );
-                          }
-
-                          Timer(Duration.zero, shoot);
-                          Timer(const Duration(milliseconds: 100), shoot);
-                          Timer(const Duration(milliseconds: 200), shoot);*/
-                        },
-                        child: Icon(Icons.stars),
                       ),
                     ),
                   ),
