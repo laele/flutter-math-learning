@@ -53,21 +53,21 @@ class _ScoreOverlayState extends State<ScoreOverlay> with SingleTickerProviderSt
     final textTheme = Theme.of(context).textTheme;
 
     return BlocListener<GameCubit, GameState>(
-      listenWhen: (previous, current) => previous.showMenu != current.showMenu,
+      listenWhen: (previous, current) => previous.showScore != current.showScore,
       listener: (context, state) async {
-        if (state.showMenu) {
+        if (state.showScore) {
+          setState(() {
+            _mounted = true;
+          });
+          await playInAnimation();
+          context.read<AudioCubit>().playSfxCorrect();
+        } else {
           await playOutAnimation();
           if (_mounted) {
             setState(() {
               _mounted = false;
             });
           }
-        } else {
-          setState(() {
-            _mounted = true;
-          });
-          await playInAnimation();
-          context.read<AudioCubit>().playSfxCorrect();
         }
       },
       child: AnimatedBuilder(
@@ -81,52 +81,55 @@ class _ScoreOverlayState extends State<ScoreOverlay> with SingleTickerProviderSt
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Center(
-                        child: AspectRatio(
-                          aspectRatio: 1,
-                          child: Card(
-                            color: colorScheme.primary,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(36.0)),
-                            elevation: 25,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  StarsScoreSection(),
-                                  SizedBox(height: 8.0),
-                                  FittedBox(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        AnimatedTextKit(
-                                          pause: Duration(milliseconds: 200),
-                                          repeatForever: true,
-                                          isRepeatingAnimation: true,
-                                          animatedTexts: [
-                                            WavyAnimatedText(
-                                              'Game Completed!',
-                                              textStyle: textTheme.displayLarge,
-                                              speed: Duration(milliseconds: 300),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(maxWidth: 300),
+                          child: AspectRatio(
+                            aspectRatio: 1,
+                            child: Card(
+                              color: colorScheme.primary,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(36.0)),
+                              elevation: 25,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    StarsScoreSection(),
+                                    SizedBox(height: 8.0),
+                                    FittedBox(
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          AnimatedTextKit(
+                                            pause: Duration(milliseconds: 200),
+                                            repeatForever: true,
+                                            isRepeatingAnimation: true,
+                                            animatedTexts: [
+                                              WavyAnimatedText(
+                                                'Game Completed!',
+                                                textStyle: textTheme.displayLarge,
+                                                speed: Duration(milliseconds: 300),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(height: 12.0),
-                                  FilledButton(
-                                    style: FilledButton.styleFrom(backgroundColor: AppColors.onPrimaryBorder),
-                                    onPressed: () {},
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Text('Play Again'),
-                                      ],
+                                    SizedBox(height: 12.0),
+                                    FilledButton(
+                                      style: FilledButton.styleFrom(backgroundColor: AppColors.onPrimaryBorder),
+                                      onPressed: () {},
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text('Play Again'),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),

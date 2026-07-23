@@ -1,8 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_math_app/core/constants/app_game.dart';
 import 'package:flutter_math_app/features/game/domain/constants/difficulty_tiers.dart';
 import 'package:flutter_math_app/features/game/domain/constants/game_modes.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_question_entity.dart';
+import 'package:flutter_math_app/features/game/domain/entities/game_session_entity.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_sound_event.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_stats_entity.dart';
 import 'package:flutter_math_app/features/game/domain/services/mix_mode_selector.dart';
@@ -80,29 +82,44 @@ class GameCubit extends Cubit<GameState> {
 
     _setNewStats(gameMode!, newStats);
 
-    if (isLevelUp) {
-      emit(state.copyWith(hideOperation: true, soundEvent: _nextGameSound(GameSoundType.correct)));
-      await playAnimation(animation: PetAnimation.success, message: 'Excellent! You are getting better!');
-    } else if (wasCorrect) {
-      emit(state.copyWith(hideOperation: true, soundEvent: _nextGameSound(GameSoundType.correct)));
-      await playAnimation(animation: PetAnimation.success, message: 'Amazing, Let\'s try next number!');
-    } else if (isLevelDown) {
-      emit(state.copyWith(hideOperation: true, soundEvent: _nextGameSound(GameSoundType.incorrect)));
-      await playAnimation(
-        message: 'Let\'s try an easier one!', // change to lower level message
-        animation: PetAnimation.failed,
-        //clearAfterShow: true,
-      );
-    } else {
-      emit(state.copyWith(soundEvent: _nextGameSound(GameSoundType.incorrect)));
-      await playAnimation(
-        message: 'Nope, Try it again!',
-        animation: PetAnimation.failed,
-        clearAfterShow: true,
-      );
-    }
+    final updatedGameSession = state.gameSession.recordAttempt(wasCorrect: wasCorrect);
+    emit(state.copyWith(gameSession: updatedGameSession));
 
-    if ((wasCorrect || isLevelDown) && !state.showMenu) generateNextLevel();
+    if (state.gameSession.isCompleted) {
+      emit(state.copyWith(showScore: true, hideOperation: true));
+      await playAnimation(animation: PetAnimation.success, message: 'That was fun! Wanna play again?...');
+    } else if (state.gameSession.incorrectStreak >= AppGame.maxIncorectStreak) {
+      // TODO explain feature message
+      final cleanIncorrectStreak = state.gameSession.cleanIncorrectStreak();
+      emit(state.copyWith(gameSession: cleanIncorrectStreak));
+
+      emit(state.copyWith(hideOperation: true, soundEvent: _nextGameSound(GameSoundType.incorrect)));
+      await playAnimation(message: 'Let\'s skip this one!', animation: PetAnimation.failed);
+      // generate next level after explain
+      generateNextLevel();
+    } else {
+      if (isLevelUp) {
+        emit(state.copyWith(hideOperation: true, soundEvent: _nextGameSound(GameSoundType.correct)));
+        await playAnimation(animation: PetAnimation.success, message: 'Excellent! You are getting better!');
+      } else if (wasCorrect) {
+        emit(state.copyWith(hideOperation: true, soundEvent: _nextGameSound(GameSoundType.correct)));
+        await playAnimation(animation: PetAnimation.success, message: 'Amazing, Let\'s try next number!');
+      } else if (isLevelDown) {
+        emit(state.copyWith(hideOperation: true, soundEvent: _nextGameSound(GameSoundType.incorrect)));
+        await playAnimation(
+          message: 'Let\'s try an easier one!', // change to lower level message
+          animation: PetAnimation.failed,
+        );
+      } else {
+        emit(state.copyWith(soundEvent: _nextGameSound(GameSoundType.incorrect)));
+        await playAnimation(
+          message: 'Nope, Try it again!',
+          animation: PetAnimation.failed,
+          clearAfterShow: true,
+        );
+      }
+      if ((wasCorrect || isLevelDown) && !state.showMenu) generateNextLevel();
+    }
   }
 
   String _messageFromNewQuestion({required GameMode gameMode, required GameQuestionEntity question}) {
@@ -147,6 +164,11 @@ class GameCubit extends Cubit<GameState> {
 
   // Menu Events----
 
+  void playAgain() {
+    emit(state.copyWith(showScore: false, gameSession: const GameSessionEntity()));
+    generateNextLevel();
+  }
+
   void startGame() {
     emit(state.copyWith(canDraw: true, showMenu: false));
     generateNextLevel();
@@ -155,7 +177,7 @@ class GameCubit extends Cubit<GameState> {
   void backToMenu() async {
     _mixModeSelector.reset();
     emit(
-      state.copyWith(canDraw: false, showMenu: true, hideOperation: true),
+      state.copyWith(canDraw: false, showMenu: true, hideOperation: true, showScore: false, gameSession: const GameSessionEntity()),
     );
     await playAnimation(message: 'Tap play to start a game!', animation: PetAnimation.success);
   }

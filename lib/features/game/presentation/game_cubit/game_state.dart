@@ -6,6 +6,9 @@ enum GameMode { learnNumbers, add, sub, mult, div }
 
 class GameState extends Equatable {
   final GameSoundEvent? soundEvent;
+
+  final GameSessionEntity gameSession;
+  final bool showScore;
   final Map<GameMode, GameStatsEntity> stats;
   final PetAnimation petAnimation;
   final bool playAnimation;
@@ -26,17 +29,19 @@ class GameState extends Equatable {
   final bool hideOperation;
 
   const GameState({
-    this.soundEvent,
     required this.petAnimation,
     required this.selectedGameModes,
     required this.currentExercise,
     required this.hideOperation,
+    this.soundEvent,
     this.currentGameMode,
-    this.stats = const {},
     this.message,
     this.result,
     this.firstNum,
     this.secNum,
+    this.showScore = false,
+    this.stats = const {},
+    this.gameSession = const GameSessionEntity(),
     this.playAnimation = false,
     this.canDraw = false,
     this.showMenu = true,
@@ -53,6 +58,8 @@ class GameState extends Equatable {
   };
 
   GameState copyWith({
+    bool? showScore,
+    GameSessionEntity? gameSession,
     GameSoundEvent? soundEvent,
     bool? playAnimation,
     bool? showMenu,
@@ -72,6 +79,8 @@ class GameState extends Equatable {
     bool? hideOperation,
   }) {
     return GameState(
+      showScore: showScore ?? this.showScore,
+      gameSession: gameSession ?? this.gameSession,
       soundEvent: soundEvent ?? this.soundEvent,
       hideOperation: hideOperation ?? this.hideOperation,
       playAnimation: playAnimation ?? this.playAnimation,
@@ -105,5 +114,7 @@ class GameState extends Equatable {
     selectedGameModes,
     currentExercise,
     currentGameMode,
+    gameSession,
+    showScore,
   ];
 }

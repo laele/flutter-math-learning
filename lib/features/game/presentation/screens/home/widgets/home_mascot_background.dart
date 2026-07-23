@@ -93,6 +93,36 @@ class _HomeMascotBackgroundState extends State<HomeMascotBackground> {
                   },
                 ),
                 ScoreOverlay(),
+                BlocBuilder<GameCubit, GameState>(
+                  buildWhen: (previous, current) {
+                    if (previous.showMenu != current.showMenu || previous.gameSession != current.gameSession) {
+                      return true;
+                    }
+
+                    return false;
+                  },
+                  builder: (context, state) {
+                    return !state.showMenu
+                        ? SafeArea(
+                            child: Center(
+                              child: Column(
+                                children: [
+                                  SizedBox(height: 12),
+                                  Text(
+                                    ' ${state.gameSession.questionsAnswered} / ${state.gameSession.questionsPerSession}',
+                                    style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.white),
+                                  ),
+                                  Text(
+                                    ' ${state.gameSession.incorrectStreak} ',
+                                    style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.white),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        : SizedBox.shrink();
+                  },
+                ),
               ],
             ),
           ),

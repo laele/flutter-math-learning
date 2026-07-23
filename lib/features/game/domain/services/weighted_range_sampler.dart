@@ -1,7 +1,6 @@
 // domain/services/weighted_range_sampler.dart
 import 'dart:math';
 
-import 'package:flutter_math_app/features/game/domain/constants/difficulty_tiers.dart';
 import 'package:flutter_math_app/features/game/domain/entities/min_max_tier_entity.dart';
 
 class WeightedRangeSampler {
