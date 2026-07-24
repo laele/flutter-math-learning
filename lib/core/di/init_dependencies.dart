@@ -1,3 +1,4 @@
+import 'package:flutter_math_app/core/effects/effects_player.dart';
 import 'package:flutter_math_app/features/audio/data/datasource/audio_datasource.dart';
 import 'package:flutter_math_app/features/audio/data/repositories/audio_repository_impl.dart';
 import 'package:flutter_math_app/features/audio/domain/repositories/audio_repository.dart';
@@ -17,6 +18,7 @@ Future<void> initDependencies() async {
   await initInputRecognizer();
   await initAudio();
   sl.registerFactory<GameCubit>(() => GameCubit());
+  sl.registerLazySingleton<EffectsPlayer>(() => EffectsPlayerImpl());
 }
 
 Future<void> initInputRecognizer() async {
