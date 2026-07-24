@@ -5,7 +5,7 @@ class GameEffectEvent extends Equatable {
   final GameEffectType type;
   final int id;
 
-  GameEffectEvent({required this.type, required this.id});
+  const GameEffectEvent({required this.type, required this.id});
 
   @override
   List<Object?> get props => [type, id];

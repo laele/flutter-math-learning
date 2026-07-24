@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_math_app/core/di/init_dependencies.dart';
+import 'package:flutter_math_app/core/effects/effects_player.dart';
+import 'package:flutter_math_app/core/effects/widgets/shake_widget.dart';
 import 'package:flutter_math_app/core/theme/app_gradients.dart';
-import 'package:flutter_math_app/features/audio/presentation/cubit/audio_cubit.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
 import 'package:flutter_math_app/features/game/presentation/screens/home/widgets/home_animated_text_bubble.dart';
 import 'package:flutter_math_app/features/game/presentation/screens/score/score_overlay.dart';
@@ -17,6 +19,7 @@ class HomeMascotBackground extends StatefulWidget {
 
 class _HomeMascotBackgroundState extends State<HomeMascotBackground> {
   late final FileLoader fileLoader;
+
   RiveWidgetController? _controller;
   TriggerInput? _triggerSuccess;
   TriggerInput? _triggerFailed;
@@ -38,11 +41,9 @@ class _HomeMascotBackgroundState extends State<HomeMascotBackground> {
     switch (petAnimation) {
       case (PetAnimation.success):
         _triggerSuccess?.fire();
-        //context.read<AudioCubit>().playSfxCorrect();
         break;
       case (PetAnimation.failed):
         _triggerFailed?.fire();
-        //context.read<AudioCubit>().playSfxIncorrect();
         break;
       case (PetAnimation.thinking):
         _triggerThinking?.fire();
