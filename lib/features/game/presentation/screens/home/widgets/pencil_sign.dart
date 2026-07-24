@@ -17,11 +17,11 @@ class _PencilSignState extends State<PencilSign> {
   void initState() {
     super.initState();
     Future.delayed(
-      const Duration(milliseconds: 50),
+      const Duration(milliseconds: 20),
       () {
         if (!mounted) return;
         setState(() {
-          _opacity = 0.10;
+          _opacity = 0.40;
         });
       },
     );
@@ -38,8 +38,8 @@ class _PencilSignState extends State<PencilSign> {
           duration: Duration(seconds: 1),
           opacity: _opacity,
           child: Container(
-            width: 100,
-            height: 100,
+            width: 160,
+            height: 160,
             child: Image.asset(
               'lib/core/assets/images/pencil.png',
               color: Colors.white,
