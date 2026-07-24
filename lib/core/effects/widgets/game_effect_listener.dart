@@ -22,6 +22,8 @@ class GameEffectListener extends StatelessWidget {
             effectsPlayer.play(GameEffectType.stars, context);
           case GameEffectType.confetti:
             effectsPlayer.play(GameEffectType.confetti, context);
+          case GameEffectType.shake:
+            effectsPlayer.play(GameEffectType.shake, context);
           case _:
             break;
         }

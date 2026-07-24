@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_math_app/core/di/init_dependencies.dart';
 import 'package:flutter_math_app/core/effects/effects_player.dart';
-import 'package:flutter_math_app/core/effects/game_effect_listener.dart';
+import 'package:flutter_math_app/core/effects/widgets/game_effect_listener.dart';
+import 'package:flutter_math_app/core/effects/widgets/shake_widget.dart';
 import 'package:flutter_math_app/features/audio/presentation/cubit/audio_cubit.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_sound_event.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
@@ -11,12 +12,14 @@ import 'package:flutter_math_app/features/game/presentation/screens/home/widgets
 import 'package:flutter_math_app/features/game/presentation/screens/home/widgets/home_play_canvas.dart';
 
 class HomeScreen extends StatelessWidget {
+  final shakeKey = GlobalKey<ShakeWidgetState>();
   final GlobalKey<HomePlayCanvasState> homePlayCanvasKey = GlobalKey<HomePlayCanvasState>();
 
   HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    sl<EffectsPlayer>().registerShakeTarget(shakeKey);
     return GameEffectListener(
       effectsPlayer: sl<EffectsPlayer>(),
       child: BlocListener<GameCubit, GameState>(
@@ -42,7 +45,7 @@ class HomeScreen extends StatelessWidget {
         child: Scaffold(
           body: Stack(
             children: [
-              HomeMascotBackground(),
+              ShakeWidget(key: shakeKey, child: HomeMascotBackground()),
               /*SafeArea(
                 child: BlocBuilder<GameCubit, GameState>(
                   buildWhen: (previous, current) {

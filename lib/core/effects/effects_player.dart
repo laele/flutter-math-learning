@@ -3,12 +3,16 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_confetti/flutter_confetti.dart';
 import 'package:flutter_math_app/core/effects/game_effect_type.dart';
+import 'package:flutter_math_app/core/effects/widgets/shake_widget.dart';
 
 abstract interface class EffectsPlayer {
   void play(GameEffectType effect, BuildContext context);
+  void registerShakeTarget(GlobalKey<ShakeWidgetState> key);
 }
 
 class EffectsPlayerImpl implements EffectsPlayer {
+  GlobalKey<ShakeWidgetState>? _shakeKey;
+
   static const _confettiOptions = ConfettiOptions(
     spread: 360,
     ticks: 50,
@@ -32,6 +36,9 @@ class EffectsPlayerImpl implements EffectsPlayer {
         _playStars(context);
       case GameEffectType.confetti:
         _playConfetti(context);
+      case GameEffectType.shake:
+        print('shaeking');
+        _shakeKey?.currentState?.shake();
         break;
     }
   }
@@ -61,7 +68,12 @@ class EffectsPlayerImpl implements EffectsPlayer {
   void _playConfetti(BuildContext context) {
     Confetti.launch(
       context,
-      options: _confettiOptions.copyWith(particleCount: 100, spread: 70, y: 0.6, scalar: 2.5, angle: 90.0),
+      options: _confettiOptions.copyWith(particleCount: 100, spread: 70, y: 0.6, scalar: 2.5, angle: 90.0, gravity: 1.0),
     );
+  }
+
+  @override
+  void registerShakeTarget(GlobalKey<ShakeWidgetState> key) {
+    _shakeKey = key;
   }
 }

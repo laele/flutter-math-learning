@@ -93,6 +93,7 @@ class GameCubit extends Cubit<GameState> {
     emit(state.copyWith(gameSession: updatedGameSession));
 
     if (state.gameSession.isCompleted) {
+      emit(state.copyWith(gameEffectType: _nextGameEffect(GameEffectType.shake)));
       emit(state.copyWith(showScore: true, hideOperation: true, gameEffectType: _nextGameEffect(GameEffectType.confetti)));
       await playAnimation(
         animation: PetAnimation.success,
@@ -102,13 +103,14 @@ class GameCubit extends Cubit<GameState> {
       // TODO explain feature message
       final cleanIncorrectStreak = state.gameSession.cleanIncorrectStreak();
       emit(state.copyWith(gameSession: cleanIncorrectStreak));
-
+      emit(state.copyWith(gameEffectType: _nextGameEffect(GameEffectType.shake)));
       emit(state.copyWith(hideOperation: true, soundEvent: _nextGameSound(GameSoundType.incorrect)));
       await playAnimation(message: 'Let\'s skip this one!', animation: PetAnimation.failed);
       // generate next level after explain
       generateNextLevel();
     } else {
       if (isLevelUp) {
+        emit(state.copyWith(gameEffectType: _nextGameEffect(GameEffectType.shake)));
         emit(
           state.copyWith(
             hideOperation: true,
@@ -119,6 +121,7 @@ class GameCubit extends Cubit<GameState> {
         );
         await playAnimation(animation: PetAnimation.success, message: 'Excellent! You are getting better!');
       } else if (wasCorrect) {
+        emit(state.copyWith(gameEffectType: _nextGameEffect(GameEffectType.shake)));
         emit(
           state.copyWith(
             hideOperation: true,
@@ -131,13 +134,19 @@ class GameCubit extends Cubit<GameState> {
         );
         await playAnimation(animation: PetAnimation.success, message: 'Amazing, Let\'s try next number!');
       } else if (isLevelDown) {
-        emit(state.copyWith(hideOperation: true, soundEvent: _nextGameSound(GameSoundType.incorrect)));
+        emit(
+          state.copyWith(
+            hideOperation: true,
+            soundEvent: _nextGameSound(GameSoundType.incorrect),
+            gameEffectType: _nextGameEffect(GameEffectType.shake),
+          ),
+        );
         await playAnimation(
           message: 'Let\'s try an easier one!', // change to lower level message
           animation: PetAnimation.failed,
         );
       } else {
-        emit(state.copyWith(soundEvent: _nextGameSound(GameSoundType.incorrect)));
+        emit(state.copyWith(soundEvent: _nextGameSound(GameSoundType.incorrect), gameEffectType: _nextGameEffect(GameEffectType.shake)));
         await playAnimation(
           message: 'Nope, Try it again!',
           animation: PetAnimation.failed,
