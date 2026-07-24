@@ -1,0 +1,1 @@
+enum GameEffectType { stars, confetti }

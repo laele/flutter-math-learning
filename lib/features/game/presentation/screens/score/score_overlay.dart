@@ -1,14 +1,12 @@
 import 'dart:async';
 
-import 'package:animate_do/animate_do.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_math_app/core/theme/app_colors.dart';
-
 import 'package:flutter_math_app/features/audio/presentation/cubit/audio_cubit.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
-import 'package:flutter_math_app/features/game/presentation/screens/home/widgets/stars_score_section.dart';
+import 'package:flutter_math_app/features/game/presentation/screens/score/widgets/score_play_again_button.dart';
+import 'package:flutter_math_app/features/game/presentation/screens/score/widgets/stars_score_section.dart';
 
 class ScoreOverlay extends StatefulWidget {
   const ScoreOverlay({super.key});
@@ -17,8 +15,7 @@ class ScoreOverlay extends StatefulWidget {
   State<ScoreOverlay> createState() => _ScoreOverlayState();
 }
 
-class _ScoreOverlayState extends State<ScoreOverlay>
-    with SingleTickerProviderStateMixin {
+class _ScoreOverlayState extends State<ScoreOverlay> with SingleTickerProviderStateMixin {
   late final AnimationController controller = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 200),
@@ -54,10 +51,8 @@ class _ScoreOverlayState extends State<ScoreOverlay>
     final textTheme = Theme.of(context).textTheme;
 
     return BlocConsumer<GameCubit, GameState>(
-      listenWhen: (previous, current) =>
-          previous.showScore != current.showScore,
+      listenWhen: (previous, current) => previous.showScore != current.showScore,
       listener: (context, state) async {
-        // TODO: implement listener
         if (state.showScore) {
           await playInAnimation();
           context.read<AudioCubit>().playSfxCorrect();
@@ -84,25 +79,31 @@ class _ScoreOverlayState extends State<ScoreOverlay>
                               child: Card(
                                 color: colorScheme.primary,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadiusGeometry.circular(
-                                    36.0,
-                                  ),
+                                  borderRadius: BorderRadiusGeometry.circular(36.0),
                                 ),
                                 elevation: 25,
                                 child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding: const EdgeInsets.all(16.0),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
+                                      FittedBox(
+                                        child: Row(
+                                          children: [
+                                            Text('Great Job!', style: Theme.of(context).textTheme.titleLarge),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(height: 8.0),
+
                                       StarsScoreSection(
                                         accuracy: state.gameSession.accuracy,
                                       ),
                                       SizedBox(height: 8.0),
                                       FittedBox(
                                         child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                          mainAxisAlignment: MainAxisAlignment.center,
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             AnimatedTextKit(
@@ -114,8 +115,7 @@ class _ScoreOverlayState extends State<ScoreOverlay>
                                               animatedTexts: [
                                                 WavyAnimatedText(
                                                   'Game Completed!',
-                                                  textStyle:
-                                                      textTheme.displayLarge,
+                                                  textStyle: textTheme.displayLarge,
                                                   speed: Duration(
                                                     milliseconds: 300,
                                                   ),
@@ -126,20 +126,7 @@ class _ScoreOverlayState extends State<ScoreOverlay>
                                         ),
                                       ),
                                       SizedBox(height: 12.0),
-                                      FilledButton(
-                                        style: FilledButton.styleFrom(
-                                          backgroundColor:
-                                              AppColors.onPrimaryBorder,
-                                        ),
-                                        onPressed: () {},
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text('Play Again'),
-                                          ],
-                                        ),
-                                      ),
+                                      ScorePlayAgainButton(),
                                     ],
                                   ),
                                 ),

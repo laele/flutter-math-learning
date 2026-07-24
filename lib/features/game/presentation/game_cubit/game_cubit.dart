@@ -1,8 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_math_app/core/constants/app_game.dart';
+import 'package:flutter_math_app/core/effects/game_effect_type.dart';
 import 'package:flutter_math_app/features/game/domain/constants/difficulty_tiers.dart';
 import 'package:flutter_math_app/features/game/domain/constants/game_modes.dart';
+import 'package:flutter_math_app/features/game/domain/entities/game_effect_event.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_question_entity.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_session_entity.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_sound_event.dart';
@@ -15,6 +17,7 @@ part 'game_state.dart';
 class GameCubit extends Cubit<GameState> {
   final MixModeSelector _mixModeSelector;
   int _gameSoundEventCounter = 0;
+  int _gameEffectsCounter = 0;
 
   GameCubit({MixModeSelector? mixModeSelector})
     : _mixModeSelector = mixModeSelector ?? MixModeSelector(),
@@ -31,6 +34,10 @@ class GameCubit extends Cubit<GameState> {
 
   GameSoundEvent _nextGameSound(GameSoundType type) {
     return GameSoundEvent(type: type, id: _gameSoundEventCounter++);
+  }
+
+  GameEffectEvent _nextGameEffect(GameEffectType type) {
+    return GameEffectEvent(type: type, id: _gameEffectsCounter++);
   }
 
   void generateNextLevel() async {
@@ -86,8 +93,11 @@ class GameCubit extends Cubit<GameState> {
     emit(state.copyWith(gameSession: updatedGameSession));
 
     if (state.gameSession.isCompleted) {
-      emit(state.copyWith(showScore: true, hideOperation: true));
-      await playAnimation(animation: PetAnimation.success, message: 'That was fun! Wanna play again?...');
+      emit(state.copyWith(showScore: true, hideOperation: true, gameEffectType: _nextGameEffect(GameEffectType.confetti)));
+      await playAnimation(
+        animation: PetAnimation.success,
+        message: 'That was fun! Wanna play again?...',
+      );
     } else if (state.gameSession.incorrectStreak >= AppGame.maxIncorectStreak) {
       // TODO explain feature message
       final cleanIncorrectStreak = state.gameSession.cleanIncorrectStreak();
@@ -99,10 +109,26 @@ class GameCubit extends Cubit<GameState> {
       generateNextLevel();
     } else {
       if (isLevelUp) {
-        emit(state.copyWith(hideOperation: true, soundEvent: _nextGameSound(GameSoundType.correct)));
+        emit(
+          state.copyWith(
+            hideOperation: true,
+            soundEvent: _nextGameSound(GameSoundType.correct),
+            gameSession: state.gameSession.cleanIncorrectStreak(),
+            gameEffectType: _nextGameEffect(GameEffectType.stars),
+          ),
+        );
         await playAnimation(animation: PetAnimation.success, message: 'Excellent! You are getting better!');
       } else if (wasCorrect) {
-        emit(state.copyWith(hideOperation: true, soundEvent: _nextGameSound(GameSoundType.correct)));
+        emit(
+          state.copyWith(
+            hideOperation: true,
+            soundEvent: _nextGameSound(
+              GameSoundType.correct,
+            ),
+            gameSession: state.gameSession.cleanIncorrectStreak(),
+            gameEffectType: _nextGameEffect(GameEffectType.stars),
+          ),
+        );
         await playAnimation(animation: PetAnimation.success, message: 'Amazing, Let\'s try next number!');
       } else if (isLevelDown) {
         emit(state.copyWith(hideOperation: true, soundEvent: _nextGameSound(GameSoundType.incorrect)));

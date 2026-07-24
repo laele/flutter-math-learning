@@ -1,8 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_math_app/core/theme/app_colors.dart';
-import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
 
 class StarsScoreSection extends StatelessWidget {
   final double accuracy;

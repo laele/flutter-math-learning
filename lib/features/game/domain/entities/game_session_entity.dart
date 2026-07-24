@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_math_app/core/constants/app_game.dart';
 
 class GameSessionEntity extends Equatable {
-  final int questionsPerSession = 5;
+  final int questionsPerSession = 3;
 
   final int questionsAnswered;
   final int correctCount;
@@ -17,26 +17,18 @@ class GameSessionEntity extends Equatable {
   });
 
   bool get isCompleted => questionsAnswered >= questionsPerSession;
-  bool get isQuestionAnsweredByIncorrectTries =>
-      this.incorrectStreak >= AppGame.maxIncorectStreak;
-  double get accuracy =>
-      questionsAnswered == 0 ? 0 : (correctCount / questionsAnswered);
+  bool get isQuestionAnsweredByIncorrectTries => this.incorrectStreak >= AppGame.maxIncorectStreak;
+  double get accuracy => questionsAnswered == 0 ? 0 : (correctCount / questionsAnswered);
   GameSessionEntity recordAttempt({
     required bool wasCorrect,
   }) {
-    final bool increaseIncorrectCount =
-        (wasCorrect ? this.incorrectStreak : this.incorrectStreak + 1) >=
-        AppGame.maxIncorectStreak;
+    final bool increaseIncorrectCount = (wasCorrect ? this.incorrectStreak : this.incorrectStreak + 1) >= AppGame.maxIncorectStreak;
 
     return GameSessionEntity(
       correctCount: this.correctCount + (wasCorrect ? 1 : 0),
-      incorrectCount: increaseIncorrectCount
-          ? this.incorrectCount + 1
-          : this.incorrectCount,
+      incorrectCount: increaseIncorrectCount ? this.incorrectCount + 1 : this.incorrectCount,
       incorrectStreak: this.incorrectStreak + (!wasCorrect ? 1 : 0),
-      questionsAnswered: (wasCorrect || increaseIncorrectCount)
-          ? this.questionsAnswered + 1
-          : this.questionsAnswered,
+      questionsAnswered: (wasCorrect || increaseIncorrectCount) ? this.questionsAnswered + 1 : this.questionsAnswered,
     );
   }
 

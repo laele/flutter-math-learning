@@ -4,7 +4,7 @@ import 'package:flutter_math_app/core/theme/app_gradients.dart';
 import 'package:flutter_math_app/features/audio/presentation/cubit/audio_cubit.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
 import 'package:flutter_math_app/features/game/presentation/screens/home/widgets/home_animated_text_bubble.dart';
-import 'package:flutter_math_app/features/game/presentation/screens/home/widgets/score_overlay.dart';
+import 'package:flutter_math_app/features/game/presentation/screens/score/score_overlay.dart';
 import 'package:flutter_math_app/features/game/presentation/screens/home/widgets/pencil_sign.dart';
 import 'package:rive/rive.dart';
 

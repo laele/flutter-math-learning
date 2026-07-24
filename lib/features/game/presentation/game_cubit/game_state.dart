@@ -6,6 +6,7 @@ enum GameMode { learnNumbers, add, sub, mult, div }
 
 class GameState extends Equatable {
   final GameSoundEvent? soundEvent;
+  final GameEffectEvent? gameEffect;
 
   final GameSessionEntity gameSession;
   final bool showScore;
@@ -34,6 +35,7 @@ class GameState extends Equatable {
     required this.currentExercise,
     required this.hideOperation,
     this.soundEvent,
+    this.gameEffect,
     this.currentGameMode,
     this.message,
     this.result,
@@ -60,6 +62,7 @@ class GameState extends Equatable {
   GameState copyWith({
     bool? showScore,
     GameSessionEntity? gameSession,
+    GameEffectEvent? gameEffectType,
     GameSoundEvent? soundEvent,
     bool? playAnimation,
     bool? showMenu,
@@ -95,6 +98,7 @@ class GameState extends Equatable {
       secNum: secNum ?? this.secNum,
       canDraw: canDraw ?? this.canDraw,
       currentExercise: currentExercise ?? this.currentExercise,
+      gameEffect: gameEffectType ?? this.gameEffect,
     );
   }
 
@@ -116,5 +120,6 @@ class GameState extends Equatable {
     currentGameMode,
     gameSession,
     showScore,
+    gameEffect,
   ];
 }
