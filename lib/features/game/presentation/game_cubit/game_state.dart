@@ -1,18 +1,15 @@
 part of 'game_cubit.dart';
 
-enum PetAnimation { idle, thinking, failed, success }
-
 enum GameMode { learnNumbers, add, sub, mult, div }
 
 class GameState extends Equatable {
   final GameSoundEvent? soundEvent;
-  final GameEffectEvent? gameEffect;
+  final GameEffectEvent? effectEvent;
+  final GameAnimationEvent? animationEvent;
 
   final GameSessionEntity gameSession;
   final bool showScore;
   final Map<GameMode, GameStatsEntity> stats;
-  final PetAnimation petAnimation;
-  final bool playAnimation;
 
   final GameMode? currentGameMode;
   final List<GameMode> selectedGameModes;
@@ -30,12 +27,12 @@ class GameState extends Equatable {
   final bool hideOperation;
 
   const GameState({
-    required this.petAnimation,
     required this.selectedGameModes,
     required this.currentExercise,
     required this.hideOperation,
+    this.animationEvent,
     this.soundEvent,
-    this.gameEffect,
+    this.effectEvent,
     this.currentGameMode,
     this.message,
     this.result,
@@ -44,7 +41,6 @@ class GameState extends Equatable {
     this.showScore = false,
     this.stats = const {},
     this.gameSession = const GameSessionEntity(),
-    this.playAnimation = false,
     this.canDraw = false,
     this.showMenu = true,
   });
@@ -62,12 +58,11 @@ class GameState extends Equatable {
   GameState copyWith({
     bool? showScore,
     GameSessionEntity? gameSession,
-    GameEffectEvent? gameEffectType,
+    GameEffectEvent? effectEvent,
     GameSoundEvent? soundEvent,
-    bool? playAnimation,
+    GameAnimationEvent? animationEvent,
     bool? showMenu,
     Map<GameMode, GameStatsEntity>? stats,
-    PetAnimation? petAnimation,
     GameMode? gameMode,
     GameMode? currentGameMode,
     List<GameMode>? selectedGameModes,
@@ -75,7 +70,6 @@ class GameState extends Equatable {
     int? result,
     int? firstNum,
     int? secNum,
-    String? letter,
     bool? readyToClearMessage,
     bool? canDraw,
     int? currentExercise,
@@ -85,31 +79,30 @@ class GameState extends Equatable {
       showScore: showScore ?? this.showScore,
       gameSession: gameSession ?? this.gameSession,
       soundEvent: soundEvent ?? this.soundEvent,
+      effectEvent: effectEvent ?? this.effectEvent,
+      animationEvent: animationEvent ?? this.animationEvent,
       hideOperation: hideOperation ?? this.hideOperation,
-      playAnimation: playAnimation ?? this.playAnimation,
       showMenu: showMenu ?? this.showMenu,
       currentGameMode: currentGameMode ?? this.currentGameMode,
       selectedGameModes: selectedGameModes ?? this.selectedGameModes,
       stats: stats ?? this.stats,
-      petAnimation: petAnimation ?? this.petAnimation,
       message: message ?? this.message,
       result: result ?? this.result,
       firstNum: firstNum ?? this.firstNum,
       secNum: secNum ?? this.secNum,
       canDraw: canDraw ?? this.canDraw,
       currentExercise: currentExercise ?? this.currentExercise,
-      gameEffect: gameEffectType ?? this.gameEffect,
     );
   }
 
   @override
   List<Object?> get props => [
     soundEvent,
+    effectEvent,
+    animationEvent,
     hideOperation,
-    playAnimation,
     showMenu,
     stats,
-    petAnimation,
     message,
     result,
     firstNum,
@@ -120,6 +113,5 @@ class GameState extends Equatable {
     currentGameMode,
     gameSession,
     showScore,
-    gameEffect,
   ];
 }

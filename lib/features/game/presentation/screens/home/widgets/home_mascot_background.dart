@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_math_app/core/di/init_dependencies.dart';
-import 'package:flutter_math_app/core/effects/effects_player.dart';
-import 'package:flutter_math_app/core/effects/widgets/shake_widget.dart';
+import 'package:flutter_math_app/core/entities/character_animation_type.dart';
 import 'package:flutter_math_app/core/theme/app_gradients.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
 import 'package:flutter_math_app/features/game/presentation/screens/home/widgets/home_animated_text_bubble.dart';
@@ -37,34 +35,34 @@ class _HomeMascotBackgroundState extends State<HomeMascotBackground> {
     fileLoader.dispose();
   }
 
-  void _animationState(PetAnimation petAnimation) {
+  void _animationState(CharacterAnimationType petAnimation) {
     switch (petAnimation) {
-      case (PetAnimation.success):
+      case (CharacterAnimationType.success):
         _triggerSuccess?.fire();
         break;
-      case (PetAnimation.failed):
+      case (CharacterAnimationType.failed):
         _triggerFailed?.fire();
         break;
-      case (PetAnimation.thinking):
+      case (CharacterAnimationType.thinking):
         _triggerThinking?.fire();
         break;
       case _:
         break;
     }
-    context.read<GameCubit>().setPlayAnimation(playAnimation: false);
+    //context.read<GameCubit>().setPlayAnimation(playAnimation: false);
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<GameCubit, GameState>(
       listenWhen: (previous, current) {
-        if (previous.playAnimation != current.playAnimation) {
+        if (previous.animationEvent != current.animationEvent && current.animationEvent != null) {
           return true;
         }
         return false;
       },
       listener: (context, state) {
-        _animationState(state.petAnimation);
+        _animationState(state.animationEvent!.type);
       },
       child: Column(
         children: [

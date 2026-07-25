@@ -45,7 +45,8 @@ class HomeScreen extends StatelessWidget {
         child: Scaffold(
           body: Stack(
             children: [
-              ShakeWidget(key: shakeKey, child: HomeMascotBackground()),
+              //ShakeWidget(key: shakeKey, child: HomeMascotBackground()),
+              HomeMascotBackground(),
               /*SafeArea(
                 child: BlocBuilder<GameCubit, GameState>(
                   buildWhen: (previous, current) {
