@@ -2,8 +2,10 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_math_app/core/constants/app_game.dart';
 import 'package:flutter_math_app/core/effects/game_effect_type.dart';
+import 'package:flutter_math_app/core/entities/character_animation_type.dart';
 import 'package:flutter_math_app/features/game/domain/constants/difficulty_tiers.dart';
 import 'package:flutter_math_app/features/game/domain/constants/game_modes.dart';
+import 'package:flutter_math_app/features/game/domain/entities/game_animation_event.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_effect_event.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_question_entity.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_session_entity.dart';
@@ -18,12 +20,12 @@ class GameCubit extends Cubit<GameState> {
   final MixModeSelector _mixModeSelector;
   int _gameSoundEventCounter = 0;
   int _gameEffectsCounter = 0;
+  int _gameAnimationCounter = 0;
 
   GameCubit({MixModeSelector? mixModeSelector})
     : _mixModeSelector = mixModeSelector ?? MixModeSelector(),
       super(
         GameState(
-          petAnimation: PetAnimation.idle,
           hideOperation: true,
           //gameMode: GameMode.menu,
           //currentQuestionMode: GameMode.menu,
@@ -38,6 +40,10 @@ class GameCubit extends Cubit<GameState> {
 
   GameEffectEvent _nextGameEffect(GameEffectType type) {
     return GameEffectEvent(type: type, id: _gameEffectsCounter++);
+  }
+
+  GameAnimationEvent _nextGameAnimation(CharacterAnimationType type) {
+    return GameAnimationEvent(type: type, id: _gameAnimationCounter++);
   }
 
   void generateNextLevel() async {
@@ -67,7 +73,7 @@ class GameCubit extends Cubit<GameState> {
         ),
       ),
     );
-    await playAnimation(animation: PetAnimation.thinking);
+    await playAnimation(animation: CharacterAnimationType.thinking);
   }
 
   void checkResult(int result) async {
@@ -93,63 +99,63 @@ class GameCubit extends Cubit<GameState> {
     emit(state.copyWith(gameSession: updatedGameSession));
 
     if (state.gameSession.isCompleted) {
-      emit(state.copyWith(gameEffectType: _nextGameEffect(GameEffectType.shake)));
-      emit(state.copyWith(showScore: true, hideOperation: true, gameEffectType: _nextGameEffect(GameEffectType.confetti)));
-      await playAnimation(
-        animation: PetAnimation.success,
-        message: 'That was fun! Wanna play again?...',
-      );
+      emit(state.copyWith(effectEvent: _nextGameEffect(GameEffectType.shake)));
+      emit(state.copyWith(showScore: true, hideOperation: true, effectEvent: _nextGameEffect(GameEffectType.confetti)));
+      await playAnimation(animation: CharacterAnimationType.success, message: 'That was fun! Wanna play again?...');
     } else if (state.gameSession.incorrectStreak >= AppGame.maxIncorectStreak) {
       // TODO explain feature message
       final cleanIncorrectStreak = state.gameSession.cleanIncorrectStreak();
-      emit(state.copyWith(gameSession: cleanIncorrectStreak));
-      emit(state.copyWith(gameEffectType: _nextGameEffect(GameEffectType.shake)));
-      emit(state.copyWith(hideOperation: true, soundEvent: _nextGameSound(GameSoundType.incorrect)));
-      await playAnimation(message: 'Let\'s skip this one!', animation: PetAnimation.failed);
+      emit(
+        state.copyWith(
+          effectEvent: _nextGameEffect(GameEffectType.shake),
+          gameSession: cleanIncorrectStreak,
+          hideOperation: true,
+          soundEvent: _nextGameSound(GameSoundType.incorrect),
+        ),
+      );
+      await playAnimation(message: 'Let\'s skip this one!', animation: CharacterAnimationType.failed);
       // generate next level after explain
       generateNextLevel();
     } else {
       if (isLevelUp) {
-        emit(state.copyWith(gameEffectType: _nextGameEffect(GameEffectType.shake)));
+        emit(state.copyWith(effectEvent: _nextGameEffect(GameEffectType.shake)));
         emit(
           state.copyWith(
             hideOperation: true,
             soundEvent: _nextGameSound(GameSoundType.correct),
             gameSession: state.gameSession.cleanIncorrectStreak(),
-            gameEffectType: _nextGameEffect(GameEffectType.stars),
+            effectEvent: _nextGameEffect(GameEffectType.stars),
           ),
         );
-        await playAnimation(animation: PetAnimation.success, message: 'Excellent! You are getting better!');
+        await playAnimation(animation: CharacterAnimationType.success, message: 'Excellent! You are getting better!');
       } else if (wasCorrect) {
-        emit(state.copyWith(gameEffectType: _nextGameEffect(GameEffectType.shake)));
+        emit(state.copyWith(effectEvent: _nextGameEffect(GameEffectType.shake)));
         emit(
           state.copyWith(
             hideOperation: true,
-            soundEvent: _nextGameSound(
-              GameSoundType.correct,
-            ),
+            soundEvent: _nextGameSound(GameSoundType.correct),
             gameSession: state.gameSession.cleanIncorrectStreak(),
-            gameEffectType: _nextGameEffect(GameEffectType.stars),
+            effectEvent: _nextGameEffect(GameEffectType.stars),
           ),
         );
-        await playAnimation(animation: PetAnimation.success, message: 'Amazing, Let\'s try next number!');
+        await playAnimation(animation: CharacterAnimationType.success, message: 'Amazing, Let\'s try next number!');
       } else if (isLevelDown) {
         emit(
           state.copyWith(
             hideOperation: true,
             soundEvent: _nextGameSound(GameSoundType.incorrect),
-            gameEffectType: _nextGameEffect(GameEffectType.shake),
+            effectEvent: _nextGameEffect(GameEffectType.shake),
           ),
         );
         await playAnimation(
           message: 'Let\'s try an easier one!', // change to lower level message
-          animation: PetAnimation.failed,
+          animation: CharacterAnimationType.failed,
         );
       } else {
-        emit(state.copyWith(soundEvent: _nextGameSound(GameSoundType.incorrect), gameEffectType: _nextGameEffect(GameEffectType.shake)));
+        emit(state.copyWith(soundEvent: _nextGameSound(GameSoundType.incorrect), effectEvent: _nextGameEffect(GameEffectType.shake)));
         await playAnimation(
           message: 'Nope, Try it again!',
-          animation: PetAnimation.failed,
+          animation: CharacterAnimationType.failed,
           clearAfterShow: true,
         );
       }
@@ -173,28 +179,21 @@ class GameCubit extends Cubit<GameState> {
     emit(state.copyWith(stats: stats));
   }
 
-  Future<void> playAnimation({String? message, required PetAnimation animation, bool clearAfterShow = false, bool? canDraw}) async {
-    if (canDraw != null && canDraw == false) {
-      emit(state.copyWith(canDraw: false));
-    }
+  Future<void> playAnimation({String? message, required CharacterAnimationType animation, bool clearAfterShow = false}) async {
     if (clearAfterShow) {
       final String? previousMessage = state.message;
-      emit(state.copyWith(petAnimation: animation, message: message, playAnimation: true));
+      emit(state.copyWith(animationEvent: _nextGameAnimation(animation), message: message));
 
       await Future.delayed(Duration(seconds: 6));
 
       if (!state.showMenu) {
-        emit(state.copyWith(message: previousMessage, canDraw: true, petAnimation: PetAnimation.thinking, playAnimation: true));
+        emit(state.copyWith(message: previousMessage, canDraw: true, animationEvent: _nextGameAnimation(CharacterAnimationType.thinking)));
       }
       return;
     } else {
-      emit(state.copyWith(petAnimation: animation, message: message, playAnimation: true));
+      emit(state.copyWith(animationEvent: _nextGameAnimation(animation), message: message));
       await Future.delayed(Duration(seconds: 6));
     }
-  }
-
-  void setPlayAnimation({required bool playAnimation}) {
-    emit(state.copyWith(playAnimation: playAnimation));
   }
 
   // Menu Events----
@@ -214,7 +213,7 @@ class GameCubit extends Cubit<GameState> {
     emit(
       state.copyWith(canDraw: false, showMenu: true, hideOperation: true, showScore: false, gameSession: const GameSessionEntity()),
     );
-    await playAnimation(message: 'Tap play to start a game!', animation: PetAnimation.success);
+    await playAnimation(message: 'Tap play to start a game!', animation: (CharacterAnimationType.success));
   }
 
   void setGameModes(GameMode gameMode) {

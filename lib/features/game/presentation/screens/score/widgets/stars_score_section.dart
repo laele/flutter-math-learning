@@ -19,7 +19,7 @@ class StarsScoreSection extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           BounceInDown(
-            delay: Duration(milliseconds: 200),
+            delay: Duration(milliseconds: 400),
             child: StarItem(
               width: 60,
               height: 60,
@@ -28,11 +28,12 @@ class StarsScoreSection extends StatelessWidget {
           ),
           SizedBox(width: 8),
           BounceInDown(
+            delay: Duration(milliseconds: 200),
             child: StarItem(width: 120, height: 120, isCompleted: true),
           ),
           SizedBox(width: 8),
           BounceInDown(
-            delay: Duration(milliseconds: 400),
+            delay: Duration(milliseconds: 600),
             child: StarItem(
               width: 60,
               height: 60,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_math_app/core/entities/character_animation_type.dart';
 import 'package:flutter_math_app/features/audio/presentation/cubit/audio_cubit.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
 import 'package:flutter_math_app/features/input_recognition/presentation/input_recognition_cubit/input_recognition_cubit.dart';
@@ -86,8 +87,7 @@ class HomePlayCanvasState extends State<HomePlayCanvas> with SingleTickerProvide
         }
         if (state.isStatusFailure && !context.read<GameCubit>().state.showMenu) {
           context.read<AudioCubit>().playSfxIncorrect();
-
-          context.read<GameCubit>().playAnimation(message: state.errorMessage!, animation: PetAnimation.failed, clearAfterShow: true, canDraw: false);
+          context.read<GameCubit>().playAnimation(message: state.errorMessage!, animation: CharacterAnimationType.failed, clearAfterShow: true);
         }
         if (state.status == InputRecognitionStatus.success) {
           context.read<GameCubit>().checkResult(state.numberRecognized!);
