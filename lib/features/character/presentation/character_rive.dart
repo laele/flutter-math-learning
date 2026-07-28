@@ -78,7 +78,7 @@ class _CharacterRiveState extends State<CharacterRive> {
                     _triggerFailed = state.controller.stateMachine.trigger('Annoyed');
                     _triggerThinking = state.controller.stateMachine.trigger('Curious');
                   }
-
+                  context.read<CharacterCubit>().setControllerReady(); // notitfy controller is ready
                   return RiveWidget(controller: state.controller, fit: Fit.cover);
                 },
               ),

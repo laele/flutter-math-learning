@@ -1,6 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_math_app/features/game/domain/enums/game_phase.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
 
 class PencilSign extends StatelessWidget {
@@ -10,13 +11,13 @@ class PencilSign extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<GameCubit, GameState>(
       buildWhen: (previous, current) {
-        if (previous.canDraw != current.canDraw) {
+        if ((previous.gamePhaseEvent != current.gamePhaseEvent) && current.gamePhaseEvent != null) {
           return true;
         }
         return false;
       },
       builder: (context, state) {
-        return state.canDraw ? _PencilSignAnimated() : SizedBox.shrink();
+        return state.gamePhaseEvent?.gamePhase == GamePhase.question ? _PencilSignAnimated() : SizedBox.shrink();
       },
     );
   }
