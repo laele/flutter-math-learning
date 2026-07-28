@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
 import 'package:flutter_svg/svg.dart';
-
+/*
 class HomeLearnNumbers extends StatelessWidget {
   const HomeLearnNumbers({super.key});
 
@@ -62,3 +62,4 @@ class HomeLearnNumbers extends StatelessWidget {
     );
   }
 }
+*/

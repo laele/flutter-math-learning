@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_math_app/core/entities/character_animation_type.dart';
-import 'package:flutter_math_app/features/audio/presentation/cubit/audio_cubit.dart';
+import 'package:flutter_math_app/features/dialog_message/cubit/dialog_message_cubit.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
 import 'package:flutter_math_app/features/input_recognition/presentation/input_recognition_cubit/input_recognition_cubit.dart';
 import 'package:scribble/scribble.dart';
 
-class HomePlayCanvas extends StatefulWidget {
-  const HomePlayCanvas({super.key});
+class ScribbleCanvas extends StatefulWidget {
+  const ScribbleCanvas({super.key});
 
   @override
-  State<HomePlayCanvas> createState() => HomePlayCanvasState();
+  State<ScribbleCanvas> createState() => _ScribbleCanvas();
 }
 
-class HomePlayCanvasState extends State<HomePlayCanvas> with SingleTickerProviderStateMixin {
+class _ScribbleCanvas extends State<ScribbleCanvas> with SingleTickerProviderStateMixin {
   late final AnimationController controller = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 250),
@@ -81,16 +80,19 @@ class HomePlayCanvasState extends State<HomePlayCanvas> with SingleTickerProvide
       },
       listener: (context, state) async {
         if (state.status == InputRecognitionStatus.processing) {
+          if (!mounted) return;
           await playOutAnimation();
           context.read<InputRecognitionCubit>().clearCanvas();
           resetAnimation();
         }
-        if (state.isStatusFailure && !context.read<GameCubit>().state.showMenu) {
-          context.read<AudioCubit>().playSfxIncorrect();
-          context.read<GameCubit>().playAnimation(message: state.errorMessage!, animation: CharacterAnimationType.failed, clearAfterShow: true);
+        if (state.isStatusFailure) {
+          context.read<DialogMessageCubit>().showMessage(message: state.errorMessage!);
+          await Future.delayed(Duration(seconds: 3));
+          if (!mounted) return;
+          context.read<GameCubit>().showInstructionMessage();
         }
         if (state.status == InputRecognitionStatus.success) {
-          context.read<GameCubit>().checkResult(state.numberRecognized!);
+          context.read<DialogMessageCubit>().showMessage(message: state.numberRecognized!.toString());
         }
       },
       child: Listener(
@@ -100,37 +102,32 @@ class HomePlayCanvasState extends State<HomePlayCanvas> with SingleTickerProvide
         onPointerUp: (_) {
           inputRecognitionCubit.onFinishedStroke(canvasHeight: canvasHeight, canvasWidth: canvasWidth);
         },
-        child: Stack(
+        child: Column(
           children: [
-            //HomeLearnNumbers(),
-            Column(
-              children: [
-                Expanded(
-                  child: AnimatedBuilder(
-                    animation: controller,
-                    builder: (context, child) {
-                      return Opacity(
-                        opacity: _fade.value,
-                        child: Transform.scale(
-                          scale: _scale.value,
-                          child: BlocBuilder<GameCubit, GameState>(
-                            buildWhen: (previous, current) => previous.canDraw != current.canDraw,
-                            builder: (context, state) {
-                              return IgnorePointer(
-                                ignoring: !state.canDraw,
-                                child: Scribble(
-                                  notifier: inputRecognitionCubit.notifier,
-                                  drawPen: true,
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
+            Expanded(
+              child: AnimatedBuilder(
+                animation: controller,
+                builder: (context, child) {
+                  return Opacity(
+                    opacity: _fade.value,
+                    child: Transform.scale(
+                      scale: _scale.value,
+                      child: BlocBuilder<GameCubit, GameState>(
+                        buildWhen: (previous, current) => previous.canDraw != current.canDraw,
+                        builder: (context, state) {
+                          return IgnorePointer(
+                            ignoring: !state.canDraw,
+                            child: Scribble(
+                              notifier: inputRecognitionCubit.notifier,
+                              drawPen: true,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
           ],
         ),

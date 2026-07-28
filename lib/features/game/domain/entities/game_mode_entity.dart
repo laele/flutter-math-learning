@@ -1,4 +1,4 @@
-import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
+import 'package:flutter_math_app/features/game/domain/enums/game_mode.dart';
 
 class GameModeEntity {
   final String title;

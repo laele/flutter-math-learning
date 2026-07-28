@@ -1,16 +1,14 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_math_app/core/constants/app_game.dart';
-import 'package:flutter_math_app/core/effects/game_effect_type.dart';
-import 'package:flutter_math_app/core/entities/character_animation_type.dart';
 import 'package:flutter_math_app/features/game/domain/constants/difficulty_tiers.dart';
 import 'package:flutter_math_app/features/game/domain/constants/game_modes.dart';
-import 'package:flutter_math_app/features/game/domain/entities/game_animation_event.dart';
-import 'package:flutter_math_app/features/game/domain/entities/game_effect_event.dart';
+import 'package:flutter_math_app/features/game/domain/entities/game_dialog_message_event.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_question_entity.dart';
+import 'package:flutter_math_app/features/game/domain/entities/game_question_event.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_session_entity.dart';
-import 'package:flutter_math_app/features/game/domain/entities/game_sound_event.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_stats_entity.dart';
+import 'package:flutter_math_app/features/game/domain/enums/game_mode.dart';
 import 'package:flutter_math_app/features/game/domain/services/mix_mode_selector.dart';
 import 'package:flutter_math_app/features/game/domain/services/question_generator_factory.dart';
 
@@ -18,32 +16,42 @@ part 'game_state.dart';
 
 class GameCubit extends Cubit<GameState> {
   final MixModeSelector _mixModeSelector;
-  int _gameSoundEventCounter = 0;
-  int _gameEffectsCounter = 0;
-  int _gameAnimationCounter = 0;
+  int _gameQuestionEventCounter = 0;
+  int _gamedialogMessageEventCounter = 0;
 
   GameCubit({MixModeSelector? mixModeSelector})
     : _mixModeSelector = mixModeSelector ?? MixModeSelector(),
       super(
         GameState(
-          hideOperation: true,
-          //gameMode: GameMode.menu,
-          //currentQuestionMode: GameMode.menu,
           selectedGameModes: GameModes.items.map((e) => e.gameMode).toList(),
           currentExercise: 0,
         ),
       );
 
-  GameSoundEvent _nextGameSound(GameSoundType type) {
-    return GameSoundEvent(type: type, id: _gameSoundEventCounter++);
+  GameQuestionEvent _nextGameQuestionEvent({
+    required GameQuestionEntity gameQuestion,
+    required GameMode gameMode,
+    required String indicationMessage,
+    required String explanationMessage,
+  }) {
+    return GameQuestionEvent(
+      id: ++_gameQuestionEventCounter,
+      gameQuestion: gameQuestion,
+      gameMode: gameMode,
+      indicationMessage: indicationMessage,
+      explanationMessage: explanationMessage,
+    );
   }
 
-  GameEffectEvent _nextGameEffect(GameEffectType type) {
-    return GameEffectEvent(type: type, id: _gameEffectsCounter++);
-  }
-
-  GameAnimationEvent _nextGameAnimation(CharacterAnimationType type) {
-    return GameAnimationEvent(type: type, id: _gameAnimationCounter++);
+  GameDialogMessageEvent _nextDialogMessageEvent({
+    required String message,
+    String? upperMessage,
+  }) {
+    return GameDialogMessageEvent(
+      id: ++_gamedialogMessageEventCounter,
+      message: message,
+      upperMessage: upperMessage,
+    );
   }
 
   void generateNextLevel() async {
@@ -61,111 +69,116 @@ class GameCubit extends Cubit<GameState> {
     final question = generator.generate(currentTier);
     emit(
       state.copyWith(
-        canDraw: true,
-        currentGameMode: nextGameMode,
-        firstNum: question.firstNum,
-        secNum: question.secNum,
-        result: question.resultNum,
-        hideOperation: false,
-        message: _messageFromNewQuestion(
+        gameQuestionEvent: _nextGameQuestionEvent(
+          gameQuestion: question,
           gameMode: nextGameMode,
-          question: question,
+          indicationMessage: _messageFromNewQuestion(gameMode: nextGameMode),
+          explanationMessage: _messageExplanationFromQuestion(
+            gameMode: nextGameMode,
+            gameQuestion: question,
+          ),
         ),
       ),
     );
-    await playAnimation(animation: CharacterAnimationType.thinking);
+    showInstructionMessage();
+  }
+
+  void showInstructionMessage() {
+    emit(
+      state.copyWith(
+        canDraw: true,
+        gameDialogMessage: _nextDialogMessageEvent(
+          message: state.gameQuestionEvent!.indicationMessage,
+          upperMessage: '${state.gameQuestionEvent!.gameQuestion.firstNum} ${state.currentGameModeOperator} ${state.gameQuestionEvent!.gameQuestion.secNum}',
+        ),
+      ),
+    );
+  }
+
+  void showIncorrectMessage() {
+    emit(
+      state.copyWith(
+        canDraw: false,
+        gameDialogMessage: _nextDialogMessageEvent(
+          message: 'Nope! Try it again!',
+        ),
+      ),
+    );
+  }
+
+  void showCorrectMessage() {
+    emit(
+      state.copyWith(
+        canDraw: false,
+        gameDialogMessage: _nextDialogMessageEvent(
+          message: 'Amazing, Let\'s try next number!',
+        ),
+      ),
+    );
+  }
+
+  void showExplanationMessage() {
+    emit(
+      state.copyWith(
+        canDraw: false,
+        gameDialogMessage: _nextDialogMessageEvent(
+          message: '${state.gameQuestionEvent!.explanationMessage}',
+        ),
+      ),
+    );
   }
 
   void checkResult(int result) async {
     emit(state.copyWith(canDraw: false));
-    final wasCorrect = (result == state.result);
-    final gameMode = state.currentGameMode;
-    final tiers = DifficultyTiers.byMode[gameMode];
-
-    var newStats = state.currentGameStats.recordAttempt(wasCorrect);
-
-    final isLevelUp = wasCorrect && tiers != null && newStats.shouldLevelUp && newStats.currentTierIndex < tiers.length - 1;
-    final isLevelDown = !wasCorrect && tiers != null && newStats.shouldLevelDown && newStats.currentTierIndex > 0;
-
-    if (isLevelUp) {
-      newStats = newStats.copyWith(currentTierIndex: newStats.currentTierIndex + 1).resetRegistry();
-    } else if (isLevelDown) {
-      newStats = newStats.copyWith(currentTierIndex: newStats.currentTierIndex - 1).resetRegistry();
-    }
-
-    _setNewStats(gameMode!, newStats);
+    final wasCorrect = (result == state.gameQuestionEvent!.gameQuestion.resultNum);
 
     final updatedGameSession = state.gameSession.recordAttempt(wasCorrect: wasCorrect);
     emit(state.copyWith(gameSession: updatedGameSession));
 
-    if (state.gameSession.isCompleted) {
-      emit(state.copyWith(effectEvent: _nextGameEffect(GameEffectType.shake)));
-      emit(state.copyWith(showScore: true, hideOperation: true, effectEvent: _nextGameEffect(GameEffectType.confetti)));
-      await playAnimation(animation: CharacterAnimationType.success, message: 'That was fun! Wanna play again?...');
-    } else if (state.gameSession.incorrectStreak >= AppGame.maxIncorectStreak) {
-      // TODO explain feature message
-      final cleanIncorrectStreak = state.gameSession.cleanIncorrectStreak();
-      emit(
-        state.copyWith(
-          effectEvent: _nextGameEffect(GameEffectType.shake),
-          gameSession: cleanIncorrectStreak,
-          hideOperation: true,
-          soundEvent: _nextGameSound(GameSoundType.incorrect),
-        ),
-      );
-      await playAnimation(message: 'Let\'s skip this one!', animation: CharacterAnimationType.failed);
-      // generate next level after explain
-      generateNextLevel();
-    } else {
-      if (isLevelUp) {
-        emit(state.copyWith(effectEvent: _nextGameEffect(GameEffectType.shake)));
-        emit(
-          state.copyWith(
-            hideOperation: true,
-            soundEvent: _nextGameSound(GameSoundType.correct),
-            gameSession: state.gameSession.cleanIncorrectStreak(),
-            effectEvent: _nextGameEffect(GameEffectType.stars),
-          ),
-        );
-        await playAnimation(animation: CharacterAnimationType.success, message: 'Excellent! You are getting better!');
-      } else if (wasCorrect) {
-        emit(state.copyWith(effectEvent: _nextGameEffect(GameEffectType.shake)));
-        emit(
-          state.copyWith(
-            hideOperation: true,
-            soundEvent: _nextGameSound(GameSoundType.correct),
-            gameSession: state.gameSession.cleanIncorrectStreak(),
-            effectEvent: _nextGameEffect(GameEffectType.stars),
-          ),
-        );
-        await playAnimation(animation: CharacterAnimationType.success, message: 'Amazing, Let\'s try next number!');
-      } else if (isLevelDown) {
-        emit(
-          state.copyWith(
-            hideOperation: true,
-            soundEvent: _nextGameSound(GameSoundType.incorrect),
-            effectEvent: _nextGameEffect(GameEffectType.shake),
-          ),
-        );
-        await playAnimation(
-          message: 'Let\'s try an easier one!', // change to lower level message
-          animation: CharacterAnimationType.failed,
-        );
-      } else {
-        emit(state.copyWith(soundEvent: _nextGameSound(GameSoundType.incorrect), effectEvent: _nextGameEffect(GameEffectType.shake)));
-        await playAnimation(
-          message: 'Nope, Try it again!',
-          animation: CharacterAnimationType.failed,
-          clearAfterShow: true,
-        );
-      }
-      if ((wasCorrect || isLevelDown) && !state.showMenu) generateNextLevel();
+    if (!wasCorrect && state.gameSession.incorrectStreak < AppGame.maxIncorectStreak) {
+      showIncorrectMessage();
+      await Future.delayed(Duration(seconds: 3));
+      showInstructionMessage();
+      return;
     }
+
+    final gameMode = state.gameQuestionEvent!.gameMode;
+    final tiers = DifficultyTiers.byMode[gameMode];
+    var newStats = state.currentGameStats.recordAttempt(wasCorrect);
+    var continueNextLevel = true;
+    if (!wasCorrect) {
+      // Incorrect Attempt
+      final isLevelDown = !wasCorrect && tiers != null && newStats.shouldLevelDown && newStats.currentTierIndex > 0;
+      if (isLevelDown) {
+        newStats = newStats.copyWith(currentTierIndex: newStats.currentTierIndex - 1).resetRegistry();
+      } else {
+        showExplanationMessage();
+      }
+    } else {
+      // correct Attempt
+      final isLevelUp = wasCorrect && tiers != null && newStats.shouldLevelUp && newStats.currentTierIndex < tiers.length - 1;
+      if (isLevelUp) {
+        newStats = newStats.copyWith(currentTierIndex: newStats.currentTierIndex + 1).resetRegistry();
+      }
+
+      if (state.gameSession.isCompleted) {
+        continueNextLevel = false;
+        emit(state.copyWith(showScore: true, canDraw: false, gameDialogMessage: _nextDialogMessageEvent(message: 'That was fun! Wanna play again?...!')));
+      } else {
+        showCorrectMessage();
+      }
+    }
+
+    final cleanIncorrectStreak = state.gameSession.cleanIncorrectStreak();
+    emit(state.copyWith(gameSession: cleanIncorrectStreak));
+    _setNewStats(gameMode!, newStats);
+    await Future.delayed(Duration(seconds: 3));
+    if (continueNextLevel) generateNextLevel();
   }
 
-  String _messageFromNewQuestion({required GameMode gameMode, required GameQuestionEntity question}) {
+  String _messageFromNewQuestion({required GameMode gameMode}) {
     return switch (gameMode) {
-      GameMode.learnNumbers => 'Draw this number!',
+      //GameMode.learnNumbers => 'Draw this number!',
       GameMode.add => 'Let\'s add these numbers!',
       GameMode.sub => 'Time to substract!',
       GameMode.mult => 'Let\'s multiply!',
@@ -174,60 +187,19 @@ class GameCubit extends Cubit<GameState> {
     };
   }
 
+  String _messageExplanationFromQuestion({required GameMode gameMode, required GameQuestionEntity gameQuestion}) {
+    return switch (gameMode) {
+      //GameMode.learnNumbers => 'Draw this number!',
+      GameMode.add => '${gameQuestion.firstNum} + ${gameQuestion.secNum} = ${gameQuestion.resultNum}',
+      GameMode.sub => '${gameQuestion.firstNum} - ${gameQuestion.secNum} = ${gameQuestion.resultNum}',
+      GameMode.mult => '${gameQuestion.firstNum} × ${gameQuestion.secNum} = ${gameQuestion.resultNum}',
+      GameMode.div => '${gameQuestion.firstNum} ÷ ${gameQuestion.secNum} = ${gameQuestion.resultNum}',
+      _ => '',
+    };
+  }
+
   void _setNewStats(GameMode mode, GameStatsEntity newStats) {
     final stats = Map<GameMode, GameStatsEntity>.from(state.stats)..[mode] = newStats;
     emit(state.copyWith(stats: stats));
   }
-
-  Future<void> playAnimation({String? message, required CharacterAnimationType animation, bool clearAfterShow = false}) async {
-    if (clearAfterShow) {
-      final String? previousMessage = state.message;
-      emit(state.copyWith(animationEvent: _nextGameAnimation(animation), message: message));
-
-      await Future.delayed(Duration(seconds: 6));
-
-      if (!state.showMenu) {
-        emit(state.copyWith(message: previousMessage, canDraw: true, animationEvent: _nextGameAnimation(CharacterAnimationType.thinking)));
-      }
-      return;
-    } else {
-      emit(state.copyWith(animationEvent: _nextGameAnimation(animation), message: message));
-      await Future.delayed(Duration(seconds: 6));
-    }
-  }
-
-  // Menu Events----
-
-  void playAgain() {
-    emit(state.copyWith(showScore: false, gameSession: const GameSessionEntity()));
-    generateNextLevel();
-  }
-
-  void startGame() {
-    emit(state.copyWith(canDraw: true, showMenu: false));
-    generateNextLevel();
-  }
-
-  void backToMenu() async {
-    _mixModeSelector.reset();
-    emit(
-      state.copyWith(canDraw: false, showMenu: true, hideOperation: true, showScore: false, gameSession: const GameSessionEntity()),
-    );
-    await playAnimation(message: 'Tap play to start a game!', animation: (CharacterAnimationType.success));
-  }
-
-  void setGameModes(GameMode gameMode) {
-    final selectedGameModes = List<GameMode>.from(state.selectedGameModes);
-
-    if (selectedGameModes.contains(gameMode)) {
-      if (selectedGameModes.length < 2) return;
-      selectedGameModes.remove(gameMode);
-    } else {
-      selectedGameModes.add(gameMode);
-    }
-
-    emit(state.copyWith(selectedGameModes: selectedGameModes));
-  }
-
-  // --------------
 }

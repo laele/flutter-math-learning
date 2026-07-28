@@ -3,6 +3,8 @@ import 'package:flutter_math_app/features/audio/data/datasource/audio_datasource
 import 'package:flutter_math_app/features/audio/data/repositories/audio_repository_impl.dart';
 import 'package:flutter_math_app/features/audio/domain/repositories/audio_repository.dart';
 import 'package:flutter_math_app/features/audio/presentation/cubit/audio_cubit.dart';
+import 'package:flutter_math_app/features/character/presentation/cubit/character_cubit.dart';
+import 'package:flutter_math_app/features/dialog_message/cubit/dialog_message_cubit.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
 import 'package:flutter_math_app/features/input_recognition/data/datasource/input_recognition_datasource.dart';
 import 'package:flutter_math_app/features/input_recognition/data/repository/input_recognition_repository_impl.dart';
@@ -19,6 +21,8 @@ Future<void> initDependencies() async {
   await initAudio();
   sl.registerFactory<GameCubit>(() => GameCubit());
   sl.registerLazySingleton<EffectsPlayer>(() => EffectsPlayerImpl());
+  sl.registerFactory<CharacterCubit>(() => CharacterCubit()); // Character Animation Cubit
+  sl.registerFactory<DialogMessageCubit>(() => DialogMessageCubit()); // Character Dialog Message Cubit for instructions
 }
 
 Future<void> initInputRecognizer() async {

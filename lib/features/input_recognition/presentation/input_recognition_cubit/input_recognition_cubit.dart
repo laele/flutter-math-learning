@@ -108,7 +108,6 @@ class InputRecognitionCubit extends Cubit<InputRecognitionState> {
     );
 
     emit(state.copyWith(status: InputRecognitionStatus.idle));
-    //print('status idle');
   }
 
   String _errorMessageFromFailure(Failure failure) => switch (failure) {

@@ -37,7 +37,6 @@ class EffectsPlayerImpl implements EffectsPlayer {
       case GameEffectType.confetti:
         _playConfetti(context);
       case GameEffectType.shake:
-        print('shaeking');
         _shakeKey?.currentState?.shake();
         break;
     }

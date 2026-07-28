@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:flutter_math_app/features/game/domain/entities/game_stats_entity.dart';
-import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
+import 'package:flutter_math_app/features/game/domain/enums/game_mode.dart';
 
 class MixModeSelector {
   MixModeSelector([Random? random]) : _random = random ?? Random();
