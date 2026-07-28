@@ -1,6 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_math_app/features/game/domain/enums/game_mode.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
 
 class GameModeItem extends StatelessWidget {
@@ -20,7 +21,7 @@ class GameModeItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        context.read<GameCubit>().setGameModes(gameMode);
+        //context.read<GameCubit>().setGameModes(gameMode);
       },
       child: SizedBox(
         height: itemWidth,

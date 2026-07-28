@@ -1,5 +1,5 @@
 import 'package:flutter_math_app/features/game/domain/entities/game_mode_entity.dart';
-import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
+import 'package:flutter_math_app/features/game/domain/enums/game_mode.dart';
 
 class GameModes {
   static List<GameModeEntity> items = [

@@ -4,6 +4,7 @@ import 'package:flutter_math_app/core/effects/effects_player.dart';
 import 'package:flutter_math_app/core/effects/game_effect_type.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
 
+/*
 class GameEffectListener extends StatelessWidget {
   final Widget child;
   final EffectsPlayer effectsPlayer;
@@ -13,23 +14,15 @@ class GameEffectListener extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<GameCubit, GameState>(
       listenWhen: (previous, current) {
-        if ((previous.gameEffect != current.gameEffect) && current.gameEffect != null) return true;
+        if ((previous.effectEvent != current.effectEvent) && current.effectEvent != null) return true;
         return false;
       },
       listener: (context, state) {
-        switch (state.gameEffect!.type) {
-          case GameEffectType.stars:
-            effectsPlayer.play(GameEffectType.stars, context);
-          case GameEffectType.confetti:
-            effectsPlayer.play(GameEffectType.confetti, context);
-          case GameEffectType.shake:
-            effectsPlayer.play(GameEffectType.shake, context);
-          case _:
-            break;
+        for (final type in state.effectEvent!.type) {
+          effectsPlayer.play(type, context);
         }
-        ;
       },
       child: child,
     );
   }
-}
+}*/

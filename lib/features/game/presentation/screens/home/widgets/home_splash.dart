@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_math_app/features/audio/presentation/cubit/audio_cubit.dart';
-import 'package:flutter_math_app/features/game/presentation/screens/home/home_screen.dart';
+import 'package:flutter_math_app/features/scenes/presentation/menu/menu_screen.dart';
 import 'package:flutter_math_app/features/input_recognition/presentation/input_recognition_cubit/input_recognition_cubit.dart';
 
 class HomeSplash extends StatefulWidget {
@@ -21,9 +21,9 @@ class _HomeSplashState extends State<HomeSplash> {
       listenWhen: (previous, current) => previous.audioLoaded != current.audioLoaded,
       listener: (context, state) {
         if (state.audioLoaded) {
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (_) => HomeScreen()),
+            MaterialPageRoute(builder: (_) => MenuScreen()),
           );
         }
       },

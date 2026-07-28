@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_math_app/core/theme/app_colors.dart';
 import 'package:flutter_math_app/features/game/domain/constants/game_modes.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
-import 'package:flutter_math_app/features/game/presentation/screens/menu/widgets/game_mode_item.dart';
+import 'package:flutter_math_app/features/scenes/presentation/menu/widgets/game_mode_item.dart';
 
-class MenuScreen extends StatelessWidget {
-  const MenuScreen({super.key});
+class MenuModdalBottomSheet extends StatelessWidget {
+  const MenuModdalBottomSheet({super.key});
 
   static Future<void> show(BuildContext context) {
     return showModalBottomSheet(
@@ -20,7 +20,7 @@ class MenuScreen extends StatelessWidget {
         ),
       ),
       context: context,
-      builder: (context) => MenuScreen(),
+      builder: (context) => MenuModdalBottomSheet(),
     );
   }
 

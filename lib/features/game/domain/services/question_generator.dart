@@ -10,14 +10,12 @@ abstract interface class QuestionGenerator {
 
 class LearnNumbersQuestionGenerator implements QuestionGenerator {
   final WeightedRangeSampler _sampler;
-  //final Random _random;
   LearnNumbersQuestionGenerator([
-    /*Random? randomm, */ WeightedRangeSampler? sampler,
-  ]) : /*_random = random ?? Random()*/ _sampler = sampler ?? WeightedRangeSampler();
+    WeightedRangeSampler? sampler,
+  ]) : _sampler = sampler ?? WeightedRangeSampler();
 
   @override
   GameQuestionEntity generate(MinMaxTierEntity tier) {
-    //final number = tier.min + _random.nextInt(tier.max - tier.min + 1);
     final number = _sampler.sample(tier);
     return GameQuestionEntity(resultNum: number);
   }
