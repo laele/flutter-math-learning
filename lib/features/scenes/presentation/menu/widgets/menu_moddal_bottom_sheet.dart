@@ -55,7 +55,7 @@ class MenuModdalBottomSheet extends StatelessWidget {
               SizedBox(height: 8.0),
               Text('Selected modes you want to integrate playing', style: Theme.of(context).textTheme.bodyMedium),
               SizedBox(height: 4.0),
-              Padding(
+              /*Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: SizedBox(
                   width: double.infinity,
@@ -99,7 +99,7 @@ class MenuModdalBottomSheet extends StatelessWidget {
                     },
                   ),
                 ),
-              ),
+              ),*/
               SizedBox(height: 8.0),
 
               FilledButton(

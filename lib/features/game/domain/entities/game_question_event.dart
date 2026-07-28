@@ -9,6 +9,16 @@ class GameQuestionEvent extends Equatable {
   final String indicationMessage;
   final String explanationMessage;
 
+  String get currentGameModeOperator => switch (gameMode) {
+    GameMode.add => '+',
+    GameMode.sub => '-',
+    GameMode.mult => '×',
+    GameMode.div => '÷',
+    _ => '',
+  };
+
+  String get operationMessage => '${gameQuestion.firstNum} $currentGameModeOperator ${gameQuestion.secNum} ';
+
   const GameQuestionEvent({
     required this.id,
     required this.gameQuestion,

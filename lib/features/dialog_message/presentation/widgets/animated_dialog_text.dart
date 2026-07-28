@@ -29,10 +29,11 @@ class _AnimatedDialogTextState extends State<AnimatedDialogText> {
     setState(() => _scale = 0.55);
 
     await Future.delayed(const Duration(milliseconds: 100));
-
+    if (!mounted) return;
     setState(() => _scale = 1.55);
 
     await Future.delayed(const Duration(milliseconds: 150));
+    if (!mounted) return;
 
     setState(() => _scale = 1);
   }

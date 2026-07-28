@@ -13,7 +13,11 @@ class CharacterCubit extends Cubit<CharacterState> {
     return CharacterAnimationEvent(type: type, id: _characterAnimationCounter++);
   }
 
-  void playSuccessCharacterAnimation(CharacterAnimationType animation) {
+  void playCharacterAnimation(CharacterAnimationType animation) {
     emit(state.copyWith(animationEvent: _nextCharacterAnimation(animation)));
+  }
+
+  void setControllerReady() {
+    emit(state.copyWith(controllerReady: true));
   }
 }

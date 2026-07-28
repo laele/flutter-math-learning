@@ -4,11 +4,13 @@ import 'package:flutter_math_app/core/constants/app_game.dart';
 import 'package:flutter_math_app/features/game/domain/constants/difficulty_tiers.dart';
 import 'package:flutter_math_app/features/game/domain/constants/game_modes.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_dialog_message_event.dart';
+import 'package:flutter_math_app/features/game/domain/entities/game_phase_event.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_question_entity.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_question_event.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_session_entity.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_stats_entity.dart';
 import 'package:flutter_math_app/features/game/domain/enums/game_mode.dart';
+import 'package:flutter_math_app/features/game/domain/enums/game_phase.dart';
 import 'package:flutter_math_app/features/game/domain/services/mix_mode_selector.dart';
 import 'package:flutter_math_app/features/game/domain/services/question_generator_factory.dart';
 
@@ -17,7 +19,7 @@ part 'game_state.dart';
 class GameCubit extends Cubit<GameState> {
   final MixModeSelector _mixModeSelector;
   int _gameQuestionEventCounter = 0;
-  int _gamedialogMessageEventCounter = 0;
+  int _gamePhaseEventCounter = 0;
 
   GameCubit({MixModeSelector? mixModeSelector})
     : _mixModeSelector = mixModeSelector ?? MixModeSelector(),
@@ -43,15 +45,10 @@ class GameCubit extends Cubit<GameState> {
     );
   }
 
-  GameDialogMessageEvent _nextDialogMessageEvent({
-    required String message,
-    String? upperMessage,
-  }) {
-    return GameDialogMessageEvent(
-      id: ++_gamedialogMessageEventCounter,
-      message: message,
-      upperMessage: upperMessage,
-    );
+  Future<void> _emitNextGamePhaseEvent({required GamePhase gamePhase, Duration duration = const Duration(seconds: 3)}) async {
+    final gamePhaseEvent = GamePhaseEvent(id: ++_gamePhaseEventCounter, gamePhase: gamePhase);
+    emit(state.copyWith(gamePhaseEvent: gamePhaseEvent));
+    await Future.delayed(duration);
   }
 
   void generateNextLevel() async {
@@ -80,65 +77,19 @@ class GameCubit extends Cubit<GameState> {
         ),
       ),
     );
-    showInstructionMessage();
-  }
-
-  void showInstructionMessage() {
-    emit(
-      state.copyWith(
-        canDraw: true,
-        gameDialogMessage: _nextDialogMessageEvent(
-          message: state.gameQuestionEvent!.indicationMessage,
-          upperMessage: '${state.gameQuestionEvent!.gameQuestion.firstNum} ${state.currentGameModeOperator} ${state.gameQuestionEvent!.gameQuestion.secNum}',
-        ),
-      ),
-    );
-  }
-
-  void showIncorrectMessage() {
-    emit(
-      state.copyWith(
-        canDraw: false,
-        gameDialogMessage: _nextDialogMessageEvent(
-          message: 'Nope! Try it again!',
-        ),
-      ),
-    );
-  }
-
-  void showCorrectMessage() {
-    emit(
-      state.copyWith(
-        canDraw: false,
-        gameDialogMessage: _nextDialogMessageEvent(
-          message: 'Amazing, Let\'s try next number!',
-        ),
-      ),
-    );
-  }
-
-  void showExplanationMessage() {
-    emit(
-      state.copyWith(
-        canDraw: false,
-        gameDialogMessage: _nextDialogMessageEvent(
-          message: '${state.gameQuestionEvent!.explanationMessage}',
-        ),
-      ),
-    );
+    await _emitNextGamePhaseEvent(gamePhase: GamePhase.question);
   }
 
   void checkResult(int result) async {
-    emit(state.copyWith(canDraw: false));
+    await _emitNextGamePhaseEvent(gamePhase: GamePhase.checkingResult);
     final wasCorrect = (result == state.gameQuestionEvent!.gameQuestion.resultNum);
 
     final updatedGameSession = state.gameSession.recordAttempt(wasCorrect: wasCorrect);
     emit(state.copyWith(gameSession: updatedGameSession));
 
     if (!wasCorrect && state.gameSession.incorrectStreak < AppGame.maxIncorectStreak) {
-      showIncorrectMessage();
-      await Future.delayed(Duration(seconds: 3));
-      showInstructionMessage();
+      await _emitNextGamePhaseEvent(gamePhase: GamePhase.incorrect);
+      await _emitNextGamePhaseEvent(gamePhase: GamePhase.question);
       return;
     }
 
@@ -148,32 +99,34 @@ class GameCubit extends Cubit<GameState> {
     var continueNextLevel = true;
     if (!wasCorrect) {
       // Incorrect Attempt
+      await _emitNextGamePhaseEvent(gamePhase: GamePhase.incorrect);
       final isLevelDown = !wasCorrect && tiers != null && newStats.shouldLevelDown && newStats.currentTierIndex > 0;
       if (isLevelDown) {
         newStats = newStats.copyWith(currentTierIndex: newStats.currentTierIndex - 1).resetRegistry();
-      } else {
-        showExplanationMessage();
       }
+      await _emitNextGamePhaseEvent(gamePhase: GamePhase.explanation);
     } else {
       // correct Attempt
+      await _emitNextGamePhaseEvent(gamePhase: GamePhase.correct);
       final isLevelUp = wasCorrect && tiers != null && newStats.shouldLevelUp && newStats.currentTierIndex < tiers.length - 1;
       if (isLevelUp) {
         newStats = newStats.copyWith(currentTierIndex: newStats.currentTierIndex + 1).resetRegistry();
       }
-
       if (state.gameSession.isCompleted) {
+        await _emitNextGamePhaseEvent(gamePhase: GamePhase.finished, duration: Duration.zero);
         continueNextLevel = false;
-        emit(state.copyWith(showScore: true, canDraw: false, gameDialogMessage: _nextDialogMessageEvent(message: 'That was fun! Wanna play again?...!')));
-      } else {
-        showCorrectMessage();
       }
     }
 
     final cleanIncorrectStreak = state.gameSession.cleanIncorrectStreak();
     emit(state.copyWith(gameSession: cleanIncorrectStreak));
     _setNewStats(gameMode!, newStats);
-    await Future.delayed(Duration(seconds: 3));
     if (continueNextLevel) generateNextLevel();
+  }
+
+  Future<void> setErrorGamePhase() async {
+    await _emitNextGamePhaseEvent(gamePhase: GamePhase.error);
+    await _emitNextGamePhaseEvent(gamePhase: GamePhase.question);
   }
 
   String _messageFromNewQuestion({required GameMode gameMode}) {

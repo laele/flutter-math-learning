@@ -4,10 +4,9 @@ class GameState extends Equatable {
   final GameSessionEntity gameSession;
   final GameQuestionEvent? gameQuestionEvent;
   final GameDialogMessageEvent? gameDialogMessage;
-  //final String? dialogMessage;
-  //final String? upperDialogMesage;
   final bool showScore;
   final Map<GameMode, GameStatsEntity> stats;
+  final GamePhaseEvent? gamePhaseEvent;
 
   final List<GameMode> selectedGameModes;
 
@@ -17,6 +16,7 @@ class GameState extends Equatable {
   const GameState({
     required this.selectedGameModes,
     required this.currentExercise,
+    this.gamePhaseEvent,
     this.gameDialogMessage,
     this.gameQuestionEvent,
     this.showScore = false,
@@ -27,26 +27,22 @@ class GameState extends Equatable {
 
   GameStatsEntity get currentGameStats => stats[gameQuestionEvent!.gameMode] ?? GameStatsEntity();
   GameStatsEntity gameStats(GameMode gameMode) => stats[gameMode] ?? GameStatsEntity();
-  String get currentGameModeOperator => switch (gameQuestionEvent!.gameMode) {
-    GameMode.add => '+',
-    GameMode.sub => '-',
-    GameMode.mult => '×',
-    GameMode.div => '÷',
-    _ => '',
-  };
+
   GameState copyWith({
+    bool? isReady,
     GameQuestionEvent? gameQuestionEvent,
-    bool? showScore,
+    GamePhaseEvent? gamePhaseEvent,
+    GameDialogMessageEvent? gameDialogMessage,
     GameSessionEntity? gameSession,
     Map<GameMode, GameStatsEntity>? stats,
     List<GameMode>? selectedGameModes,
     bool? canDraw,
+    bool? showScore,
     int? currentExercise,
-    GameDialogMessageEvent? gameDialogMessage,
   }) {
     return GameState(
+      gamePhaseEvent: gamePhaseEvent ?? this.gamePhaseEvent,
       gameDialogMessage: gameDialogMessage ?? this.gameDialogMessage,
-      //upperDialogMesage: upperDialogMessage ?? this.upperDialogMesage,
       showScore: showScore ?? this.showScore,
       gameSession: gameSession ?? this.gameSession,
       selectedGameModes: selectedGameModes ?? this.selectedGameModes,
@@ -59,6 +55,7 @@ class GameState extends Equatable {
 
   @override
   List<Object?> get props => [
+    gamePhaseEvent,
     gameDialogMessage,
     gameQuestionEvent,
     stats,
