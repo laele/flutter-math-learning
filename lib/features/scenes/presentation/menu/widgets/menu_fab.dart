@@ -1,7 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_app/features/scenes/presentation/game/game_screen.dart';
-import 'package:flutter_math_app/features/scenes/presentation/menu/widgets/menu_moddal_bottom_sheet.dart';
+import 'package:flutter_math_app/features/scenes/presentation/menu/widgets/menu_sheet.dart';
 
 class MenuFloatingActionButtons extends StatelessWidget {
   const MenuFloatingActionButtons({super.key});
@@ -20,7 +20,7 @@ class MenuFloatingActionButtons extends StatelessWidget {
                 child: FloatingActionButton(
                   heroTag: 'menuButton',
                   onPressed: () {
-                    MenuModdalBottomSheet.show(context);
+                    MenuSheet.show(context);
                   },
                   child: Icon(Icons.menu),
                 ),

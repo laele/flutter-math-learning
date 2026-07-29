@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter_math_app/core/entities/character_animation_type.dart';
+import 'package:flutter_math_app/features/character/domain/enums/character_animation_type.dart';
 
 class CharacterAnimationEvent extends Equatable {
   final CharacterAnimationType type;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_math_app/core/entities/character_animation_type.dart';
+import 'package:flutter_math_app/features/character/domain/enums/character_animation_type.dart';
 import 'package:flutter_math_app/features/character/presentation/cubit/character_cubit.dart';
 import 'package:rive/rive.dart';
 
