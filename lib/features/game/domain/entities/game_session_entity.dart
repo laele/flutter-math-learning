@@ -2,8 +2,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_math_app/core/constants/app_game.dart';
 
 class GameSessionEntity extends Equatable {
-  final int questionsPerSession = 3;
-
   final int questionsAnswered;
   final int correctCount;
   final int incorrectCount;
@@ -16,7 +14,7 @@ class GameSessionEntity extends Equatable {
     this.incorrectStreak = 0,
   });
 
-  bool get isCompleted => questionsAnswered >= questionsPerSession;
+  bool get isCompleted => questionsAnswered >= AppGame.questionsPerSession;
   bool get isQuestionAnsweredByIncorrectTries => this.incorrectStreak >= AppGame.maxIncorectStreak;
   double get accuracy => questionsAnswered == 0 ? 0 : (correctCount / questionsAnswered);
   GameSessionEntity recordAttempt({

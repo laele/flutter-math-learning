@@ -16,10 +16,11 @@ import 'package:flutter_math_app/features/effects/presentation/effects_layer.dar
 import 'package:flutter_math_app/features/effects/presentation/widgets/shake_widget.dart';
 import 'package:flutter_math_app/features/game/domain/enums/game_phase.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
+import 'package:flutter_math_app/features/game/presentation/widgets/attempt_counter_section.dart';
 import 'package:flutter_math_app/features/game/presentation/widgets/score_overlay.dart';
 import 'package:flutter_math_app/features/input_recognition/presentation/input_recognition_cubit/input_recognition_cubit.dart';
 import 'package:flutter_math_app/features/scenes/presentation/game/widgets/game_fab.dart';
-import 'package:flutter_math_app/features/scenes/presentation/game/widgets/scribble_canvas.dart';
+import 'package:flutter_math_app/features/scenes/presentation/shared/widgets/scribble_canvas.dart';
 import 'package:flutter_math_app/features/game/presentation/widgets/pencil_sign.dart';
 
 class GameScreen extends StatelessWidget {
@@ -202,6 +203,7 @@ class _GameViewState extends State<GameView> {
                 ],
               ),
               ScribbleCanvas(),
+              AttemptCounterSection(),
               ScoreOverlay(),
               EffectsLayer(),
             ],

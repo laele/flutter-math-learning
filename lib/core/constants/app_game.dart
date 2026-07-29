@@ -1,3 +1,4 @@
 class AppGame {
-  static final double maxIncorectStreak = 3;
+  static final int questionsPerSession = 3;
+  static final int maxIncorectStreak = 3;
 }
