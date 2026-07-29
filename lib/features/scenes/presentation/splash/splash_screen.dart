@@ -4,14 +4,14 @@ import 'package:flutter_math_app/features/audio/presentation/cubit/audio_cubit.d
 import 'package:flutter_math_app/features/scenes/presentation/menu/menu_screen.dart';
 import 'package:flutter_math_app/features/input_recognition/presentation/input_recognition_cubit/input_recognition_cubit.dart';
 
-class HomeSplash extends StatefulWidget {
-  const HomeSplash({super.key});
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
 
   @override
-  State<HomeSplash> createState() => _HomeSplashState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _HomeSplashState extends State<HomeSplash> {
+class _SplashScreenState extends State<SplashScreen> {
   bool audioLoaded = false;
   bool inputRecognizerLoaded = false;
 

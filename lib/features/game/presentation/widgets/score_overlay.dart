@@ -1,12 +1,12 @@
 import 'dart:async';
-
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:flutter_math_app/features/game/domain/enums/game_phase.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
-import 'package:flutter_math_app/features/game/presentation/screens/score/widgets/score_play_again_button.dart';
-import 'package:flutter_math_app/features/game/presentation/screens/score/widgets/stars_score_section.dart';
+import 'package:flutter_math_app/features/game/presentation/widgets/score_overlay/play_again_button.dart';
+import 'package:flutter_math_app/features/game/presentation/widgets/score_overlay/stars_section.dart';
 
 class ScoreOverlay extends StatefulWidget {
   const ScoreOverlay({super.key});
@@ -104,9 +104,7 @@ class _ScoreOverlayState extends State<ScoreOverlay> with SingleTickerProviderSt
                                       ),
                                       SizedBox(height: 8.0),
 
-                                      StarsScoreSection(
-                                        accuracy: state.gameSession.accuracy,
-                                      ),
+                                      StarsSection(accuracy: state.gameSession.accuracy),
                                       SizedBox(height: 8.0),
                                       FittedBox(
                                         child: Row(
@@ -133,7 +131,7 @@ class _ScoreOverlayState extends State<ScoreOverlay> with SingleTickerProviderSt
                                         ),
                                       ),
                                       SizedBox(height: 12.0),
-                                      ScorePlayAgainButton(),
+                                      PlayAgainButton(),
                                     ],
                                   ),
                                 ),

@@ -2,9 +2,9 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_app/core/theme/app_colors.dart';
 
-class StarsScoreSection extends StatelessWidget {
+class StarsSection extends StatelessWidget {
   final double accuracy;
-  const StarsScoreSection({super.key, required this.accuracy});
+  const StarsSection({super.key, required this.accuracy});
 
   int get _stars {
     if (accuracy >= 0.8) return 3;
