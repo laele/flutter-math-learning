@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_math_app/features/audio/presentation/cubit/audio_cubit.dart';
+import 'package:flutter_math_app/features/game/domain/enums/game_phase.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
 import 'package:flutter_math_app/features/game/presentation/screens/score/widgets/score_play_again_button.dart';
 import 'package:flutter_math_app/features/game/presentation/screens/score/widgets/stars_score_section.dart';
@@ -16,33 +16,41 @@ class ScoreOverlay extends StatefulWidget {
 }
 
 class _ScoreOverlayState extends State<ScoreOverlay> with SingleTickerProviderStateMixin {
-  late final AnimationController controller = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 200),
-  );
+  late final AnimationController _controller;
+  late final Animation<double> _fade;
+  late final Animation<double> _scale;
 
-  late final Animation<double> _fade = Tween<double>(begin: 0, end: 1).animate(
-    CurvedAnimation(parent: controller, curve: const Interval(0.0, 1.0)),
-  );
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
 
-  late final Animation<double> _scale = TweenSequence<double>(
-    [
-      TweenSequenceItem(tween: Tween(begin: 0.0, end: 1.0), weight: 40),
-    ],
-  ).animate(CurvedAnimation(parent: controller, curve: const Interval(0.0, 1)));
+    _scale = TweenSequence<double>(
+      [
+        TweenSequenceItem(tween: Tween(begin: 0.0, end: 1.0), weight: 40),
+      ],
+    ).animate(CurvedAnimation(parent: _controller, curve: const Interval(0.0, 1)));
+
+    _fade = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(parent: _controller, curve: const Interval(0.0, 1.0)),
+    );
+  }
 
   @override
   void dispose() {
-    controller.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
   Future<void> playInAnimation() async {
-    await controller.forward(from: 0);
+    await _controller.forward(from: 0);
   }
 
   Future<void> playOutAnimation() async {
-    await controller.reverse(from: 1);
+    await _controller.reverse(from: 1);
   }
 
   @override
@@ -51,21 +59,20 @@ class _ScoreOverlayState extends State<ScoreOverlay> with SingleTickerProviderSt
     final textTheme = Theme.of(context).textTheme;
 
     return BlocConsumer<GameCubit, GameState>(
-      listenWhen: (previous, current) => previous.showScore != current.showScore,
+      listenWhen: (previous, current) => (previous.gamePhaseEvent != current.gamePhaseEvent) && current.gamePhaseEvent != null,
       listener: (context, state) async {
-        if (state.showScore) {
-          await playInAnimation();
-          context.read<AudioCubit>().playSfxCorrect();
+        if (state.gamePhaseEvent!.gamePhase == GamePhase.finished) {
+          playInAnimation();
         }
       },
-      buildWhen: (previous, current) => previous.showScore != current.showScore,
+      buildWhen: (previous, current) => (previous.gamePhaseEvent != current.gamePhaseEvent) && current.gamePhaseEvent != null,
 
       builder: (context, state) {
-        return AnimatedBuilder(
-          animation: controller,
-          builder: (context, child) {
-            return state.showScore
-                ? Opacity(
+        return (state.gamePhaseEvent?.gamePhase == GamePhase.finished)
+            ? AnimatedBuilder(
+                animation: _controller,
+                builder: (context, child) {
+                  return Opacity(
                     opacity: _fade.value,
                     child: Transform.scale(
                       scale: _scale.value,
@@ -136,10 +143,10 @@ class _ScoreOverlayState extends State<ScoreOverlay> with SingleTickerProviderSt
                         ),
                       ),
                     ),
-                  )
-                : SizedBox.shrink();
-          },
-        );
+                  );
+                },
+              )
+            : SizedBox.shrink();
       },
     );
   }

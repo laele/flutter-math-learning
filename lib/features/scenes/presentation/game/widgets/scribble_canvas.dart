@@ -13,57 +13,64 @@ class ScribbleCanvas extends StatefulWidget {
 }
 
 class _ScribbleCanvas extends State<ScribbleCanvas> with SingleTickerProviderStateMixin {
-  late final AnimationController controller = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 250),
-  );
+  late final AnimationController _controller;
+  late final Animation<double> _fade;
+  late final Animation<double> _scale;
 
-  late final Animation<double> _fade = Tween<double>(begin: 1, end: 0).animate(
-    CurvedAnimation(parent: controller, curve: Curves.bounceInOut),
-  );
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 250),
+    );
+    _scale =
+        TweenSequence<double>([
+          TweenSequenceItem(
+            tween: Tween(
+              begin: 1.0,
+              end: 0.6,
+            ).chain(CurveTween(curve: Curves.easeIn)),
+            weight: 15,
+          ),
+          TweenSequenceItem(
+            tween: Tween(
+              begin: 0.96,
+              end: 1.6,
+            ).chain(CurveTween(curve: Curves.easeOut)),
+            weight: 45,
+          ),
+          TweenSequenceItem(
+            tween: Tween(
+              begin: 1.6,
+              end: 2.0,
+            ).chain(CurveTween(curve: Curves.easeOut)),
+            weight: 40,
+          ),
+        ]).animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: const Interval(0.0, 1, curve: Curves.easeOut),
+          ),
+        );
 
-  late final Animation<double> _scale =
-      TweenSequence<double>([
-        TweenSequenceItem(
-          tween: Tween(
-            begin: 1.0,
-            end: 0.6,
-          ).chain(CurveTween(curve: Curves.easeIn)),
-          weight: 15,
-        ),
-        TweenSequenceItem(
-          tween: Tween(
-            begin: 0.96,
-            end: 1.6,
-          ).chain(CurveTween(curve: Curves.easeOut)),
-          weight: 45,
-        ),
-        TweenSequenceItem(
-          tween: Tween(
-            begin: 1.6,
-            end: 2.0,
-          ).chain(CurveTween(curve: Curves.easeOut)),
-          weight: 40,
-        ),
-      ]).animate(
-        CurvedAnimation(
-          parent: controller,
-          curve: const Interval(0.0, 1, curve: Curves.easeOut),
-        ),
-      );
+    _fade = Tween<double>(begin: 1, end: 0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.bounceInOut),
+    );
+  }
 
   @override
   void dispose() {
-    controller.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
   Future<void> playOutAnimation() async {
-    await controller.forward(from: 0);
+    await _controller.forward(from: 0);
   }
 
   void resetAnimation() async {
-    controller.reset();
+    _controller.reset();
   }
 
   @override
@@ -80,8 +87,8 @@ class _ScribbleCanvas extends State<ScribbleCanvas> with SingleTickerProviderSta
       },
       listener: (context, state) async {
         if (state.status == InputRecognitionStatus.processing) {
-          if (!mounted) return;
           await playOutAnimation();
+          if (!mounted) return;
           context.read<InputRecognitionCubit>().clearCanvas();
           resetAnimation();
         }
@@ -103,7 +110,7 @@ class _ScribbleCanvas extends State<ScribbleCanvas> with SingleTickerProviderSta
           children: [
             Expanded(
               child: AnimatedBuilder(
-                animation: controller,
+                animation: _controller,
                 builder: (context, child) {
                   return Opacity(
                     opacity: _fade.value,
