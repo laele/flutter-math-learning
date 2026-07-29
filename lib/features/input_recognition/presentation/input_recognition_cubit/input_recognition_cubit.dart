@@ -103,7 +103,6 @@ class InputRecognitionCubit extends Cubit<InputRecognitionState> {
       },
       (number) {
         emit(state.copyWith(numberRecognized: number, status: InputRecognitionStatus.success));
-        //print('status success');
       },
     );
 

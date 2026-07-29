@@ -1,9 +1,10 @@
+import 'dart:ui';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_math_app/core/constants/app_game.dart';
 import 'package:flutter_math_app/features/game/domain/constants/difficulty_tiers.dart';
 import 'package:flutter_math_app/features/game/domain/constants/game_modes.dart';
-import 'package:flutter_math_app/features/game/domain/entities/game_dialog_message_event.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_phase_event.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_question_entity.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_question_event.dart';
@@ -21,12 +22,13 @@ class GameCubit extends Cubit<GameState> {
   int _gameQuestionEventCounter = 0;
   int _gamePhaseEventCounter = 0;
 
+  VoidCallback? _nextAction;
+
   GameCubit({MixModeSelector? mixModeSelector})
     : _mixModeSelector = mixModeSelector ?? MixModeSelector(),
       super(
         GameState(
           selectedGameModes: GameModes.items.map((e) => e.gameMode).toList(),
-          currentExercise: 0,
         ),
       );
 
@@ -45,13 +47,29 @@ class GameCubit extends Cubit<GameState> {
     );
   }
 
-  Future<void> _emitNextGamePhaseEvent({required GamePhase gamePhase, Duration duration = const Duration(seconds: 3)}) async {
+  void _emitNextGamePhaseEvent({required GamePhase gamePhase}) {
     final gamePhaseEvent = GamePhaseEvent(id: ++_gamePhaseEventCounter, gamePhase: gamePhase);
     emit(state.copyWith(gamePhaseEvent: gamePhaseEvent));
-    await Future.delayed(duration);
   }
 
-  void generateNextLevel() async {
+  void _pause(GamePhase phase, VoidCallback nextAction) {
+    _emitNextGamePhaseEvent(gamePhase: phase);
+    _nextAction = nextAction;
+  }
+
+  void continueAction() {
+    final action = _nextAction;
+    _nextAction = null;
+    action?.call();
+  }
+
+  void initGame() {
+    emit(state.copyWith(gameSession: GameSessionEntity()));
+    _emitNextGamePhaseEvent(gamePhase: GamePhase.starting);
+    generateNextLevel();
+  }
+
+  void generateNextLevel() {
     final nextGameMode = _mixModeSelector.pickNext(
       candidates: state.selectedGameModes,
       stats: state.stats,
@@ -77,56 +95,61 @@ class GameCubit extends Cubit<GameState> {
         ),
       ),
     );
-    await _emitNextGamePhaseEvent(gamePhase: GamePhase.question);
+    _emitNextGamePhaseEvent(gamePhase: GamePhase.question);
   }
 
   void checkResult(int result) async {
-    await _emitNextGamePhaseEvent(gamePhase: GamePhase.checkingResult);
+    _emitNextGamePhaseEvent(gamePhase: GamePhase.checkingResult);
     final wasCorrect = (result == state.gameQuestionEvent!.gameQuestion.resultNum);
 
     final updatedGameSession = state.gameSession.recordAttempt(wasCorrect: wasCorrect);
     emit(state.copyWith(gameSession: updatedGameSession));
 
     if (!wasCorrect && state.gameSession.incorrectStreak < AppGame.maxIncorectStreak) {
-      await _emitNextGamePhaseEvent(gamePhase: GamePhase.incorrect);
-      await _emitNextGamePhaseEvent(gamePhase: GamePhase.question);
+      _pause(GamePhase.incorrect, () {
+        _emitNextGamePhaseEvent(gamePhase: GamePhase.question);
+      });
       return;
     }
 
     final gameMode = state.gameQuestionEvent!.gameMode;
     final tiers = DifficultyTiers.byMode[gameMode];
     var newStats = state.currentGameStats.recordAttempt(wasCorrect);
-    var continueNextLevel = true;
+
     if (!wasCorrect) {
       // Incorrect Attempt
-      await _emitNextGamePhaseEvent(gamePhase: GamePhase.incorrect);
       final isLevelDown = !wasCorrect && tiers != null && newStats.shouldLevelDown && newStats.currentTierIndex > 0;
       if (isLevelDown) {
         newStats = newStats.copyWith(currentTierIndex: newStats.currentTierIndex - 1).resetRegistry();
       }
-      await _emitNextGamePhaseEvent(gamePhase: GamePhase.explanation);
+      _setNewStats(gameMode, newStats);
+      _pause(GamePhase.skipByIncorrect, () {
+        _pause(GamePhase.explanation, _continueAfterAttempt);
+      });
     } else {
       // correct Attempt
-      await _emitNextGamePhaseEvent(gamePhase: GamePhase.correct);
       final isLevelUp = wasCorrect && tiers != null && newStats.shouldLevelUp && newStats.currentTierIndex < tiers.length - 1;
       if (isLevelUp) {
         newStats = newStats.copyWith(currentTierIndex: newStats.currentTierIndex + 1).resetRegistry();
       }
-      if (state.gameSession.isCompleted) {
-        await _emitNextGamePhaseEvent(gamePhase: GamePhase.finished, duration: Duration.zero);
-        continueNextLevel = false;
-      }
+      _setNewStats(gameMode, newStats);
+      _pause(GamePhase.correct, _continueAfterAttempt);
     }
+  }
 
-    final cleanIncorrectStreak = state.gameSession.cleanIncorrectStreak();
-    emit(state.copyWith(gameSession: cleanIncorrectStreak));
-    _setNewStats(gameMode!, newStats);
-    if (continueNextLevel) generateNextLevel();
+  void _continueAfterAttempt() {
+    emit(state.copyWith(gameSession: state.gameSession.cleanIncorrectStreak()));
+    if (state.gameSession.isCompleted) {
+      _pause(GamePhase.finished, () {});
+    } else {
+      generateNextLevel();
+    }
   }
 
   Future<void> setErrorGamePhase() async {
-    await _emitNextGamePhaseEvent(gamePhase: GamePhase.error);
-    await _emitNextGamePhaseEvent(gamePhase: GamePhase.question);
+    _pause(GamePhase.error, () {
+      _emitNextGamePhaseEvent(gamePhase: GamePhase.question);
+    });
   }
 
   String _messageFromNewQuestion({required GameMode gameMode}) {
