@@ -1,11 +1,11 @@
-import 'package:flutter_math_app/features/audio/domain/entities/background_song_entity.dart';
-import 'package:flutter_math_app/features/audio/domain/entities/sound_effect_entity.dart';
+import 'package:flutter_math_app/features/audio/domain/enums/song_type.dart';
+import 'package:flutter_math_app/features/audio/domain/enums/sound_type.dart';
 import 'package:flutter_soloud/flutter_soloud.dart';
 
 abstract interface class AudioDataSource {
   Future<void> init();
-  Future<void> playSfx({required SoundEffectEntity effect, required double volume});
-  Future<void> playMusic({required BackgroundSongEntity song, required double volume});
+  Future<void> playSfx({required SoundType effect, required double volume});
+  Future<void> playMusic({required SongType song, required double volume});
   Future<void> stopMusic();
   Future<void> pauseMusic();
   Future<void> resumeMusic();
@@ -17,16 +17,15 @@ class AudioDataSourceImpl implements AudioDataSource {
   final SoLoud _soloud = SoLoud.instance;
   SoundHandle? _musicHandle;
 
-  final Map<BackgroundSongEntity, AudioSource> _songs = {};
-  final Map<SoundEffectEntity, AudioSource> _sfx = {};
+  final Map<SongType, AudioSource> _songs = {};
+  final Map<SoundType, AudioSource> _sfx = {};
 
   static const _songsAssets = {
-    BackgroundSongEntity.gameplay: 'assets/music/background_song.mp3',
+    SongType.gameplay: 'assets/music/background_song.mp3',
   };
   static const _sfxAssets = {
-    SoundEffectEntity.correct: 'assets/sfx/correct_sound_2.mp3',
-    SoundEffectEntity.incorrect: 'assets/sfx/error_sound.mp3',
-    SoundEffectEntity.buttonTap: 'assets/sfx/tap_button.mp3',
+    SoundType.correct: 'assets/sfx/correct_sound_2.mp3',
+    SoundType.incorrect: 'assets/sfx/error_sound.mp3',
   };
   @override
   Future<void> init() async {
@@ -45,14 +44,14 @@ class AudioDataSourceImpl implements AudioDataSource {
   }
 
   @override
-  Future<void> playSfx({required SoundEffectEntity effect, required double volume}) async {
+  Future<void> playSfx({required SoundType effect, required double volume}) async {
     final source = _sfx[effect];
     if (source == null) return;
     _soloud.play(source, volume: volume);
   }
 
   @override
-  Future<void> playMusic({required BackgroundSongEntity song, required double volume}) async {
+  Future<void> playMusic({required SongType song, required double volume}) async {
     final source = _songs[song];
     if (source == null) return;
     if (_musicHandle != null) {

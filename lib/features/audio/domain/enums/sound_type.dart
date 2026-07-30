@@ -1,0 +1,1 @@
+enum SoundType { correct, incorrect }

@@ -29,7 +29,7 @@ class _EffectsLayerState extends State<EffectsLayer> {
     super.dispose();
   }
 
-  _handleEffect(EffectsType effect) {
+  void _handleEffect(EffectsType effect) {
     switch (effect) {
       case EffectsType.stars:
         _playStars();

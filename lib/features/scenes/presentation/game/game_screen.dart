@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_math_app/core/di/init_dependencies.dart';
+import 'package:flutter_math_app/features/audio/domain/enums/sound_type.dart';
+import 'package:flutter_math_app/features/audio/presentation/cubit/audio_cubit.dart';
 import 'package:flutter_math_app/features/character/domain/enums/character_animation_type.dart';
 import 'package:flutter_math_app/core/theme/app_gradients.dart';
 import 'package:flutter_math_app/features/character/presentation/character_rive.dart';
@@ -140,6 +142,7 @@ class _GameViewState extends State<GameView> {
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.failed);
                 context.read<DialogMessageCubit>().showMessage(message: 'Nope! Try it again!...');
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
+                context.read<AudioCubit>().playSound(soundType: SoundType.incorrect);
 
                 break;
               case GamePhase.correct:
@@ -147,16 +150,19 @@ class _GameViewState extends State<GameView> {
                 context.read<DialogMessageCubit>().showMessage(message: 'Correct!...');
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.stars);
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
+                context.read<AudioCubit>().playSound(soundType: SoundType.correct);
                 break;
               case GamePhase.skipByIncorrect:
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.failed);
                 context.read<DialogMessageCubit>().showMessage(message: 'Let\'s skip this one...');
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
+                context.read<AudioCubit>().playSound(soundType: SoundType.incorrect);
                 break;
               case GamePhase.error:
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.failed);
                 context.read<DialogMessageCubit>().showMessage(message: 'What was that?...');
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
+                context.read<AudioCubit>().playSound(soundType: SoundType.incorrect);
                 break;
               case GamePhase.explanation:
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.thinking);

@@ -1,12 +1,11 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter_math_app/features/audio/domain/enums/sound_type.dart';
 
-enum SoundType { correct, incorrect, levelUp, levelDown }
-
-class GameSoundEvent extends Equatable {
+class SoundEvent extends Equatable {
   final SoundType type;
   final int id;
 
-  GameSoundEvent({required this.type, required this.id});
+  const SoundEvent({required this.type, required this.id});
 
   @override
   List<Object?> get props => [type, id];
