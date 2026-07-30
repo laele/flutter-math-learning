@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_math_app/core/di/init_dependencies.dart';
 import 'package:flutter_math_app/core/theme/app_theme.dart';
 import 'package:flutter_math_app/features/audio/presentation/cubit/audio_cubit.dart';
+import 'package:flutter_math_app/features/audio/presentation/widgets/audio_listener.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
 import 'package:flutter_math_app/features/scenes/presentation/splash/splash_screen.dart';
 import 'package:flutter_math_app/features/input_recognition/presentation/input_recognition_cubit/input_recognition_cubit.dart';
@@ -28,18 +29,22 @@ class MyApp extends StatelessWidget {
             ..ensureModelDownloaded()
             ..initNotifier(),
         ),
-        /*BlocProvider(
+        BlocProvider(
           create: (context) => sl<AudioCubit>()..initAudio(),
           //..playBackgroundMusic(),
           lazy: false,
-        ), */
+        ),
         // Lazy false forces to create the instance instantly
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Froggy Math',
         theme: AppTheme.light(),
-        home: MenuScreen(),
+        home: SplashScreen(),
+        builder: (context, child) {
+          //  Audio listener will work in whole app
+          return AudioListener(child: child!);
+        },
       ),
     );
   }

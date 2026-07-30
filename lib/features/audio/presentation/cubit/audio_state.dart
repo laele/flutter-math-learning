@@ -7,7 +7,10 @@ class AudioState extends Equatable {
   final double sfxVolume;
   final double musicVolume;
 
+  final SoundEvent? soundEvent;
+
   const AudioState({
+    this.soundEvent,
     this.audioLoaded = false,
     this.musicMuted = false,
     this.sfxMuted = false,
@@ -21,8 +24,10 @@ class AudioState extends Equatable {
     bool? sfxMuted,
     double? sfxVolume,
     double? musicVolume,
+    SoundEvent? soundEvent,
   }) {
     return AudioState(
+      soundEvent: soundEvent ?? this.soundEvent,
       audioLoaded: audioLoaded ?? this.audioLoaded,
       musicMuted: musicMuted ?? this.musicMuted,
       sfxMuted: sfxMuted ?? this.sfxMuted,
@@ -32,7 +37,8 @@ class AudioState extends Equatable {
   }
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
+    soundEvent,
     audioLoaded,
     musicMuted,
     sfxMuted,

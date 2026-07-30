@@ -1,11 +1,11 @@
 import 'package:dartz/dartz.dart';
-import 'package:flutter_math_app/features/audio/domain/entities/background_song_entity.dart';
-import 'package:flutter_math_app/features/audio/domain/entities/sound_effect_entity.dart';
+import 'package:flutter_math_app/features/audio/domain/enums/sound_type.dart';
+import 'package:flutter_math_app/features/audio/domain/enums/song_type.dart';
 
 abstract interface class AudioRepository {
   Future<Unit> initAudio();
-  Future<void> playSfx({required SoundEffectEntity soundSfx, required double volume});
-  Future<void> playBackgroundMusic({required BackgroundSongEntity song, required double volume});
+  Future<void> playSfx({required SoundType soundSfx, required double volume});
+  Future<void> playBackgroundMusic({required SongType song, required double volume});
   Future<void> stopBackgroundMusic();
   Future<void> pauseBackgroundMusic();
   Future<void> resumeBackgroundMusic();
