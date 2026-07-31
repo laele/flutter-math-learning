@@ -1,6 +1,5 @@
 import 'package:flutter_math_app/features/game/domain/entities/min_max_tier_entity.dart';
 import 'package:flutter_math_app/features/game/domain/enums/game_mode.dart';
-import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
 
 class DifficultyTiers {
   static const Map<GameMode, List<MinMaxTierEntity>> byMode = {

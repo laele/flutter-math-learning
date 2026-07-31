@@ -105,6 +105,52 @@ class GameCubit extends Cubit<GameState> {
     final updatedGameSession = state.gameSession.recordAttempt(wasCorrect: wasCorrect);
     emit(state.copyWith(gameSession: updatedGameSession));
 
+    if (!wasCorrect) {
+      _pause(GamePhase.incorrect, () {
+        _emitNextGamePhaseEvent(gamePhase: GamePhase.question);
+      });
+      return;
+    }
+
+    final gameMode = state.gameQuestionEvent!.gameMode;
+    final tiers = DifficultyTiers.byMode[gameMode];
+    var newStats = state.currentGameStats.recordAttempt(wasCorrect);
+
+    final isLevelUp = wasCorrect && tiers != null && newStats.shouldLevelUp && newStats.currentTierIndex < tiers.length - 1;
+    if (isLevelUp) {
+      newStats = newStats.copyWith(currentTierIndex: newStats.currentTierIndex + 1).resetRegistry();
+    }
+    _setNewStats(gameMode, newStats);
+    _pause(GamePhase.correct, _continueAfterAttempt);
+
+    /*if (!wasCorrect) {
+      // Incorrect Attempt
+      /*final isLevelDown = !wasCorrect && tiers != null && newStats.shouldLevelDown && newStats.currentTierIndex > 0;
+      if (isLevelDown) {
+        newStats = newStats.copyWith(currentTierIndex: newStats.currentTierIndex - 1).resetRegistry();
+      }*/
+      //_setNewStats(gameMode, newStats);
+      _pause(GamePhase.skipByIncorrect, () {
+        _pause(GamePhase.explanation, _continueAfterAttempt);
+      });
+    } else {
+      // correct Attempt
+      final isLevelUp = wasCorrect && tiers != null && newStats.shouldLevelUp && newStats.currentTierIndex < tiers.length - 1;
+      if (isLevelUp) {
+        newStats = newStats.copyWith(currentTierIndex: newStats.currentTierIndex + 1).resetRegistry();
+      }
+      _setNewStats(gameMode, newStats);
+      _pause(GamePhase.correct, _continueAfterAttempt);
+    }*/
+  }
+
+  /*void checkResult(int result) async {
+    _emitNextGamePhaseEvent(gamePhase: GamePhase.checkingResult);
+    final wasCorrect = (result == state.gameQuestionEvent!.gameQuestion.resultNum);
+
+    final updatedGameSession = state.gameSession.recordAttempt(wasCorrect: wasCorrect);
+    emit(state.copyWith(gameSession: updatedGameSession));
+
     if (!wasCorrect && state.gameSession.incorrectStreak < AppGame.maxIncorectStreak) {
       _pause(GamePhase.incorrect, () {
         _emitNextGamePhaseEvent(gamePhase: GamePhase.question);
@@ -135,21 +181,26 @@ class GameCubit extends Cubit<GameState> {
       _setNewStats(gameMode, newStats);
       _pause(GamePhase.correct, _continueAfterAttempt);
     }
-  }
+  }*/
 
   void _continueAfterAttempt() {
     emit(state.copyWith(gameSession: state.gameSession.cleanIncorrectStreak()));
-    if (state.gameSession.isCompleted) {
-      _pause(GamePhase.finished, () {});
+    generateNextLevel();
+    /*if (state.gameSession.isCompleted) {
+      _emitNextGamePhaseEvent(gamePhase: GamePhase.finished);
     } else {
       generateNextLevel();
-    }
+    }*/
   }
 
   Future<void> setErrorGamePhase() async {
     _pause(GamePhase.error, () {
       _emitNextGamePhaseEvent(gamePhase: GamePhase.question);
     });
+  }
+
+  Future<void> setFinishedGamePhase() async {
+    _emitNextGamePhaseEvent(gamePhase: GamePhase.finished);
   }
 
   String _messageFromNewQuestion({required GameMode gameMode}) {

@@ -4,6 +4,7 @@ import 'package:flutter_math_app/core/di/init_dependencies.dart';
 import 'package:flutter_math_app/core/theme/app_gradients.dart';
 import 'package:flutter_math_app/features/character/presentation/character_rive.dart';
 import 'package:flutter_math_app/features/character/presentation/cubit/character_cubit.dart';
+import 'package:flutter_math_app/features/scenes/presentation/menu/widgets/menu_canvas.dart';
 import 'package:flutter_math_app/features/scenes/presentation/menu/widgets/menu_fab.dart';
 
 class MenuScreen extends StatelessWidget {
@@ -18,18 +19,26 @@ class MenuScreen extends StatelessWidget {
         ),
       ],
       child: Scaffold(
-        body: Column(
+        body: Stack(
           children: [
-            Expanded(
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: AppGradients.background,
+            Column(
+              children: [
+                Expanded(
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      gradient: AppGradients.background,
+                    ),
+                  ),
                 ),
-              ),
-            ),
 
-            CharacterRive(),
+                CharacterRive(),
+              ],
+            ),
+            /*Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: MenuCanvas(),
+            ),*/
           ],
         ),
         floatingActionButton: MenuFloatingActionButtons(),
