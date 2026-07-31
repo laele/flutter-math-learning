@@ -18,13 +18,9 @@ class TimerIndicator extends StatelessWidget {
         return false;
       },
       builder: (BuildContext context, TimerState state) {
-        return Column(
-          children: [
-            TimerAnimated(
-              isVisible: !state.isRunning,
-              progress: state.progress,
-            ),
-          ],
+        return TimerAnimated(
+          isVisible: !state.isRunning,
+          progress: state.progress,
         );
       },
     );
