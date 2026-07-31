@@ -25,13 +25,7 @@ class TimerCubit extends Cubit<TimerState> {
 
     _totalDuration = duration;
 
-    emit(
-      state.copyWith(
-        remainingTime: duration,
-        totalTime: duration,
-        isRunning: true,
-      ),
-    );
+    emit(state.copyWith(remainingTime: duration, totalTime: duration, isRunning: true));
 
     _timer = Timer.periodic(
       const Duration(milliseconds: 16),
@@ -48,12 +42,7 @@ class TimerCubit extends Cubit<TimerState> {
 
         final completed = remaining == Duration.zero;
 
-        emit(
-          state.copyWith(
-            remainingTime: remaining,
-            isRunning: !completed,
-          ),
-        );
+        emit(state.copyWith(remainingTime: remaining, isRunning: !completed));
 
         if (completed) {
           _timer?.cancel();
@@ -63,7 +52,10 @@ class TimerCubit extends Cubit<TimerState> {
     );
   }
 
-  // Stop Timer ??
+  void pauseTimer() {
+    _timer?.cancel();
+    emit(state.copyWith(isRunning: false));
+  }
 
   @override
   Future<void> close() {

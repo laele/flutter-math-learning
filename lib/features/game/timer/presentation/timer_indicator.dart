@@ -12,7 +12,7 @@ class TimerIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<TimerCubit, TimerState>(
       buildWhen: (previous, current) {
-        if (previous.remainingTime != current.remainingTime) {
+        if (previous.remainingTime != current.remainingTime || previous.isRunning != current.isRunning) {
           return true;
         }
         return false;
@@ -21,7 +21,7 @@ class TimerIndicator extends StatelessWidget {
         return Column(
           children: [
             TimerAnimated(
-              isCompleted: state.isCompleted,
+              isVisible: !state.isRunning,
               progress: state.progress,
             ),
           ],
@@ -33,11 +33,11 @@ class TimerIndicator extends StatelessWidget {
 
 class TimerAnimated extends StatefulWidget {
   final double progress;
-  final bool isCompleted;
+  final bool isVisible;
   const TimerAnimated({
     super.key,
     required this.progress,
-    required this.isCompleted,
+    required this.isVisible,
   });
 
   @override
@@ -52,20 +52,20 @@ class _TimerAnimatedState extends State<TimerAnimated> with SingleTickerProvider
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 550));
+    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
     _animation = CurvedAnimation(parent: _controller, curve: Curves.linear);
     _scale =
         TweenSequence<double>([
           TweenSequenceItem(
             tween: Tween(
               begin: 0.0,
-              end: 1.35,
+              end: 1.65,
             ),
-            weight: 25,
+            weight: 55,
           ),
           TweenSequenceItem(
             tween: Tween(
-              begin: 1.35,
+              begin: 1.65,
               end: 0.9,
             ),
             weight: 35,
@@ -75,7 +75,7 @@ class _TimerAnimatedState extends State<TimerAnimated> with SingleTickerProvider
               begin: 0.9,
               end: 1,
             ),
-            weight: 40,
+            weight: 20,
           ),
         ]).animate(
           _animation,
@@ -94,8 +94,8 @@ class _TimerAnimatedState extends State<TimerAnimated> with SingleTickerProvider
   void didUpdateWidget(covariant TimerAnimated oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.isCompleted != widget.isCompleted) {
-      if (widget.isCompleted) {
+    if (oldWidget.isVisible != widget.isVisible) {
+      if (widget.isVisible) {
         playOutAnimation();
       } else {
         playInAnimation();

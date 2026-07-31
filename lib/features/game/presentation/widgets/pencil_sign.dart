@@ -17,7 +17,9 @@ class PencilSign extends StatelessWidget {
         return false;
       },
       builder: (context, state) {
-        return state.gamePhaseEvent?.gamePhase == GamePhase.question ? _PencilSignAnimated() : SizedBox.shrink();
+        return (state.gamePhaseEvent?.gamePhase == GamePhase.newQuestion || state.gamePhaseEvent?.gamePhase == GamePhase.repeatQuestion)
+            ? _PencilSignAnimated()
+            : SizedBox.shrink();
       },
     );
   }

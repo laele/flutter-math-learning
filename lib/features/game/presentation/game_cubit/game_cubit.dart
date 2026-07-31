@@ -95,7 +95,7 @@ class GameCubit extends Cubit<GameState> {
         ),
       ),
     );
-    _emitNextGamePhaseEvent(gamePhase: GamePhase.question);
+    _emitNextGamePhaseEvent(gamePhase: GamePhase.newQuestion);
   }
 
   void checkResult(int result) async {
@@ -107,7 +107,7 @@ class GameCubit extends Cubit<GameState> {
 
     if (!wasCorrect) {
       _pause(GamePhase.incorrect, () {
-        _emitNextGamePhaseEvent(gamePhase: GamePhase.question);
+        _emitNextGamePhaseEvent(gamePhase: GamePhase.repeatQuestion);
       });
       return;
     }
@@ -195,7 +195,7 @@ class GameCubit extends Cubit<GameState> {
 
   Future<void> setErrorGamePhase() async {
     _pause(GamePhase.error, () {
-      _emitNextGamePhaseEvent(gamePhase: GamePhase.question);
+      _emitNextGamePhaseEvent(gamePhase: GamePhase.repeatQuestion);
     });
   }
 
