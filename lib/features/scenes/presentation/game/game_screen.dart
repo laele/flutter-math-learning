@@ -18,10 +18,11 @@ import 'package:flutter_math_app/features/effects/presentation/effects_layer.dar
 import 'package:flutter_math_app/features/effects/presentation/widgets/shake_widget.dart';
 import 'package:flutter_math_app/features/game/domain/enums/game_phase.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
-import 'package:flutter_math_app/features/game/presentation/widgets/attempt_counter_section.dart';
-import 'package:flutter_math_app/features/game/presentation/widgets/score_overlay.dart';
+import 'package:flutter_math_app/features/game/score/score_overlay.dart';
+import 'package:flutter_math_app/features/game/timer/presentation/cubit/timer_cubit.dart';
 import 'package:flutter_math_app/features/input_recognition/presentation/input_recognition_cubit/input_recognition_cubit.dart';
 import 'package:flutter_math_app/features/scenes/presentation/game/widgets/game_fab.dart';
+import 'package:flutter_math_app/features/scenes/presentation/game/widgets/game_top_bar.dart';
 import 'package:flutter_math_app/features/scenes/presentation/shared/widgets/scribble_canvas.dart';
 import 'package:flutter_math_app/features/game/presentation/widgets/pencil_sign.dart';
 
@@ -36,6 +37,7 @@ class GameScreen extends StatelessWidget {
         BlocProvider(create: (_) => sl<CharacterCubit>()),
         BlocProvider(create: (_) => sl<DialogMessageCubit>()),
         BlocProvider(create: (_) => sl<EffectsCubit>()),
+        BlocProvider(create: (_) => sl<TimerCubit>()),
       ],
       child: GameView(),
     );
@@ -55,12 +57,12 @@ class _GameViewState extends State<GameView> {
 
   static const _phaseTimings = <GamePhase, Duration>{
     //GamePhase.checkingResult: Duration.zero,
-    GamePhase.incorrect: Duration(seconds: 5),
-    GamePhase.correct: Duration(seconds: 5),
-    GamePhase.question: Duration(seconds: 5),
-    GamePhase.skipByIncorrect: Duration(seconds: 5),
-    GamePhase.explanation: Duration(seconds: 5),
-    GamePhase.error: Duration(seconds: 5),
+    GamePhase.incorrect: Duration(seconds: 3),
+    GamePhase.correct: Duration(seconds: 3),
+    GamePhase.question: Duration(seconds: 3),
+    GamePhase.skipByIncorrect: Duration(seconds: 3),
+    GamePhase.explanation: Duration(seconds: 3),
+    GamePhase.error: Duration(seconds: 3),
   };
 
   void _waitForNextAction({required GamePhase gamePhase}) {
@@ -81,6 +83,7 @@ class _GameViewState extends State<GameView> {
     if (characterReady) {
       _hasStarted = true;
       context.read<GameCubit>().initGame();
+      context.read<TimerCubit>().startTimer(duration: Duration(seconds: 10));
     }
   }
 
@@ -105,6 +108,15 @@ class _GameViewState extends State<GameView> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
+        BlocListener<TimerCubit, TimerState>(
+          listenWhen: (previous, current) => previous.remainingTime != current.remainingTime,
+          listener: (context, state) {
+            if (state.isCompleted) {
+              // Game Ended
+              context.read<GameCubit>().setFinishedGamePhase();
+            }
+          },
+        ),
         // Check if Character is ready TODO change if want to check more than 1 dependency
         BlocListener<CharacterCubit, CharacterState>(
           listenWhen: (previous, current) {
@@ -151,6 +163,7 @@ class _GameViewState extends State<GameView> {
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.stars);
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
                 context.read<AudioCubit>().playSound(soundType: SoundType.correct);
+                context.read<TimerCubit>().startTimer(duration: Duration(seconds: 10));
                 break;
               case GamePhase.skipByIncorrect:
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.failed);
@@ -175,6 +188,7 @@ class _GameViewState extends State<GameView> {
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
                 break;
               case GamePhase.starting:
+                context.read<TimerCubit>().startTimer(duration: Duration(seconds: 10));
                 break;
               case (_):
                 break;
@@ -209,7 +223,9 @@ class _GameViewState extends State<GameView> {
                 ],
               ),
               ScribbleCanvas(),
-              AttemptCounterSection(),
+              GameTopBar(),
+
+              //AttemptCounterSection(),
               ScoreOverlay(),
               EffectsLayer(),
             ],

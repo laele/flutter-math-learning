@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -41,18 +42,24 @@ class _EffectsLayerState extends State<EffectsLayer> {
   }
 
   void _playConfetti() {
-    if (!mounted) return;
-    Confetti.launch(
-      context,
-      options: _confettiOptions.copyWith(
-        particleCount: 100,
-        spread: 70,
-        y: 0.6,
-        scalar: 2.5,
-        angle: 90.0,
-        gravity: 1.00,
-      ),
-    );
+    void shoot() {
+      if (!mounted) return;
+      Confetti.launch(
+        context,
+        options: _confettiOptions.copyWith(
+          particleCount: 100,
+          spread: 70,
+          y: 1,
+          x: 0.5,
+          scalar: Random().nextDouble() * 0.95 + 1,
+          angle: 90.0,
+          gravity: 1.00,
+        ),
+      );
+    }
+
+    _t1 = Timer(Duration.zero, shoot);
+    _t2 = Timer(const Duration(milliseconds: 100), shoot);
   }
 
   void _playStars() {
