@@ -1,6 +1,7 @@
 enum GamePhase {
   starting,
-  question,
+  newQuestion,
+  repeatQuestion,
   checkingResult,
   correct,
   incorrect,

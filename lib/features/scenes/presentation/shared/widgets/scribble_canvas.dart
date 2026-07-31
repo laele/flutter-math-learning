@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_math_app/features/game/domain/entities/game_phase_event.dart';
 import 'package:flutter_math_app/features/game/domain/enums/game_phase.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
 import 'package:flutter_math_app/features/input_recognition/presentation/input_recognition_cubit/input_recognition_cubit.dart';
@@ -86,16 +87,20 @@ class _ScribbleCanvas extends State<ScribbleCanvas> with SingleTickerProviderSta
         return false;
       },
       listener: (context, state) async {
+        final isQuestionGamePhase =
+            (context.read<GameCubit>().state.gamePhaseEvent?.gamePhase == GamePhase.newQuestion ||
+            context.read<GameCubit>().state.gamePhaseEvent?.gamePhase == GamePhase.repeatQuestion);
+
         if (state.status == InputRecognitionStatus.processing) {
           await playOutAnimation();
           if (!mounted) return;
           context.read<InputRecognitionCubit>().clearCanvas();
           resetAnimation();
         }
-        if (state.isStatusFailure) {
+        if (state.isStatusFailure && isQuestionGamePhase) {
           context.read<GameCubit>().setErrorGamePhase();
         }
-        if (state.status == InputRecognitionStatus.success) {
+        if (state.status == InputRecognitionStatus.success && isQuestionGamePhase) {
           context.read<GameCubit>().checkResult(state.numberRecognized!);
         }
       },
@@ -119,8 +124,9 @@ class _ScribbleCanvas extends State<ScribbleCanvas> with SingleTickerProviderSta
                       child: BlocBuilder<GameCubit, GameState>(
                         buildWhen: (previous, current) => (previous.gamePhaseEvent != current.gamePhaseEvent) && current.gamePhaseEvent != null,
                         builder: (context, state) {
+                          context.read<InputRecognitionCubit>().clearCanvas(); // clear canvas for each gamePhase changed
                           return IgnorePointer(
-                            ignoring: state.gamePhaseEvent?.gamePhase != GamePhase.question,
+                            ignoring: state.gamePhaseEvent?.gamePhase != GamePhase.newQuestion && state.gamePhaseEvent?.gamePhase != GamePhase.repeatQuestion,
                             child: Scribble(
                               notifier: inputRecognitionCubit.notifier,
                               drawPen: true,

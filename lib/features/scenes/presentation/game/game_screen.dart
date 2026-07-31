@@ -57,12 +57,13 @@ class _GameViewState extends State<GameView> {
 
   static const _phaseTimings = <GamePhase, Duration>{
     //GamePhase.checkingResult: Duration.zero,
-    GamePhase.incorrect: Duration(seconds: 3),
-    GamePhase.correct: Duration(seconds: 3),
-    GamePhase.question: Duration(seconds: 3),
-    GamePhase.skipByIncorrect: Duration(seconds: 3),
-    GamePhase.explanation: Duration(seconds: 3),
-    GamePhase.error: Duration(seconds: 3),
+    GamePhase.incorrect: Duration(seconds: 1),
+    GamePhase.correct: Duration(seconds: 2),
+    GamePhase.newQuestion: Duration(seconds: 2),
+    GamePhase.repeatQuestion: Duration(seconds: 2),
+    GamePhase.skipByIncorrect: Duration(seconds: 2),
+    GamePhase.explanation: Duration(seconds: 2),
+    GamePhase.error: Duration(seconds: 1),
   };
 
   void _waitForNextAction({required GamePhase gamePhase}) {
@@ -139,7 +140,15 @@ class _GameViewState extends State<GameView> {
           listener: (context, state) {
             final gamePhase = state.gamePhaseEvent!.gamePhase;
             switch (gamePhase) {
-              case GamePhase.question:
+              case GamePhase.newQuestion:
+                context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.thinking);
+                context.read<DialogMessageCubit>().showMessage(
+                  message: state.gameQuestionEvent!.indicationMessage,
+                  upperMessage: state.gameQuestionEvent!.operationMessage,
+                );
+                context.read<TimerCubit>().startTimer(duration: Duration(seconds: 10));
+                break;
+              case GamePhase.repeatQuestion:
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.thinking);
                 context.read<DialogMessageCubit>().showMessage(
                   message: state.gameQuestionEvent!.indicationMessage,
@@ -163,7 +172,7 @@ class _GameViewState extends State<GameView> {
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.stars);
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
                 context.read<AudioCubit>().playSound(soundType: SoundType.correct);
-                context.read<TimerCubit>().startTimer(duration: Duration(seconds: 10));
+                context.read<TimerCubit>().pauseTimer();
                 break;
               case GamePhase.skipByIncorrect:
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.failed);
@@ -176,6 +185,7 @@ class _GameViewState extends State<GameView> {
                 context.read<DialogMessageCubit>().showMessage(message: 'What was that?...');
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
                 context.read<AudioCubit>().playSound(soundType: SoundType.incorrect);
+                //context.read<TimerCubit>().pauseTimer();
                 break;
               case GamePhase.explanation:
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.thinking);
@@ -214,6 +224,10 @@ class _GameViewState extends State<GameView> {
                           ),
                         ),
                         Align(alignment: AlignmentGeometry.center, child: PencilSign()),
+                        Align(
+                          alignment: AlignmentGeometry.center,
+                          child: ScoreOverlay(),
+                        ),
                         Align(alignment: AlignmentGeometry.bottomCenter, child: DialogMessageText()),
                       ],
                     ),
@@ -226,7 +240,6 @@ class _GameViewState extends State<GameView> {
               GameTopBar(),
 
               //AttemptCounterSection(),
-              ScoreOverlay(),
               EffectsLayer(),
             ],
           ),

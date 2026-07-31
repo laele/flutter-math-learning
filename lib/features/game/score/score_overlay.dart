@@ -97,17 +97,6 @@ class _ScoreOverlayState extends State<ScoreOverlay> with SingleTickerProviderSt
                                   children: [
                                     FittedBox(
                                       child: Row(
-                                        children: [
-                                          Text('Great Job!', style: Theme.of(context).textTheme.titleLarge),
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(height: 8.0),
-
-                                    StarsSection(accuracy: state.gameSession.accuracy),
-                                    SizedBox(height: 8.0),
-                                    FittedBox(
-                                      child: Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
@@ -119,7 +108,7 @@ class _ScoreOverlayState extends State<ScoreOverlay> with SingleTickerProviderSt
                                             isRepeatingAnimation: true,
                                             animatedTexts: [
                                               WavyAnimatedText(
-                                                'Game Completed!',
+                                                'Game Over!',
                                                 textStyle: textTheme.displayLarge,
                                                 speed: Duration(
                                                   milliseconds: 300,
@@ -130,6 +119,39 @@ class _ScoreOverlayState extends State<ScoreOverlay> with SingleTickerProviderSt
                                         ],
                                       ),
                                     ),
+                                    SizedBox(height: 8.0),
+                                    FittedBox(
+                                      child: Row(
+                                        children: [
+                                          Text('Great Job!', style: Theme.of(context).textTheme.titleLarge),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(height: 8.0),
+                                    FittedBox(
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          AnimatedTextKit(
+                                            pause: Duration(
+                                              milliseconds: 200,
+                                            ),
+                                            repeatForever: false,
+                                            isRepeatingAnimation: false,
+                                            animatedTexts: [
+                                              BounceAnimatedText(
+                                                'New Score!',
+                                                textStyle: textTheme.displayLarge,
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    //StarsSection(accuracy: state.gameSession.accuracy),
+                                    SizedBox(height: 8.0),
+
                                     SizedBox(height: 12.0),
                                     PlayAgainButton(),
                                   ],
