@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_math_app/features/game/score/score_animated.dart';
 import 'package:flutter_math_app/features/game/timer/presentation/timer_indicator.dart';
 
 class GameTopBar extends StatelessWidget {
@@ -9,11 +10,14 @@ class GameTopBar extends StatelessWidget {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TimerIndicator(),
-          ],
+        child: SizedBox(
+          width: double.infinity,
+          child: Stack(
+            children: [
+              Align(alignment: AlignmentGeometry.topRight, child: ScoreAnimated()),
+              Align(alignment: AlignmentGeometry.topCenter, child: TimerIndicator()),
+            ],
+          ),
         ),
       ),
     );
