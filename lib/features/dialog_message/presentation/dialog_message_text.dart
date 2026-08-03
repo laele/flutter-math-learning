@@ -18,7 +18,7 @@ class DialogMessageText extends StatelessWidget {
       builder: (context, state) {
         return state.dialogMessageEvent != null
             ? AnimatedDialogText(
-                key: ValueKey(state.dialogMessageEvent!.id),
+                //key: ValueKey(state.dialogMessageEvent!.id),
                 message: state.dialogMessageEvent!.message,
                 upperMessage: state.dialogMessageEvent!.upperMessage,
               )

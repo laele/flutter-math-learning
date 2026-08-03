@@ -1,7 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_math_app/features/dialog_message/domain/enums/dialog_animation_type.dart';
 
 class AnimatedDialogText extends StatefulWidget {
   final String message;
@@ -22,14 +21,18 @@ class _AnimatedDialogTextState extends State<AnimatedDialogText> with SingleTick
 
   late final Animation<double> _showScale;
   late final Animation<double> _hideScale;
+  late Animation<double> _scale;
+
+  String? _displayedMessage;
+  String? _displayedUpperMessage;
   bool _isAnimating = false;
 
-  DialogAnimationType _animationType = DialogAnimationType.show;
+  //DialogAnimationType _animationType = DialogAnimationType.show;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 650));
+    _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 250));
 
     _showScale =
         TweenSequence<double>([
@@ -62,19 +65,26 @@ class _AnimatedDialogTextState extends State<AnimatedDialogText> with SingleTick
         );
     _hideScale = Tween<double>(begin: 1.0, end: 0.0).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
 
+    _scale = _showScale;
+
+    _displayedMessage = widget.message;
+    _displayedUpperMessage = widget.upperMessage;
+
     _showAnimation();
   }
 
   Future<void> _showAnimation() async {
-    _animationType = DialogAnimationType.show;
+    setState(() {
+      _scale = _showScale;
+    });
     await _controller.forward(from: 0);
-    if (!mounted) return;
   }
 
   Future<void> _hideAnimation() async {
-    _animationType = DialogAnimationType.hide;
+    setState(() {
+      _scale = _hideScale;
+    });
     await _controller.forward(from: 0);
-    if (!mounted) return;
   }
 
   @override
@@ -88,16 +98,25 @@ class _AnimatedDialogTextState extends State<AnimatedDialogText> with SingleTick
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.message != widget.message) {
-      _changeAnimation();
+      _changeMessage();
     }
   }
 
-  Future<void> _changeAnimation() async {
+  Future<void> _changeMessage() async {
     if (_isAnimating) return;
+
     _isAnimating = true;
+
     try {
       await _hideAnimation();
+
       if (!mounted) return;
+
+      setState(() {
+        _displayedMessage = widget.message;
+        _displayedUpperMessage = widget.upperMessage;
+      });
+
       await _showAnimation();
     } finally {
       _isAnimating = false;
@@ -111,13 +130,8 @@ class _AnimatedDialogTextState extends State<AnimatedDialogText> with SingleTick
       child: AnimatedBuilder(
         animation: _controller,
         builder: (context, child) {
-          final scale = switch (_animationType) {
-            DialogAnimationType.show => _showScale.value,
-            DialogAnimationType.hide => _hideScale.value,
-          };
-
           return Transform.scale(
-            scale: scale,
+            scale: _scale.value,
             alignment: Alignment.bottomCenter,
             child: child,
           );
@@ -125,7 +139,7 @@ class _AnimatedDialogTextState extends State<AnimatedDialogText> with SingleTick
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (widget.upperMessage != null)
+            if (_displayedUpperMessage != null)
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(32),
@@ -134,7 +148,7 @@ class _AnimatedDialogTextState extends State<AnimatedDialogText> with SingleTick
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Text(
-                    widget.upperMessage.toString(),
+                    _displayedUpperMessage.toString(),
                     style: Theme.of(context).textTheme.displayMedium,
                   ),
                 ),
@@ -155,11 +169,11 @@ class _AnimatedDialogTextState extends State<AnimatedDialogText> with SingleTick
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: AnimatedTextKit(
-                      key: ValueKey(widget.message),
+                      key: ValueKey(_displayedMessage),
                       totalRepeatCount: 1,
                       animatedTexts: [
                         TyperAnimatedText(
-                          widget.message!,
+                          _displayedMessage!,
                           textAlign: TextAlign.center,
                           textStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
                             color: Colors.pink,
