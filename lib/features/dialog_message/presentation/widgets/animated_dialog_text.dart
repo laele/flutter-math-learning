@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_math_app/features/dialog_message/domain/enums/dialog_animation_type.dart';
 
 class AnimatedDialogText extends StatefulWidget {
   final String message;
@@ -16,37 +17,111 @@ class AnimatedDialogText extends StatefulWidget {
   State<AnimatedDialogText> createState() => _AnimatedDialogTextState();
 }
 
-class _AnimatedDialogTextState extends State<AnimatedDialogText> {
-  double _scale = 1;
+class _AnimatedDialogTextState extends State<AnimatedDialogText> with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  late final Animation<double> _showScale;
+  late final Animation<double> _hideScale;
+  bool _isAnimating = false;
+
+  DialogAnimationType _animationType = DialogAnimationType.show;
 
   @override
   void initState() {
     super.initState();
-    _bounce();
+    _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 650));
+
+    _showScale =
+        TweenSequence<double>([
+          TweenSequenceItem(
+            tween: Tween(
+              begin: 0.0,
+              end: 1.25,
+            ).chain(CurveTween(curve: Curves.easeIn)),
+            weight: 35,
+          ),
+          TweenSequenceItem(
+            tween: Tween(
+              begin: 1.25,
+              end: 0.95,
+            ).chain(CurveTween(curve: Curves.easeOut)),
+            weight: 45,
+          ),
+          TweenSequenceItem(
+            tween: Tween(
+              begin: 0.95,
+              end: 1.0,
+            ).chain(CurveTween(curve: Curves.easeOut)),
+            weight: 30,
+          ),
+        ]).animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: const Interval(0.0, 1, curve: Curves.easeOut),
+          ),
+        );
+    _hideScale = Tween<double>(begin: 1.0, end: 0.0).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
+
+    _showAnimation();
   }
 
-  void _bounce() async {
-    setState(() => _scale = 0.55);
-
-    await Future.delayed(const Duration(milliseconds: 100));
+  Future<void> _showAnimation() async {
+    _animationType = DialogAnimationType.show;
+    await _controller.forward(from: 0);
     if (!mounted) return;
-    setState(() => _scale = 1.55);
+  }
 
-    await Future.delayed(const Duration(milliseconds: 150));
+  Future<void> _hideAnimation() async {
+    _animationType = DialogAnimationType.hide;
+    await _controller.forward(from: 0);
     if (!mounted) return;
+  }
 
-    setState(() => _scale = 1);
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant AnimatedDialogText oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.message != widget.message) {
+      _changeAnimation();
+    }
+  }
+
+  Future<void> _changeAnimation() async {
+    if (_isAnimating) return;
+    _isAnimating = true;
+    try {
+      await _hideAnimation();
+      if (!mounted) return;
+      await _showAnimation();
+    } finally {
+      _isAnimating = false;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: AnimatedScale(
-        scale: _scale,
-        alignment: Alignment.bottomCenter,
-        duration: Duration(milliseconds: 350),
-        curve: Curves.easeOutBack,
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, child) {
+          final scale = switch (_animationType) {
+            DialogAnimationType.show => _showScale.value,
+            DialogAnimationType.hide => _hideScale.value,
+          };
+
+          return Transform.scale(
+            scale: scale,
+            alignment: Alignment.bottomCenter,
+            child: child,
+          );
+        },
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
