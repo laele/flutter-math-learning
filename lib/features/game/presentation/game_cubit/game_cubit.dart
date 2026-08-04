@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_math_app/core/constants/app_game.dart';
 import 'package:flutter_math_app/features/game/domain/constants/difficulty_tiers.dart';
 import 'package:flutter_math_app/features/game/domain/constants/game_modes.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_phase_event.dart';
@@ -14,6 +13,7 @@ import 'package:flutter_math_app/features/game/domain/enums/game_mode.dart';
 import 'package:flutter_math_app/features/game/domain/enums/game_phase.dart';
 import 'package:flutter_math_app/features/game/domain/services/mix_mode_selector.dart';
 import 'package:flutter_math_app/features/game/domain/services/question_generator_factory.dart';
+import 'package:flutter_math_app/features/game/domain/services/question_weight_calculator.dart';
 
 part 'game_state.dart';
 
@@ -37,6 +37,7 @@ class GameCubit extends Cubit<GameState> {
     required GameMode gameMode,
     required String indicationMessage,
     required String explanationMessage,
+    required double questionWeight,
   }) {
     return GameQuestionEvent(
       id: ++_gameQuestionEventCounter,
@@ -44,6 +45,7 @@ class GameCubit extends Cubit<GameState> {
       gameMode: gameMode,
       indicationMessage: indicationMessage,
       explanationMessage: explanationMessage,
+      questionWeight: questionWeight,
     );
   }
 
@@ -64,9 +66,12 @@ class GameCubit extends Cubit<GameState> {
   }
 
   void initGame() {
-    emit(state.copyWith(gameSession: GameSessionEntity()));
+    emit(state.copyWith(gameSession: GameSessionEntity(), stats: {}));
     _emitNextGamePhaseEvent(gamePhase: GamePhase.starting);
-    generateNextLevel();
+    _pause(GamePhase.starting, () {
+      generateNextLevel();
+    });
+    //generateNextLevel();
   }
 
   void generateNextLevel() {
@@ -81,10 +86,13 @@ class GameCubit extends Cubit<GameState> {
 
     final currentTier = tiers[currentGameStats.currentTierIndex];
     final generator = QuestionGeneratorFactory.forMode(nextGameMode);
+    final questionWeight = QuestionWeightCalculator.calculate(gameMode: nextGameMode, tier: currentTier);
     final question = generator.generate(currentTier);
+
     emit(
       state.copyWith(
         gameQuestionEvent: _nextGameQuestionEvent(
+          questionWeight: questionWeight,
           gameQuestion: question,
           gameMode: nextGameMode,
           indicationMessage: _messageFromNewQuestion(gameMode: nextGameMode),
@@ -98,7 +106,7 @@ class GameCubit extends Cubit<GameState> {
     _emitNextGamePhaseEvent(gamePhase: GamePhase.newQuestion);
   }
 
-  void checkResult(int result) async {
+  void checkResult({required int result}) async {
     _emitNextGamePhaseEvent(gamePhase: GamePhase.checkingResult);
     final wasCorrect = (result == state.gameQuestionEvent!.gameQuestion.resultNum);
 

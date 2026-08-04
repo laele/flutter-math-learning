@@ -8,6 +8,7 @@ class GameQuestionEvent extends Equatable {
   final GameMode gameMode;
   final String indicationMessage;
   final String explanationMessage;
+  final double questionWeight;
 
   String get currentGameModeOperator => switch (gameMode) {
     GameMode.add => '+',
@@ -20,6 +21,7 @@ class GameQuestionEvent extends Equatable {
   String get operationMessage => '${gameQuestion.firstNum} $currentGameModeOperator ${gameQuestion.secNum} ';
 
   const GameQuestionEvent({
+    required this.questionWeight,
     required this.id,
     required this.gameQuestion,
     required this.gameMode,
@@ -34,5 +36,6 @@ class GameQuestionEvent extends Equatable {
     gameMode,
     indicationMessage,
     explanationMessage,
+    questionWeight,
   ];
 }

@@ -6,17 +6,20 @@ class GameSessionEntity extends Equatable {
   final int correctCount;
   final int incorrectCount;
   final int incorrectStreak;
+  final int score;
 
   const GameSessionEntity({
     this.questionsAnswered = 0,
     this.correctCount = 0,
     this.incorrectCount = 0,
     this.incorrectStreak = 0,
+    this.score = 0,
   });
 
   bool get isCompleted => questionsAnswered >= AppGame.questionsPerSession;
   bool get isQuestionAnsweredByIncorrectTries => this.incorrectStreak >= AppGame.maxIncorectStreak;
   double get accuracy => questionsAnswered == 0 ? 0 : (correctCount / questionsAnswered);
+
   GameSessionEntity recordAttempt({
     required bool wasCorrect,
   }) {
@@ -28,6 +31,10 @@ class GameSessionEntity extends Equatable {
       incorrectStreak: this.incorrectStreak + (!wasCorrect ? 1 : 0),
       questionsAnswered: (wasCorrect || increaseIncorrectCount) ? this.questionsAnswered + 1 : this.questionsAnswered,
     );
+  }
+
+  GameSessionEntity addScore({required int scoreToAdd}) {
+    return GameSessionEntity(score: this.score + scoreToAdd);
   }
 
   GameSessionEntity cleanIncorrectStreak() {
@@ -44,8 +51,10 @@ class GameSessionEntity extends Equatable {
     int? correctCount,
     int? incorrectCount,
     int? questionsAnswered,
+    int? score,
   }) {
     return GameSessionEntity(
+      score: score ?? this.score,
       incorrectStreak: incorrectStreak ?? this.incorrectStreak,
       questionsAnswered: questionsAnswered ?? this.questionsAnswered,
       correctCount: correctCount ?? this.correctCount,
@@ -55,6 +64,7 @@ class GameSessionEntity extends Equatable {
 
   @override
   List<Object?> get props => [
+    score,
     questionsAnswered,
     correctCount,
     incorrectCount,

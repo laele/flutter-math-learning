@@ -7,7 +7,9 @@ import 'package:flutter_math_app/features/effects/presentation/cubit/effects_cub
 
 import 'package:flutter_math_app/features/game/domain/enums/game_phase.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
+import 'package:flutter_math_app/features/game/score/cubit/score_cubit.dart';
 import 'package:flutter_math_app/features/game/score/widgets/play_again_button.dart';
+import 'package:flutter_math_app/features/game/score/widgets/score_badge.dart';
 import 'package:flutter_math_app/features/game/score/widgets/stars_section.dart';
 
 class ScoreOverlay extends StatefulWidget {
@@ -120,12 +122,31 @@ class _ScoreOverlayState extends State<ScoreOverlay> with SingleTickerProviderSt
                                       ),
                                     ),
                                     SizedBox(height: 8.0),
-                                    FittedBox(
-                                      child: Row(
-                                        children: [
-                                          Text('Great Job!', style: Theme.of(context).textTheme.titleLarge),
-                                        ],
-                                      ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Your Score',
+                                          style: Theme.of(context).textTheme.titleLarge,
+                                        ),
+                                        SizedBox(width: 8),
+                                        ScoreBadge(
+                                          widthSize: 75,
+                                          heightSize: 75,
+                                          child: FittedBox(child: Text(context.read<ScoreCubit>().state.currentScore.toString())),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Best',
+                                          style: Theme.of(context).textTheme.titleLarge,
+                                        ),
+                                        SizedBox(width: 8),
+                                        ScoreBadge(widthSize: 75, heightSize: 75, child: FittedBox(child: Text('999999'))),
+                                      ],
                                     ),
                                     SizedBox(height: 8.0),
                                     FittedBox(
