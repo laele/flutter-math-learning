@@ -4,11 +4,13 @@ class GameQuestionEntity extends Equatable {
   final int? firstNum;
   final int? secNum;
   final int? resultNum;
+  final int? scoreToAdd;
 
   const GameQuestionEntity({
     this.firstNum,
     this.secNum,
     this.resultNum,
+    this.scoreToAdd,
   });
 
   @override
@@ -16,5 +18,6 @@ class GameQuestionEntity extends Equatable {
     firstNum,
     secNum,
     resultNum,
+    scoreToAdd,
   ];
 }

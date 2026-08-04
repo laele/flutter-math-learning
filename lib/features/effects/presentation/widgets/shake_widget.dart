@@ -38,7 +38,7 @@ class ShakeWidgetState extends State<ShakeWidget> with SingleTickerProviderState
     _animation =
         Tween(
           begin: 1.0,
-          end: 1.04,
+          end: 1.25,
         ).animate(
           CurvedAnimation(
             parent: _controller,

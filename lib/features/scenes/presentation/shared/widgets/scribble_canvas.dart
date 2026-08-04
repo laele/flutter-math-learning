@@ -101,7 +101,7 @@ class _ScribbleCanvas extends State<ScribbleCanvas> with SingleTickerProviderSta
           context.read<GameCubit>().setErrorGamePhase();
         }
         if (state.status == InputRecognitionStatus.success && isQuestionGamePhase) {
-          context.read<GameCubit>().checkResult(state.numberRecognized!);
+          context.read<GameCubit>().checkResult(result: state.numberRecognized!);
         }
       },
       child: Listener(
