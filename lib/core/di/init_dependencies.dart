@@ -1,5 +1,4 @@
 import 'package:flutter_math_app/features/effects/presentation/cubit/effects_cubit.dart';
-import 'package:flutter_math_app/features/effects/presentation/effects_layer.dart';
 import 'package:flutter_math_app/features/audio/data/datasource/audio_datasource.dart';
 import 'package:flutter_math_app/features/audio/data/repositories/audio_repository_impl.dart';
 import 'package:flutter_math_app/features/audio/domain/repositories/audio_repository.dart';
@@ -15,19 +14,39 @@ import 'package:flutter_math_app/features/input_recognition/domain/repository/in
 import 'package:flutter_math_app/features/input_recognition/domain/usecases/ensure_model_downloaded_usecase.dart';
 import 'package:flutter_math_app/features/input_recognition/domain/usecases/recognize_number_usecase.dart';
 import 'package:flutter_math_app/features/input_recognition/presentation/input_recognition_cubit/input_recognition_cubit.dart';
+import 'package:flutter_math_app/features/player_prefs/data/datasource/player_profile_local_datasource.dart';
+import 'package:flutter_math_app/features/player_prefs/data/models/player_profile_model.dart';
+import 'package:flutter_math_app/features/player_prefs/data/repositories/player_profile_reporitory_impl.dart';
+import 'package:flutter_math_app/features/player_prefs/domain/repositories/player_profile_repository.dart';
+import 'package:flutter_math_app/features/player_prefs/presentation/cubit/player_profile_cubit.dart';
 import 'package:get_it/get_it.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:isar_community/isar.dart';
 
 final sl = GetIt.instance;
 
 Future<void> initDependencies() async {
+  final isarInstance = await Isar.open([PlayerProfileModelSchema], directory: (await getApplicationDocumentsDirectory()).path);
+  sl.registerLazySingleton<Isar>(() => isarInstance);
   await initInputRecognizer();
   await initAudio();
+  await initPlayerProfile();
+
   sl.registerFactory<GameCubit>(() => GameCubit());
   sl.registerFactory<EffectsCubit>(() => EffectsCubit()); // effect animaiton
   sl.registerFactory<CharacterCubit>(() => CharacterCubit()); // Character Animation Cubit
   sl.registerFactory<DialogMessageCubit>(() => DialogMessageCubit()); // Character Dialog Message Cubit for instructions
   sl.registerFactory<TimerCubit>(() => TimerCubit());
   sl.registerFactory<ScoreCubit>(() => ScoreCubit());
+}
+
+Future<void> initPlayerProfile() async {
+  sl
+    ..registerLazySingleton<PlayerProfileLocalDataSource>(() => PlayerProfileLocalDatasourceImpl(isar: sl()))
+    ..registerLazySingleton<PlayerProfileRepository>(() => PlayerProfileReporitoryImpl(localDataSource: sl()))
+    ..registerFactory<PlayerProfileCubit>(
+      () => PlayerProfileCubit(repository: sl()),
+    );
 }
 
 Future<void> initInputRecognizer() async {

@@ -1,9 +1,28 @@
 import 'package:flutter_math_app/core/error/failure.dart';
 
-class ModelNotDownloadedFailure extends Failure {}
+class ModelNotDownloadedFailure extends Failure {
+  const ModelNotDownloadedFailure({super.message = ''});
 
-class EmptyInputFailure extends Failure {}
+  @override
+  List<Object?> get props => [];
+}
 
-class UnrecognizedInputFailure extends Failure {}
+class EmptyInputFailure extends Failure {
+  const EmptyInputFailure({super.message = ''});
 
-class UnknownInputRecognitionFailure extends Failure {}
+  @override
+  List<Object?> get props => [];
+}
+
+class UnrecognizedInputFailure extends Failure {
+  const UnrecognizedInputFailure({super.message = ''});
+
+  @override
+  List<Object?> get props => [];
+}
+
+class UnknownInputRecognitionFailure extends Failure {
+  const UnknownInputRecognitionFailure({super.message = ''});
+  @override
+  List<Object?> get props => [];
+}

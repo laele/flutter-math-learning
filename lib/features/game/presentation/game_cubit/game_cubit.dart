@@ -215,7 +215,7 @@ class GameCubit extends Cubit<GameState> {
     return switch (gameMode) {
       //GameMode.learnNumbers => 'Draw this number!',
       GameMode.add => 'Let\'s add these numbers!',
-      GameMode.sub => 'Time to substract!',
+      GameMode.sub => 'Time to subtract!',
       GameMode.mult => 'Let\'s multiply!',
       GameMode.div => 'Can you solve this division?',
       _ => '',
