@@ -22,6 +22,7 @@ import 'package:flutter_math_app/features/game/score/cubit/score_cubit.dart';
 import 'package:flutter_math_app/features/game/score/score_overlay.dart';
 import 'package:flutter_math_app/features/game/timer/presentation/cubit/timer_cubit.dart';
 import 'package:flutter_math_app/features/input_recognition/presentation/input_recognition_cubit/input_recognition_cubit.dart';
+import 'package:flutter_math_app/features/player_prefs/presentation/cubit/player_profile_cubit.dart';
 import 'package:flutter_math_app/features/scenes/presentation/game/widgets/game_fab.dart';
 import 'package:flutter_math_app/features/scenes/presentation/game/widgets/game_top_bar.dart';
 import 'package:flutter_math_app/features/scenes/presentation/shared/widgets/scribble_canvas.dart';
@@ -211,6 +212,7 @@ class _GameViewState extends State<GameView> {
                 context.read<DialogMessageCubit>().showMessage(message: 'That was fun! Wanna play again?...');
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.confetti);
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
+                context.read<PlayerProfileCubit>().registerFinalScore(score: context.read<ScoreCubit>().state.currentScore);
                 break;
               case GamePhase.starting:
                 context.read<ScoreCubit>().startScore();

@@ -4,6 +4,9 @@ import 'package:flutter_math_app/core/di/init_dependencies.dart';
 import 'package:flutter_math_app/core/theme/app_gradients.dart';
 import 'package:flutter_math_app/features/character/presentation/character_rive.dart';
 import 'package:flutter_math_app/features/character/presentation/cubit/character_cubit.dart';
+import 'package:flutter_math_app/features/player_prefs/domain/enums/player_profile_status.dart';
+import 'package:flutter_math_app/features/player_prefs/presentation/cubit/player_profile_cubit.dart';
+import 'package:flutter_math_app/features/player_prefs/presentation/widgets/player_prefs_section.dart';
 import 'package:flutter_math_app/features/scenes/presentation/menu/widgets/menu_canvas.dart';
 import 'package:flutter_math_app/features/scenes/presentation/menu/widgets/menu_fab.dart';
 
@@ -35,10 +38,7 @@ class MenuScreen extends StatelessWidget {
                 CharacterRive(),
               ],
             ),
-            /*Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: MenuCanvas(),
-            ),*/
+            MenuCanvas(),
           ],
         ),
         floatingActionButton: MenuFloatingActionButtons(),
