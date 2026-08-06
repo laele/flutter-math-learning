@@ -1,7 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_app/features/scenes/presentation/game/game_screen.dart';
-import 'package:flutter_math_app/features/scenes/presentation/menu/widgets/menu_sheet.dart';
 
 class MenuFloatingActionButtons extends StatelessWidget {
   const MenuFloatingActionButtons({super.key});
@@ -11,24 +10,7 @@ class MenuFloatingActionButtons extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        BounceInDown(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 32.0),
-                child: FloatingActionButton(
-                  heroTag: 'menuButton',
-                  onPressed: () {
-                    MenuSheet.show(context);
-                  },
-                  child: Icon(Icons.menu),
-                ),
-              ),
-            ],
-          ),
-        ),
-
+        SizedBox.shrink(),
         BounceInDown(
           delay: Duration(milliseconds: 100),
           child: Column(
@@ -36,14 +18,17 @@ class MenuFloatingActionButtons extends StatelessWidget {
             children: [
               FloatingActionButton(
                 heroTag: 'playButton',
-
                 onPressed: () {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (_) => GameScreen()),
                   );
                 },
-                child: Icon(Icons.play_arrow),
+                child: SizedBox(
+                  height: 16,
+                  width: 16,
+                  child: Image.asset('lib/core/assets/images/play_icon.png'),
+                ),
               ),
             ],
           ),

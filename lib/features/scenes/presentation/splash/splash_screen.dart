@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_math_app/features/audio/presentation/cubit/audio_cubit.dart';
+import 'package:flutter_math_app/features/audio/presentation/widgets/audio_listener.dart';
+import 'package:flutter_math_app/features/player_prefs/domain/enums/player_profile_status.dart';
+import 'package:flutter_math_app/features/player_prefs/presentation/cubit/player_profile_cubit.dart';
 import 'package:flutter_math_app/features/scenes/presentation/menu/menu_screen.dart';
 import 'package:flutter_math_app/features/input_recognition/presentation/input_recognition_cubit/input_recognition_cubit.dart';
 
@@ -12,21 +15,73 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  bool audioLoaded = false;
-  bool inputRecognizerLoaded = false;
+  bool _hasNavigated = false;
+  bool _minDurationElpased = false;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(
+      const Duration(seconds: 2),
+      () {
+        if (!mounted) return;
+        setState(() {
+          _minDurationElpased = true;
+          _tryNavigate();
+        });
+      },
+    );
+  }
+
+  void _tryNavigate() {
+    if (_hasNavigated || !_minDurationElpased) return;
+
+    final audioReady = context.read<AudioCubit>().state.audioLoaded == true;
+    final inputReady = context.read<InputRecognitionCubit>().state.isLoaded == true;
+    final profileReady = context.read<PlayerProfileCubit>().state.status == PlayerProfileStatus.success;
+
+    if (audioReady && inputReady && profileReady) {
+      _hasNavigated = true;
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const MenuScreen(),
+        ),
+      ); // TODO First Time Playing  ?? go to Tutorial
+    }
+  }
+
+  void _showErrorMessage({required String message}) {}
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AudioCubit, AudioState>(
-      listenWhen: (previous, current) => previous.audioLoaded != current.audioLoaded,
-      listener: (context, state) {
-        if (state.audioLoaded) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (_) => MenuScreen()),
-          );
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<AudioCubit, AudioState>(
+          listenWhen: (previous, current) => previous.audioLoaded != current.audioLoaded,
+          listener: (context, state) {
+            if (state.audioLoaded) {
+              _tryNavigate();
+            }
+          },
+        ),
+        BlocListener<InputRecognitionCubit, InputRecognitionState>(
+          listenWhen: (previous, current) => previous.status != current.status,
+          listener: (context, state) {
+            if (state.status == InputRecognitionStatus.success) {
+              _tryNavigate();
+            }
+            if (state.status == InputRecognitionStatus.failed) {
+              _showErrorMessage(message: state.errorMessage!);
+            }
+          },
+        ),
+        BlocListener<PlayerProfileCubit, PlayerProfileState>(
+          listenWhen: (previous, current) => previous.status != current.status,
+          listener: (context, state) {
+            _tryNavigate();
+          },
+        ),
+      ],
       child: Scaffold(
         body: Column(
           children: [
@@ -38,11 +93,9 @@ class _SplashScreenState extends State<SplashScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Loaded Audio: ${context.read<AudioCubit>().state.audioLoaded}'),
-                      SizedBox(height: 4.0),
-                      Text('Loaded Input Recognizer: ${context.read<InputRecognitionCubit>().state.isLoaded}'),
-                      SizedBox(height: 8.0),
-                      CircularProgressIndicator(),
+                      CircularProgressIndicator(
+                        color: Colors.deepOrange,
+                      ),
                     ],
                   ),
                 ),

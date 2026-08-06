@@ -39,13 +39,15 @@ class PlayerProfileCubit extends Cubit<PlayerProfileState> {
       (failure) => emit(state.copyWith(status: PlayerProfileStatus.error)),
       (profile) {
         final isNewScore = profile.bestArcadeScore == score && score > state.profile.bestArcadeScore;
-        emit(
-          state.copyWith(
-            status: PlayerProfileStatus.success,
-            profile: profile,
-            newRecordEvent: _nextRecordEvent(newScore: score),
-          ),
-        );
+        if (isNewScore) {
+          emit(
+            state.copyWith(
+              status: PlayerProfileStatus.success,
+              profile: profile,
+              newRecordEvent: _nextRecordEvent(newScore: score),
+            ),
+          );
+        }
       },
     );
   }

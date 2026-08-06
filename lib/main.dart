@@ -31,6 +31,7 @@ class MyApp extends StatelessWidget {
           create: (context) => sl<InputRecognitionCubit>()
             ..ensureModelDownloaded()
             ..initNotifier(),
+          lazy: false,
         ),
         BlocProvider(
           create: (context) => sl<AudioCubit>()..initAudio(),
