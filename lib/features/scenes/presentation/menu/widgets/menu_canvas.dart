@@ -18,6 +18,7 @@ class MenuCanvas extends StatelessWidget {
             Align(
               alignment: AlignmentGeometry.topCenter,
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   AspectRatio(
                     aspectRatio: 20 / 9,
@@ -33,65 +34,193 @@ class MenuCanvas extends StatelessWidget {
 
                   SizedBox(height: 8),
 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.primary,
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            'Player',
-                            style: Theme.of(context).textTheme.headlineMedium,
-                          ),
-                        ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 247, 103, 0),
+                      borderRadius: BorderRadius.circular(
+                        24.0,
                       ),
-                      SizedBox(width: 8),
-                      BlocBuilder<PlayerProfileCubit, PlayerProfileState>(
-                        buildWhen: (previous, current) {
-                          if (previous.newRecordEvent != current.newRecordEvent) {
-                            return true;
-                          }
-                          return false;
-                        },
-                        builder: (context, state) {
-                          return Container(
-                            decoration: BoxDecoration(
-                              color: AppColors.primary,
-                              borderRadius: BorderRadius.circular(24),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  ScoreBadge(
-                                    widthSize: 50,
-                                    heightSize: 50,
-                                    child: Text(state.profile.bestArcadeScore.toString()),
-                                  ),
-                                  Text(
-                                    'Best Score!',
-                                    style: Theme.of(context).textTheme!.titleMedium!.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
-                                  ),
-                                ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                'Hello!',
+                                style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.white),
                               ),
-                            ),
-                          );
-                        },
+                              SizedBox(width: 8),
+                              Expanded(
+                                child: Align(alignment: AlignmentGeometry.centerLeft, child: EditablePlayerName()),
+                              ),
+                              SizedBox(width: 18),
+                              BlocBuilder<PlayerProfileCubit, PlayerProfileState>(
+                                buildWhen: (previous, current) {
+                                  if (previous.newRecordEvent != current.newRecordEvent) {
+                                    return true;
+                                  }
+                                  return false;
+                                },
+                                builder: (context, state) {
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      color: AppColors.primary,
+                                      borderRadius: BorderRadius.circular(24),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              ScoreBadge(
+                                                widthSize: 50,
+                                                heightSize: 50,
+                                                child: Text(state.profile.bestArcadeScore.toString()),
+                                              ),
+                                            ],
+                                          ),
+                                          Text(
+                                            'Best Score!',
+                                            style: Theme.of(context).textTheme!.labelMedium!.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 8.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      FilledButton(
+                        onPressed: () {},
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.play_arrow),
+                            Text('Practice Mode'),
+                          ],
+                        ),
                       ),
                     ],
                   ),
-                  FilledButton(onPressed: () {}, child: Text('Practice Mode')),
                 ],
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class EditablePlayerName extends StatefulWidget {
+  const EditablePlayerName({
+    super.key,
+  });
+
+  @override
+  State<EditablePlayerName> createState() => _EditablePlayerNameState();
+}
+
+class _EditablePlayerNameState extends State<EditablePlayerName> {
+  bool _isEditing = false;
+  final _formKey = GlobalKey<FormState>();
+  final _controller = TextEditingController();
+  final _focusNode = FocusNode();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<PlayerProfileCubit, PlayerProfileState>(
+      buildWhen: (previous, current) => previous.profile.playerName != current.profile.playerName,
+      builder: (context, state) {
+        if (!_isEditing && _controller.text != state.profile.playerName) {
+          _controller.text = state.profile.playerName;
+        }
+        return !_isEditing
+            ? Badge(
+                padding: EdgeInsets.all(8.0),
+                label: Icon(Icons.edit),
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() => _isEditing = true);
+
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      _focusNode.requestFocus();
+                      _controller.selection = TextSelection.fromPosition(
+                        TextPosition(offset: _controller.text.length),
+                      );
+                    });
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        state.profile.playerName,
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            : Form(
+                key: _formKey,
+                child: TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  decoration: const InputDecoration(
+                    isDense: true,
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                  maxLength: 12,
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.white),
+                  controller: _controller,
+                  focusNode: _focusNode,
+                  autofocus: true,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Enter your name';
+                    }
+
+                    if (value.trim().length < 3) {
+                      return 'Minimum 3 characters';
+                    }
+
+                    return null;
+                  },
+                  onTapOutside: (event) {
+                    setState(() {
+                      _isEditing = false;
+                      //_controller.text = state.profile.playerName;
+                    });
+                  },
+                  onFieldSubmitted: (value) {
+                    setState(() {
+                      _isEditing = false;
+                      if (_formKey.currentState!.validate()) {
+                        context.read<PlayerProfileCubit>().updateName(name: value.trim());
+                      }
+                    });
+                  },
+                ),
+              );
+      },
     );
   }
 }
