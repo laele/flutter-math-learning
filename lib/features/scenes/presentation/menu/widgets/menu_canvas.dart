@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_math_app/core/theme/app_colors.dart';
-import 'package:flutter_math_app/features/game/score/widgets/score_badge.dart';
+import 'package:flutter_math_app/core/widgets/score_badge.dart';
 import 'package:flutter_math_app/features/player_prefs/presentation/cubit/player_profile_cubit.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MenuCanvas extends StatelessWidget {
   const MenuCanvas({super.key});
@@ -21,13 +22,24 @@ class MenuCanvas extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   AspectRatio(
-                    aspectRatio: 20 / 9,
+                    aspectRatio: 3 / 1,
                     child: Container(
                       width: double.infinity,
-                      //height: 100,
                       decoration: BoxDecoration(
-                        color: AppColors.primary,
+                        //color: AppColors.primary,
                         borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: Center(
+                        child: Text(
+                          'MathHop',
+                          style:
+                              GoogleFonts.baloo2(
+                                textStyle: Theme.of(context).textTheme.displayLarge,
+                              ).copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w900,
+                              ),
+                        ),
                       ),
                     ),
                   ),
@@ -36,7 +48,7 @@ class MenuCanvas extends StatelessWidget {
 
                   Container(
                     decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 247, 103, 0),
+                      color: AppColors.primary,
                       borderRadius: BorderRadius.circular(
                         24.0,
                       ),
@@ -100,8 +112,9 @@ class MenuCanvas extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 8.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                  Wrap(
+                    alignment: WrapAlignment.end,
+                    //mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       FilledButton(
                         onPressed: () {},
@@ -109,8 +122,52 @@ class MenuCanvas extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           mainAxisSize: MainAxisSize.min,
                           children: [
+                            SizedBox(height: 32, width: 32, child: Image.asset('lib/core/assets/images/lang_icon.png')),
+                            /*SizedBox(width: 4),
+                            Flexible(
+                              child: Text(
+                                'Change Language',
+                                maxLines: 1,
+                                overflow: TextOverflow.fade,
+                              ),
+                            ),*/
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      FilledButton(
+                        onPressed: () {},
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(height: 32, width: 32, child: Image.asset('lib/core/assets/images/how_to_play_icon.png')),
+                            /*SizedBox(width: 4),
+                            Flexible(
+                              child: Text(
+                                '?',
+                                maxLines: 1,
+                                overflow: TextOverflow.fade,
+                              ),
+                            ),*/
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      FilledButton(
+                        onPressed: () {},
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
                             Icon(Icons.play_arrow),
-                            Text('Practice Mode'),
+                            Flexible(
+                              child: Text(
+                                'Practice Mode',
+                                maxLines: 1,
+                                overflow: TextOverflow.fade,
+                              ),
+                            ),
                           ],
                         ),
                       ),
