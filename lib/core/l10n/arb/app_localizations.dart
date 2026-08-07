@@ -7,6 +7,7 @@ import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_en.dart';
 import 'app_localizations_es.dart';
+import 'app_localizations_pt.dart';
 
 // ignore_for_file: type=lint
 
@@ -96,31 +97,8 @@ abstract class AppLocalizations {
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
     Locale('es'),
+    Locale('pt'),
   ];
-
-  /// No description provided for @playAgain.
-  ///
-  /// In en, this message translates to:
-  /// **'Play again'**
-  String get playAgain;
-
-  /// No description provided for @yourScore.
-  ///
-  /// In en, this message translates to:
-  /// **'Your Score'**
-  String get yourScore;
-
-  /// No description provided for @best.
-  ///
-  /// In en, this message translates to:
-  /// **'Best'**
-  String get best;
-
-  /// No description provided for @menuTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Froggy Math'**
-  String get menuTitle;
 
   /// No description provided for @bestScore.
   ///
@@ -139,6 +117,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Practice Mode'**
   String get practiceMode;
+
+  /// No description provided for @gameOver.
+  ///
+  /// In en, this message translates to:
+  /// **'Game Over!'**
+  String get gameOver;
+
+  /// No description provided for @yourScore.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Score'**
+  String get yourScore;
+
+  /// No description provided for @best.
+  ///
+  /// In en, this message translates to:
+  /// **'Best'**
+  String get best;
+
+  /// No description provided for @newScore.
+  ///
+  /// In en, this message translates to:
+  /// **'New Best Score!'**
+  String get newScore;
+
+  /// No description provided for @playAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Play again'**
+  String get playAgain;
+
+  /// No description provided for @selectLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Language'**
+  String get selectLanguage;
 }
 
 class _AppLocalizationsDelegate
@@ -152,7 +166,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en', 'es'].contains(locale.languageCode);
+      <String>['en', 'es', 'pt'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -165,6 +179,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
       return AppLocalizationsEn();
     case 'es':
       return AppLocalizationsEs();
+    case 'pt':
+      return AppLocalizationsPt();
   }
 
   throw FlutterError(

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_math_app/core/l10n/arb/app_localizations.dart';
@@ -5,7 +7,6 @@ import 'package:flutter_math_app/core/theme/app_colors.dart';
 import 'package:flutter_math_app/core/widgets/score_badge.dart';
 import 'package:flutter_math_app/features/player_prefs/presentation/cubit/player_profile_cubit.dart';
 import 'package:flutter_math_app/features/settings/presentation/widgets/language_sheet.dart';
-import 'package:flutter_math_app/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MenuCanvas extends StatelessWidget {
@@ -13,6 +14,8 @@ class MenuCanvas extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -99,7 +102,7 @@ class MenuCanvas extends StatelessWidget {
                                             ],
                                           ),
                                           Text(
-                                            'Best Score!',
+                                            l10n.bestScore,
                                             style: Theme.of(context).textTheme!.labelMedium!.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
                                           ),
                                         ],
@@ -147,14 +150,6 @@ class MenuCanvas extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             SizedBox(height: 32, width: 32, child: Image.asset('lib/core/assets/images/how_to_play_icon.png')),
-                            /*SizedBox(width: 4),
-                            Flexible(
-                              child: Text(
-                                '?',
-                                maxLines: 1,
-                                overflow: TextOverflow.fade,
-                              ),
-                            ),*/
                           ],
                         ),
                       ),
@@ -168,7 +163,7 @@ class MenuCanvas extends StatelessWidget {
                             Icon(Icons.play_arrow),
                             Flexible(
                               child: Text(
-                                'Practice Mode',
+                                l10n.practiceMode,
                                 maxLines: 1,
                                 overflow: TextOverflow.fade,
                               ),

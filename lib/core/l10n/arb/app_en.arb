@@ -1,10 +1,14 @@
-{
-  "playAgain": "Play again",
-  "yourScore": "Your Score",
-  "best": "Best",
-  "menuTitle": "Froggy Math",
-
+{  
   "bestScore": "Best Score!",
   "hello": "Hello!",
-  "practiceMode": "Practice Mode"
+  "practiceMode": "Practice Mode",
+  
+  "gameOver": "Game Over!",
+  "yourScore": "Your Score",
+  "best": "Best",
+  "newScore": "New Best Score!",
+  "playAgain": "Play again",
+
+  "selectLanguage": "Select Language"
+
 }

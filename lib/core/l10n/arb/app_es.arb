@@ -1,10 +1,13 @@
 {
-  "playAgain": "Jugar de nuevo",
-  "yourScore": "Tu puntaje",
-  "best": "Mejor",
-  "menuTitle": "Froggy Math",
-
-  "bestScore": "Mejor Puntuación!",
+  "bestScore": "Mejor Puntaje!",
   "hello": "Hola!",
-  "practiceMode": "Modo Práctica"
+  "practiceMode": "Modo Práctica",
+  
+  "gameOver": "Juego Terminado!",
+  "yourScore": "Tu Puntaje",
+  "best": "Mejor",
+  "newScore": "Nuevo Mejor Puntaje!",
+  "playAgain": "Jugar de Nuevo",
+
+  "selectLanguage": "Seleccionar idioma"
 }
