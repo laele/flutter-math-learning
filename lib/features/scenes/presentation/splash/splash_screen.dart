@@ -50,7 +50,7 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
-  void _showErrorMessage({required String message}) {}
+  void _showErrorMessage({required String message}) {} // TODO ERROR MESSAGE
 
   @override
   Widget build(BuildContext context) {

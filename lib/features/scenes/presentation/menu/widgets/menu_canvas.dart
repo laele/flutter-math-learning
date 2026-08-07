@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_math_app/core/l10n/arb/app_localizations.dart';
 import 'package:flutter_math_app/core/theme/app_colors.dart';
 import 'package:flutter_math_app/core/widgets/score_badge.dart';
 import 'package:flutter_math_app/features/player_prefs/presentation/cubit/player_profile_cubit.dart';
+import 'package:flutter_math_app/features/settings/presentation/widgets/language_sheet.dart';
+import 'package:flutter_math_app/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MenuCanvas extends StatelessWidget {
@@ -60,7 +63,7 @@ class MenuCanvas extends StatelessWidget {
                           Row(
                             children: [
                               Text(
-                                'Hello!',
+                                AppLocalizations.of(context)!.hello,
                                 style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.white),
                               ),
                               SizedBox(width: 8),
@@ -117,20 +120,22 @@ class MenuCanvas extends StatelessWidget {
                     //mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       FilledButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          LanguageSheet.show(context);
+                        },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             SizedBox(height: 32, width: 32, child: Image.asset('lib/core/assets/images/lang_icon.png')),
-                            /*SizedBox(width: 4),
+                            SizedBox(width: 4),
                             Flexible(
                               child: Text(
-                                'Change Language',
+                                Localizations.localeOf(context).languageCode, // current lang string,
                                 maxLines: 1,
                                 overflow: TextOverflow.fade,
                               ),
-                            ),*/
+                            ),
                           ],
                         ),
                       ),

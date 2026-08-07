@@ -63,7 +63,7 @@ class InputRecognitionCubit extends Cubit<InputRecognitionState> {
         emit(state.copyWith(status: InputRecognitionStatus.failed, errorMessage: _errorMessageFromFailure(failure)));
       },
       (_) {
-        emit(state.copyWith(isLoaded: true));
+        emit(state.copyWith(status: InputRecognitionStatus.success, isLoaded: true));
       },
     );
   }

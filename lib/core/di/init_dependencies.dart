@@ -19,18 +19,24 @@ import 'package:flutter_math_app/features/player_prefs/data/models/player_profil
 import 'package:flutter_math_app/features/player_prefs/data/repositories/player_profile_reporitory_impl.dart';
 import 'package:flutter_math_app/features/player_prefs/domain/repositories/player_profile_repository.dart';
 import 'package:flutter_math_app/features/player_prefs/presentation/cubit/player_profile_cubit.dart';
+import 'package:flutter_math_app/features/settings/data/repositories/settings_repository_impl.dart';
+import 'package:flutter_math_app/features/settings/domain/repository/settings_repository.dart';
+import 'package:flutter_math_app/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:get_it/get_it.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:isar_community/isar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final sl = GetIt.instance;
 
 Future<void> initDependencies() async {
+  final sharedPrefs = await SharedPreferences.getInstance();
   final isarInstance = await Isar.open([PlayerProfileModelSchema], directory: (await getApplicationDocumentsDirectory()).path);
   sl.registerLazySingleton<Isar>(() => isarInstance);
   await initInputRecognizer();
   await initAudio();
   await initPlayerProfile();
+  await initSettings(instance: sharedPrefs);
 
   sl.registerFactory<GameCubit>(() => GameCubit());
   sl.registerFactory<EffectsCubit>(() => EffectsCubit()); // effect animaiton
@@ -76,4 +82,13 @@ Future<void> initAudio() async {
     ..registerLazySingleton<AudioDataSource>(() => AudioDataSourceImpl())
     ..registerLazySingleton<AudioRepository>(() => AudioRepositoryImpl(datasource: sl()))
     ..registerLazySingleton<AudioCubit>(() => AudioCubit(audioRepository: sl()));
+}
+
+Future<void> initSettings({required SharedPreferences instance}) async {
+  sl
+    ..registerLazySingleton<SharedPreferences>(() => instance)
+    ..registerLazySingleton<SettingsRepository>(
+      () => SettingsRepositoryImpl(prefs: sl()),
+    )
+    ..registerFactory<SettingsCubit>(() => SettingsCubit(repository: sl()));
 }
