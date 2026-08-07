@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_math_app/core/l10n/arb/app_localizations.dart';
 import 'package:flutter_math_app/features/game/domain/enums/game_phase.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
 import 'package:flutter_math_app/features/game/score/cubit/score_cubit.dart';
@@ -58,6 +59,7 @@ class _ScoreOverlayState extends State<ScoreOverlay> with SingleTickerProviderSt
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    final l10n = AppLocalizations.of(context)!;
 
     return BlocConsumer<GameCubit, GameState>(
       listenWhen: (previous, current) => (previous.gamePhaseEvent != current.gamePhaseEvent) && current.gamePhaseEvent != null,
@@ -107,7 +109,7 @@ class _ScoreOverlayState extends State<ScoreOverlay> with SingleTickerProviderSt
                                             isRepeatingAnimation: true,
                                             animatedTexts: [
                                               WavyAnimatedText(
-                                                'Game Over!',
+                                                l10n.gameOver,
                                                 textStyle: textTheme.displayLarge,
                                                 speed: Duration(
                                                   milliseconds: 300,
@@ -123,7 +125,7 @@ class _ScoreOverlayState extends State<ScoreOverlay> with SingleTickerProviderSt
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          'Your Score',
+                                          l10n.yourScore,
                                           style: Theme.of(context).textTheme.titleLarge,
                                         ),
                                         SizedBox(width: 8),
@@ -138,7 +140,7 @@ class _ScoreOverlayState extends State<ScoreOverlay> with SingleTickerProviderSt
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          'Best',
+                                          l10n.best,
                                           style: Theme.of(context).textTheme.titleLarge,
                                         ),
                                         SizedBox(width: 8),
@@ -163,7 +165,7 @@ class _ScoreOverlayState extends State<ScoreOverlay> with SingleTickerProviderSt
                                             isRepeatingAnimation: false,
                                             animatedTexts: [
                                               BounceAnimatedText(
-                                                'New Score!',
+                                                l10n.newScore,
                                                 textStyle: textTheme.displayLarge,
                                               ),
                                             ],

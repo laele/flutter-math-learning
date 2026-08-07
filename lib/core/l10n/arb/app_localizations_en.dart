@@ -9,7 +9,16 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get playAgain => 'Play again';
+  String get bestScore => 'Best Score!';
+
+  @override
+  String get hello => 'Hello!';
+
+  @override
+  String get practiceMode => 'Practice Mode';
+
+  @override
+  String get gameOver => 'Game Over!';
 
   @override
   String get yourScore => 'Your Score';
@@ -18,14 +27,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get best => 'Best';
 
   @override
-  String get menuTitle => 'Froggy Math';
+  String get newScore => 'New Best Score!';
 
   @override
-  String get bestScore => 'Best Score!';
+  String get playAgain => 'Play again';
 
   @override
-  String get hello => 'Hello!';
-
-  @override
-  String get practiceMode => 'Practice Mode';
+  String get selectLanguage => 'Select Language';
 }
