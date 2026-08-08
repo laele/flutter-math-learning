@@ -35,7 +35,7 @@ class GameCubit extends Cubit<GameState> {
   GameQuestionEvent _nextGameQuestionEvent({
     required GameQuestionEntity gameQuestion,
     required GameMode gameMode,
-    required String indicationMessage,
+    //required String indicationMessage,
     required String explanationMessage,
     required double questionWeight,
   }) {
@@ -43,7 +43,7 @@ class GameCubit extends Cubit<GameState> {
       id: ++_gameQuestionEventCounter,
       gameQuestion: gameQuestion,
       gameMode: gameMode,
-      indicationMessage: indicationMessage,
+      //indicationMessage: indicationMessage,
       explanationMessage: explanationMessage,
       questionWeight: questionWeight,
     );
@@ -95,7 +95,7 @@ class GameCubit extends Cubit<GameState> {
           questionWeight: questionWeight,
           gameQuestion: question,
           gameMode: nextGameMode,
-          indicationMessage: _messageFromNewQuestion(gameMode: nextGameMode),
+          //indicationMessage: _messageFromNewQuestion(gameMode: nextGameMode),
           explanationMessage: _messageExplanationFromQuestion(
             gameMode: nextGameMode,
             gameQuestion: question,
@@ -211,7 +211,7 @@ class GameCubit extends Cubit<GameState> {
     _emitNextGamePhaseEvent(gamePhase: GamePhase.finished);
   }
 
-  String _messageFromNewQuestion({required GameMode gameMode}) {
+  /*String _messageFromNewQuestion({required GameMode gameMode}) {
     return switch (gameMode) {
       //GameMode.learnNumbers => 'Draw this number!',
       GameMode.add => 'Let\'s add these numbers!',
@@ -220,7 +220,7 @@ class GameCubit extends Cubit<GameState> {
       GameMode.div => 'Can you solve this division?',
       _ => '',
     };
-  }
+  }*/
 
   String _messageExplanationFromQuestion({required GameMode gameMode, required GameQuestionEntity gameQuestion}) {
     return switch (gameMode) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_math_app/core/di/init_dependencies.dart';
+import 'package:flutter_math_app/core/l10n/app_supported_locales.dart';
 import 'package:flutter_math_app/core/l10n/arb/app_localizations.dart';
 import 'package:flutter_math_app/core/theme/app_theme.dart';
 import 'package:flutter_math_app/features/audio/presentation/cubit/audio_cubit.dart';
@@ -51,7 +52,7 @@ class MyApp extends StatelessWidget {
         builder: (context, state) => MaterialApp(
           locale: state.locale,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
+          supportedLocales: AppSupportedLocales.locales,
           debugShowCheckedModeBanner: false,
           title: 'Froggy Math',
           theme: AppTheme.light(),

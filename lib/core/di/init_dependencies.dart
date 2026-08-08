@@ -1,10 +1,17 @@
+import 'dart:io';
+
+import 'package:flutter_math_app/features/dialog_message/data/datasources/dialog_message_pool_en.dart';
+import 'package:flutter_math_app/features/dialog_message/data/datasources/dialog_message_pool_es.dart';
+import 'package:flutter_math_app/features/dialog_message/data/datasources/dialog_message_pool_pt.dart';
+import 'package:flutter_math_app/features/dialog_message/data/repositories/dialog_message_repository_impl.dart';
+import 'package:flutter_math_app/features/dialog_message/domain/repositories/dialog_message_repository.dart';
 import 'package:flutter_math_app/features/effects/presentation/cubit/effects_cubit.dart';
 import 'package:flutter_math_app/features/audio/data/datasource/audio_datasource.dart';
 import 'package:flutter_math_app/features/audio/data/repositories/audio_repository_impl.dart';
 import 'package:flutter_math_app/features/audio/domain/repositories/audio_repository.dart';
 import 'package:flutter_math_app/features/audio/presentation/cubit/audio_cubit.dart';
 import 'package:flutter_math_app/features/character/presentation/cubit/character_cubit.dart';
-import 'package:flutter_math_app/features/dialog_message/cubit/dialog_message_cubit.dart';
+import 'package:flutter_math_app/features/dialog_message/presentation/cubit/dialog_message_cubit.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
 import 'package:flutter_math_app/features/game/score/cubit/score_cubit.dart';
 import 'package:flutter_math_app/features/game/timer/presentation/cubit/timer_cubit.dart';
@@ -36,12 +43,12 @@ Future<void> initDependencies() async {
   await initInputRecognizer();
   await initAudio();
   await initPlayerProfile();
+  await initDialogMessage();
   await initSettings(instance: sharedPrefs);
 
   sl.registerFactory<GameCubit>(() => GameCubit());
   sl.registerFactory<EffectsCubit>(() => EffectsCubit()); // effect animaiton
   sl.registerFactory<CharacterCubit>(() => CharacterCubit()); // Character Animation Cubit
-  sl.registerFactory<DialogMessageCubit>(() => DialogMessageCubit()); // Character Dialog Message Cubit for instructions
   sl.registerFactory<TimerCubit>(() => TimerCubit());
   sl.registerFactory<ScoreCubit>(() => ScoreCubit());
 }
@@ -90,5 +97,15 @@ Future<void> initSettings({required SharedPreferences instance}) async {
     ..registerLazySingleton<SettingsRepository>(
       () => SettingsRepositoryImpl(prefs: sl()),
     )
-    ..registerFactory<SettingsCubit>(() => SettingsCubit(repository: sl()));
+    ..registerFactory<SettingsCubit>(() => SettingsCubit(settingsRepository: sl(), dialogRepository: sl()));
+}
+
+Future<void> initDialogMessage() async {
+  sl
+    ..registerLazySingleton<DialogMessageRepository>(
+      () => DialogMessageRepositoryImpl(
+        poolsByLocale: {'en': dialogMessagePoolEn, 'es': dialogMessagePoolEs, 'pt': dialogMessagePoolPt},
+      ),
+    )
+    ..registerFactory<DialogMessageCubit>(() => DialogMessageCubit(repository: sl()));
 }
