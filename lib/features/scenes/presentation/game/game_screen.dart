@@ -10,7 +10,8 @@ import 'package:flutter_math_app/features/character/domain/enums/character_anima
 import 'package:flutter_math_app/core/theme/app_gradients.dart';
 import 'package:flutter_math_app/features/character/presentation/character_rive.dart';
 import 'package:flutter_math_app/features/character/presentation/cubit/character_cubit.dart';
-import 'package:flutter_math_app/features/dialog_message/cubit/dialog_message_cubit.dart';
+import 'package:flutter_math_app/features/dialog_message/domain/enums/message_key_type.dart';
+import 'package:flutter_math_app/features/dialog_message/presentation/cubit/dialog_message_cubit.dart';
 import 'package:flutter_math_app/features/dialog_message/presentation/dialog_message_text.dart';
 import 'package:flutter_math_app/features/effects/domain/enums/effect_type.dart';
 import 'package:flutter_math_app/features/effects/presentation/cubit/effects_cubit.dart';
@@ -19,6 +20,7 @@ import 'package:flutter_math_app/features/effects/presentation/widgets/shake_wid
 import 'package:flutter_math_app/features/game/domain/enums/game_phase.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
 import 'package:flutter_math_app/features/game/score/cubit/score_cubit.dart';
+import 'package:flutter_math_app/features/scenes/presentation/game/game_message_mapper.dart';
 import 'package:flutter_math_app/features/scenes/presentation/game/score_overlay.dart';
 import 'package:flutter_math_app/features/game/timer/presentation/cubit/timer_cubit.dart';
 import 'package:flutter_math_app/features/input_recognition/presentation/input_recognition_cubit/input_recognition_cubit.dart';
@@ -148,8 +150,8 @@ class _GameViewState extends State<GameView> {
             switch (gamePhase) {
               case GamePhase.newQuestion:
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.thinking);
-                context.read<DialogMessageCubit>().showMessage(
-                  message: state.gameQuestionEvent!.indicationMessage,
+                context.read<DialogMessageCubit>().showMessageByKey(
+                  key: GameMessageMapper.messageKeyFor(state.gameQuestionEvent!.gameMode),
                   upperMessage: state.gameQuestionEvent!.operationMessage,
                 );
                 context.read<ScoreCubit>().onQuestionShown(weight: state.gameQuestionEvent!.questionWeight);
@@ -159,8 +161,8 @@ class _GameViewState extends State<GameView> {
                 break;
               case GamePhase.repeatQuestion:
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.thinking);
-                context.read<DialogMessageCubit>().showMessage(
-                  message: state.gameQuestionEvent!.indicationMessage,
+                context.read<DialogMessageCubit>().showMessageByKey(
+                  key: GameMessageMapper.messageKeyFor(state.gameQuestionEvent!.gameMode),
                   upperMessage: state.gameQuestionEvent!.operationMessage,
                 );
                 break;
@@ -179,19 +181,15 @@ class _GameViewState extends State<GameView> {
                 if (!_firstCompleted) _firstCompleted = true;
                 context.read<ScoreCubit>().onCorrectAnswer();
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.success);
-                context.read<DialogMessageCubit>().showMessage(message: 'Correct!');
+                context.read<DialogMessageCubit>().showMessageByKey(key: MessageKeyType.correct);
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.stars);
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
                 context.read<AudioCubit>().playSound(soundType: SoundType.correct);
                 context.read<TimerCubit>().pauseTimer();
-                print('GameMode ${context.read<GameCubit>().state.gameQuestionEvent!.gameMode}');
-                print('Tier Index ${context.read<GameCubit>().state.currentGameStats.currentTierIndex}');
-                print('Question Weight ${state.gameQuestionEvent!.questionWeight}');
-                print('Score added ${context.read<ScoreCubit>().state.scoreToAdd}');
                 break;
               case GamePhase.skipByIncorrect:
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.failed);
-                context.read<DialogMessageCubit>().showMessage(message: 'Let\'s skip this one...');
+                context.read<DialogMessageCubit>().showMessageByKey(key: MessageKeyType.skipByIncorrect);
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
                 context.read<AudioCubit>().playSound(soundType: SoundType.incorrect);
                 break;
@@ -209,14 +207,14 @@ class _GameViewState extends State<GameView> {
               case GamePhase.finished:
                 _firstCompleted = false;
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.success);
-                context.read<DialogMessageCubit>().showMessage(message: 'That was fun! Wanna play again?...');
+                context.read<DialogMessageCubit>().showMessageByKey(key: MessageKeyType.finished);
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.confetti);
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
                 context.read<PlayerProfileCubit>().registerFinalScore(score: context.read<ScoreCubit>().state.currentScore);
                 break;
               case GamePhase.starting:
                 context.read<ScoreCubit>().startScore();
-                context.read<DialogMessageCubit>().showMessage(message: 'Let\'s solve some math!');
+                context.read<DialogMessageCubit>().showMessageByKey(key: MessageKeyType.starting);
                 break;
               case (_):
                 break;

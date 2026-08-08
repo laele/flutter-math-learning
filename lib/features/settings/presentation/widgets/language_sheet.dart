@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_math_app/core/l10n/app_supported_locales.dart';
 import 'package:flutter_math_app/core/l10n/arb/app_localizations.dart';
 import 'package:flutter_math_app/core/theme/app_colors.dart';
-import 'package:flutter_math_app/features/settings/domain/constants/app_languages.dart';
 import 'package:flutter_math_app/features/settings/presentation/cubit/settings_cubit.dart';
 
 class LanguageSheet extends StatelessWidget {
@@ -40,11 +40,11 @@ class LanguageSheet extends StatelessWidget {
                   Text(AppLocalizations.of(context)!.selectLanguage, style: Theme.of(context).textTheme.titleLarge),
                 ],
               ),
-              for (var item in AppLanguages.languages.entries.toList())
+              for (var item in AppSupportedLocales.codes.entries.toList())
                 ListTile(
                   title: Text('${item.value} (${item.key})'),
                   onTap: () {
-                    context.read<SettingsCubit>().changeLocale(Locale(item.key));
+                    context.read<SettingsCubit>().changeLocale(localeCode: item.key);
                   },
                 ),
             ],

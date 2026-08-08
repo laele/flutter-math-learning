@@ -6,7 +6,7 @@ class GameQuestionEvent extends Equatable {
   final int id;
   final GameQuestionEntity gameQuestion;
   final GameMode gameMode;
-  final String indicationMessage;
+  //final String indicationMessage;
   final String explanationMessage;
   final double questionWeight;
 
@@ -25,7 +25,7 @@ class GameQuestionEvent extends Equatable {
     required this.id,
     required this.gameQuestion,
     required this.gameMode,
-    required this.indicationMessage,
+    //required this.indicationMessage,
     required this.explanationMessage,
   });
 
@@ -34,7 +34,7 @@ class GameQuestionEvent extends Equatable {
     id,
     gameQuestion,
     gameMode,
-    indicationMessage,
+    //indicationMessage,
     explanationMessage,
     questionWeight,
   ];
