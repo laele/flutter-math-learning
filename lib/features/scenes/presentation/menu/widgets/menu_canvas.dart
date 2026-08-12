@@ -6,6 +6,7 @@ import 'package:flutter_math_app/core/l10n/arb/app_localizations.dart';
 import 'package:flutter_math_app/core/theme/app_colors.dart';
 import 'package:flutter_math_app/core/widgets/score_badge.dart';
 import 'package:flutter_math_app/features/player_prefs/presentation/cubit/player_profile_cubit.dart';
+import 'package:flutter_math_app/features/scenes/presentation/practice_game/practice_game_screen.dart';
 import 'package:flutter_math_app/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:flutter_math_app/features/settings/presentation/widgets/language_sheet.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -104,7 +105,10 @@ class MenuCanvas extends StatelessWidget {
                                           ),
                                           Text(
                                             l10n.bestScore,
-                                            style: Theme.of(context).textTheme!.labelMedium!.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
+                                            style: Theme.of(context).textTheme!.labelMedium!.copyWith(
+                                              color: Colors.red,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -156,7 +160,12 @@ class MenuCanvas extends StatelessWidget {
                       ),
                       SizedBox(width: 8),
                       FilledButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (_) => PracticeGameScreen()),
+                          );
+                        },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           mainAxisSize: MainAxisSize.min,

@@ -7,7 +7,7 @@ class GameQuestionEvent extends Equatable {
   final GameQuestionEntity gameQuestion;
   final GameMode gameMode;
   //final String indicationMessage;
-  final String explanationMessage;
+  //final String explanationMessage;
   final double questionWeight;
 
   String get currentGameModeOperator => switch (gameMode) {
@@ -26,7 +26,7 @@ class GameQuestionEvent extends Equatable {
     required this.gameQuestion,
     required this.gameMode,
     //required this.indicationMessage,
-    required this.explanationMessage,
+    //required this.explanationMessage,
   });
 
   @override
@@ -35,7 +35,7 @@ class GameQuestionEvent extends Equatable {
     gameQuestion,
     gameMode,
     //indicationMessage,
-    explanationMessage,
+    //explanationMessage,
     questionWeight,
   ];
 }

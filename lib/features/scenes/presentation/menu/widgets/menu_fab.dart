@@ -1,6 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_math_app/features/scenes/presentation/game/game_screen.dart';
+import 'package:flutter_math_app/features/scenes/presentation/arcade_game/arcade_game_screen.dart';
 
 class MenuFloatingActionButtons extends StatelessWidget {
   const MenuFloatingActionButtons({super.key});
@@ -21,7 +21,7 @@ class MenuFloatingActionButtons extends StatelessWidget {
                 onPressed: () {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (_) => GameScreen()),
+                    MaterialPageRoute(builder: (_) => ArcadeGameScreen()),
                   );
                 },
                 child: SizedBox(

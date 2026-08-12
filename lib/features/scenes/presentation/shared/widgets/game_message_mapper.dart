@@ -6,6 +6,6 @@ class GameMessageMapper {
     GameMode.add => MessageKeyType.questionAdd,
     GameMode.sub => MessageKeyType.questionSub,
     GameMode.mult => MessageKeyType.questionMult,
-    GameMode.div => MessageKeyType.questionMult,
+    GameMode.div => MessageKeyType.questionDiv,
   };
 }

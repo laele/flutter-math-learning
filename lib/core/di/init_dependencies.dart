@@ -12,6 +12,7 @@ import 'package:flutter_math_app/features/audio/domain/repositories/audio_reposi
 import 'package:flutter_math_app/features/audio/presentation/cubit/audio_cubit.dart';
 import 'package:flutter_math_app/features/character/presentation/cubit/character_cubit.dart';
 import 'package:flutter_math_app/features/dialog_message/presentation/cubit/dialog_message_cubit.dart';
+import 'package:flutter_math_app/features/game/domain/services/game_rules_policy.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
 import 'package:flutter_math_app/features/game/score/cubit/score_cubit.dart';
 import 'package:flutter_math_app/features/game/timer/presentation/cubit/timer_cubit.dart';
@@ -39,6 +40,7 @@ final sl = GetIt.instance;
 Future<void> initDependencies() async {
   final sharedPrefs = await SharedPreferences.getInstance();
   final isarInstance = await Isar.open([PlayerProfileModelSchema], directory: (await getApplicationDocumentsDirectory()).path);
+
   sl.registerLazySingleton<Isar>(() => isarInstance);
   await initInputRecognizer();
   await initAudio();
@@ -46,7 +48,7 @@ Future<void> initDependencies() async {
   await initDialogMessage();
   await initSettings(instance: sharedPrefs);
 
-  sl.registerFactory<GameCubit>(() => GameCubit());
+  sl.registerFactoryParam<GameCubit, GameRulesPolicy, void>((policy, _) => GameCubit(rulesPolicy: policy));
   sl.registerFactory<EffectsCubit>(() => EffectsCubit()); // effect animaiton
   sl.registerFactory<CharacterCubit>(() => CharacterCubit()); // Character Animation Cubit
   sl.registerFactory<TimerCubit>(() => TimerCubit());
@@ -97,14 +99,23 @@ Future<void> initSettings({required SharedPreferences instance}) async {
     ..registerLazySingleton<SettingsRepository>(
       () => SettingsRepositoryImpl(prefs: sl()),
     )
-    ..registerFactory<SettingsCubit>(() => SettingsCubit(settingsRepository: sl(), dialogRepository: sl()));
+    ..registerFactory<SettingsCubit>(
+      () => SettingsCubit(
+        settingsRepository: sl(),
+        dialogRepository: sl(),
+      ),
+    );
 }
 
 Future<void> initDialogMessage() async {
   sl
     ..registerLazySingleton<DialogMessageRepository>(
       () => DialogMessageRepositoryImpl(
-        poolsByLocale: {'en': dialogMessagePoolEn, 'es': dialogMessagePoolEs, 'pt': dialogMessagePoolPt},
+        poolsByLocale: {
+          'en': dialogMessagePoolEn, // 'en' as default first position
+          'es': dialogMessagePoolEs,
+          'pt': dialogMessagePoolPt,
+        },
       ),
     )
     ..registerFactory<DialogMessageCubit>(() => DialogMessageCubit(repository: sl()));

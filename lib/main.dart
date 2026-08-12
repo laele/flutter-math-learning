@@ -45,6 +45,7 @@ class MyApp extends StatelessWidget {
           //..playBackgroundMusic(),
           lazy: false,
         ),
+
         // Lazy false forces to create the instance instantly
       ],
       child: BlocBuilder<SettingsCubit, SettingsState>(

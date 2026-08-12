@@ -18,58 +18,54 @@ import 'package:flutter_math_app/features/effects/presentation/cubit/effects_cub
 import 'package:flutter_math_app/features/effects/presentation/effects_layer.dart';
 import 'package:flutter_math_app/features/effects/presentation/widgets/shake_widget.dart';
 import 'package:flutter_math_app/features/game/domain/enums/game_phase.dart';
+import 'package:flutter_math_app/features/game/domain/services/game_rules_policy.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
-import 'package:flutter_math_app/features/game/score/cubit/score_cubit.dart';
-import 'package:flutter_math_app/features/scenes/presentation/game/game_message_mapper.dart';
-import 'package:flutter_math_app/features/scenes/presentation/game/score_overlay.dart';
-import 'package:flutter_math_app/features/game/timer/presentation/cubit/timer_cubit.dart';
+import 'package:flutter_math_app/features/scenes/presentation/practice_game/widgets/practice_game_top_bar.dart';
+import 'package:flutter_math_app/features/scenes/presentation/shared/widgets/game_message_mapper.dart';
+import 'package:flutter_math_app/features/scenes/presentation/arcade_game/score_overlay.dart';
 import 'package:flutter_math_app/features/input_recognition/presentation/input_recognition_cubit/input_recognition_cubit.dart';
-import 'package:flutter_math_app/features/player_prefs/presentation/cubit/player_profile_cubit.dart';
-import 'package:flutter_math_app/features/scenes/presentation/game/widgets/game_fab.dart';
-import 'package:flutter_math_app/features/scenes/presentation/game/widgets/game_top_bar.dart';
+import 'package:flutter_math_app/features/scenes/presentation/arcade_game/widgets/game_fab.dart';
 import 'package:flutter_math_app/features/scenes/presentation/shared/widgets/scribble_canvas.dart';
 import 'package:flutter_math_app/features/game/presentation/widgets/pencil_sign.dart';
 
-class GameScreen extends StatelessWidget {
-  const GameScreen({super.key});
+class PracticeGameScreen extends StatelessWidget {
+  const PracticeGameScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => sl<GameCubit>()),
+        BlocProvider(create: (_) => sl<GameCubit>(param1: PracticeRulesPolicy())),
         BlocProvider(create: (_) => sl<CharacterCubit>()),
         BlocProvider(create: (_) => sl<DialogMessageCubit>()),
         BlocProvider(create: (_) => sl<EffectsCubit>()),
-        BlocProvider(create: (_) => sl<TimerCubit>()),
-        BlocProvider(create: (_) => sl<ScoreCubit>()),
       ],
-      child: GameView(),
+      child: PracticeGameView(),
     );
   }
 }
 
-class GameView extends StatefulWidget {
-  const GameView({super.key});
+class PracticeGameView extends StatefulWidget {
+  const PracticeGameView({super.key});
 
   @override
-  State<GameView> createState() => _GameViewState();
+  State<PracticeGameView> createState() => _PracticeGameViewState();
 }
 
-class _GameViewState extends State<GameView> {
+class _PracticeGameViewState extends State<PracticeGameView> {
   bool _hasStarted = false;
   bool _firstCompleted = false;
   Timer? _nextActionTimer;
 
   static const _phaseTimings = <GamePhase, Duration>{
-    GamePhase.incorrect: Duration(milliseconds: 100),
+    GamePhase.incorrect: Duration(seconds: 5),
     GamePhase.starting: Duration(seconds: 3),
     GamePhase.correct: Duration(seconds: 5),
     GamePhase.newQuestion: Duration(seconds: 1),
     GamePhase.repeatQuestion: Duration(seconds: 1),
-    GamePhase.skipByIncorrect: Duration(seconds: 2),
-    GamePhase.explanation: Duration(seconds: 2),
-    GamePhase.error: Duration(seconds: 1),
+    GamePhase.skipByIncorrect: Duration(seconds: 5),
+    GamePhase.explanation: Duration(seconds: 5),
+    GamePhase.error: Duration(seconds: 5),
   };
 
   void _waitForNextAction({required GamePhase gamePhase}) {
@@ -92,7 +88,6 @@ class _GameViewState extends State<GameView> {
     if (characterReady) {
       _hasStarted = true;
       context.read<GameCubit>().initGame();
-      //context.read<TimerCubit>().startTimer(duration: Duration(seconds: 10));
     }
   }
 
@@ -117,16 +112,6 @@ class _GameViewState extends State<GameView> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<TimerCubit, TimerState>(
-          listenWhen: (previous, current) => previous.remainingTime != current.remainingTime,
-          listener: (context, state) {
-            if (state.isCompleted) {
-              // Game Ended
-              context.read<GameCubit>().setFinishedGamePhase();
-            }
-          },
-        ),
-        // Check if Character is ready TODO change if want to check more than 1 dependency
         BlocListener<CharacterCubit, CharacterState>(
           listenWhen: (previous, current) {
             if (previous.controllerReady != current.controllerReady && current.controllerReady == true) {
@@ -154,10 +139,6 @@ class _GameViewState extends State<GameView> {
                   key: GameMessageMapper.messageKeyFor(state.gameQuestionEvent!.gameMode),
                   upperMessage: state.gameQuestionEvent!.operationMessage,
                 );
-                context.read<ScoreCubit>().onQuestionShown(weight: state.gameQuestionEvent!.questionWeight);
-                if (_firstCompleted) {
-                  context.read<TimerCubit>().startTimer(duration: Duration(seconds: 10));
-                }
                 break;
               case GamePhase.repeatQuestion:
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.thinking);
@@ -166,26 +147,25 @@ class _GameViewState extends State<GameView> {
                   upperMessage: state.gameQuestionEvent!.operationMessage,
                 );
                 break;
-              /*case GamePhase.checkingResult:
+              case GamePhase.checkingResult:
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.thinking);
-                context.read<DialogMessageCubit>().showMessage(message: 'Checking result...');
-                break;*/
+                context.read<DialogMessageCubit>().showMessageByKey(
+                  key: MessageKeyType.thinking,
+                );
+                break;
               case GamePhase.incorrect:
-                //context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.failed);
-                //context.read<DialogMessageCubit>().showMessage(message: 'Nope! Try it again!...');
+                context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.failed);
+                context.read<DialogMessageCubit>().showMessageByKey(key: MessageKeyType.incorrect);
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
                 context.read<AudioCubit>().playSound(soundType: SoundType.incorrect);
-
                 break;
               case GamePhase.correct:
                 if (!_firstCompleted) _firstCompleted = true;
-                context.read<ScoreCubit>().onCorrectAnswer();
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.success);
                 context.read<DialogMessageCubit>().showMessageByKey(key: MessageKeyType.correct);
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.stars);
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
                 context.read<AudioCubit>().playSound(soundType: SoundType.correct);
-                context.read<TimerCubit>().pauseTimer();
                 break;
               case GamePhase.skipByIncorrect:
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.failed);
@@ -195,14 +175,13 @@ class _GameViewState extends State<GameView> {
                 break;
               case GamePhase.error:
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.failed);
-                //context.read<DialogMessageCubit>().showMessage(message: 'What was that?...');
+                context.read<DialogMessageCubit>().showMessageByKey(key: MessageKeyType.error);
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
                 context.read<AudioCubit>().playSound(soundType: SoundType.incorrect);
-                //context.read<TimerCubit>().pauseTimer();
                 break;
               case GamePhase.explanation:
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.thinking);
-                context.read<DialogMessageCubit>().showMessage(message: '${state.gameQuestionEvent!.explanationMessage}...');
+                context.read<DialogMessageCubit>().showMessageByKey(key: MessageKeyType.explanation, upperMessage: ' --- ');
                 break;
               case GamePhase.finished:
                 _firstCompleted = false;
@@ -210,10 +189,8 @@ class _GameViewState extends State<GameView> {
                 context.read<DialogMessageCubit>().showMessageByKey(key: MessageKeyType.finished);
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.confetti);
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
-                context.read<PlayerProfileCubit>().registerFinalScore(score: context.read<ScoreCubit>().state.currentScore);
                 break;
               case GamePhase.starting:
-                context.read<ScoreCubit>().startScore();
                 context.read<DialogMessageCubit>().showMessageByKey(key: MessageKeyType.starting);
                 break;
               case (_):
@@ -240,10 +217,10 @@ class _GameViewState extends State<GameView> {
                           ),
                         ),
                         Align(alignment: AlignmentGeometry.center, child: PencilSign()),
-                        Align(
+                        /*Align(
                           alignment: AlignmentGeometry.center,
                           child: ScoreOverlay(),
-                        ),
+                        ),*/
                         Align(alignment: AlignmentGeometry.bottomCenter, child: DialogMessageText()),
                       ],
                     ),
@@ -253,9 +230,7 @@ class _GameViewState extends State<GameView> {
                 ],
               ),
               ScribbleCanvas(),
-              GameTopBar(),
-
-              //AttemptCounterSection(),
+              PracticeGameTopBar(),
               EffectsLayer(),
             ],
           ),
