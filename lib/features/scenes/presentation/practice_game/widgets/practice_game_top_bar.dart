@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_math_app/features/scenes/presentation/practice_game/widgets/incorrect_streak_indicator.dart';
+import 'package:flutter_math_app/features/game/presentation/widgets/strike_indicator/incorrect_streak_indicator.dart';
 
 class PracticeGameTopBar extends StatelessWidget {
   const PracticeGameTopBar({super.key});
@@ -15,7 +15,11 @@ class PracticeGameTopBar extends StatelessWidget {
             children: [
               Align(
                 alignment: AlignmentGeometry.topCenter,
-                child: StrikeIndicatorSection(),
+                child: Column(
+                  children: [
+                    StrikeIndicatorSection(),
+                  ],
+                ),
               ),
             ],
           ),
