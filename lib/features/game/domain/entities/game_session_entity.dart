@@ -17,6 +17,7 @@ class GameSessionEntity extends Equatable {
   bool get isCompleted => questionsAnswered >= AppGame.questionsPerSession;
   bool get isQuestionAnsweredByIncorrectTries => this.incorrectStreak >= AppGame.maxIncorectStreak;
   double get accuracy => questionsAnswered == 0 ? 0 : (correctCount / questionsAnswered);
+  double get progress => questionsAnswered == 0 ? 0 : (questionsAnswered / AppGame.questionsPerSession);
 
   GameSessionEntity recordAttempt({
     required bool wasCorrect,
