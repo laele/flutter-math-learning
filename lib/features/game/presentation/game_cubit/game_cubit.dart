@@ -121,6 +121,9 @@ class GameCubit extends Cubit<GameState> {
     var newStats = state.currentGameStats.recordAttempt(true);
     final tiers = DifficultyTiers.byMode[gameMode];
 
+    final cleanedSession = state.gameSession.cleanIncorrectStreak();
+    emit(state.copyWith(gameSession: cleanedSession));
+
     final isLevelUp = _gameRulesPolicy.allowLevelUp && tiers != null && newStats.shouldLevelUp && newStats.currentTierIndex < tiers.length - 1;
     if (isLevelUp) {
       newStats = newStats.copyWith(currentTierIndex: newStats.currentTierIndex + 1).resetRegistry();
@@ -131,7 +134,7 @@ class GameCubit extends Cubit<GameState> {
 
   void _handleIncorrect({required GameSessionEntity session}) {
     final maxAttempts = _gameRulesPolicy.maxIncorrectAttemptsToSkip;
-    if (maxAttempts == null || session.incorrectStreak <= maxAttempts) {
+    if (maxAttempts == null || session.incorrectStreak < maxAttempts) {
       _pause(
         GamePhase.incorrect,
         () {
@@ -153,6 +156,8 @@ class GameCubit extends Cubit<GameState> {
     _pause(
       GamePhase.skipByIncorrect,
       () {
+        final cleanedSession = state.gameSession.cleanIncorrectStreak();
+        emit(state.copyWith(gameSession: cleanedSession));
         _pause(GamePhase.explanation, _continueAfterAttempt);
       },
     );
@@ -162,8 +167,8 @@ class GameCubit extends Cubit<GameState> {
     if (_gameRulesPolicy.shouldEndSession(state.gameSession)) {
       _emitNextGamePhaseEvent(gamePhase: GamePhase.finished);
     } else {
-      final cleanedSession = state.gameSession.cleanIncorrectStreak();
-      emit(state.copyWith(gameSession: cleanedSession));
+      /*final cleanedSession = state.gameSession.cleanIncorrectStreak();
+      emit(state.copyWith(gameSession: cleanedSession));*/
       generateNextLevel();
     }
   }

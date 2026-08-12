@@ -17,7 +17,7 @@ class ScoreBadge extends StatelessWidget {
         children: [
           Center(
             child: Image.asset(
-              'lib/core/assets/images/star.png',
+              'lib/core/assets/images/star_1.png',
               color: Colors.white,
             ),
           ),
