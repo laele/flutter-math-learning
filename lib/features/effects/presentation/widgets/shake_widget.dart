@@ -21,7 +21,8 @@ class ShakeWidget extends StatefulWidget {
   State<ShakeWidget> createState() => ShakeWidgetState();
 }
 
-class ShakeWidgetState extends State<ShakeWidget> with SingleTickerProviderStateMixin {
+class ShakeWidgetState extends State<ShakeWidget>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _animation;
 
@@ -34,11 +35,15 @@ class ShakeWidgetState extends State<ShakeWidget> with SingleTickerProviderState
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: widget.duration, reverseDuration: widget.reverseDuration);
+    _controller = AnimationController(
+      vsync: this,
+      duration: widget.duration,
+      reverseDuration: widget.reverseDuration,
+    );
     _animation =
         Tween(
           begin: 1.0,
-          end: 1.25,
+          end: 1.095,
         ).animate(
           CurvedAnimation(
             parent: _controller,
@@ -58,7 +63,9 @@ class ShakeWidgetState extends State<ShakeWidget> with SingleTickerProviderState
   Widget build(BuildContext context) {
     return BlocListener<EffectsCubit, EffectsState>(
       listenWhen: (previous, current) {
-        if ((previous.effectsEvent != current.effectsEvent) && current.effectsEvent != null && current.effectsEvent?.type == EffectsType.shake) {
+        if ((previous.effectsEvent != current.effectsEvent) &&
+            current.effectsEvent != null &&
+            current.effectsEvent?.type == EffectsType.shake) {
           return true;
         }
         return false;
