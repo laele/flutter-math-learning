@@ -181,7 +181,7 @@ class _PracticeGameViewState extends State<PracticeGameView> {
                 break;
               case GamePhase.explanation:
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.thinking);
-                context.read<DialogMessageCubit>().showMessageByKey(key: MessageKeyType.explanation, upperMessage: ' --- ');
+                context.read<DialogMessageCubit>().showMessageByKey(key: MessageKeyType.explanation, upperMessage: state.gameQuestionEvent!.resultExplained);
                 break;
               case GamePhase.finished:
                 _firstCompleted = false;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_math_app/features/scenes/presentation/practice_game/widgets/strike_indicator.dart';
+import 'package:flutter_math_app/core/theme/app_colors.dart';
+import 'package:flutter_math_app/features/game/presentation/widgets/strike_indicator/strike_indicator.dart';
 
 class IncorrectStreakAnimated extends StatefulWidget {
   final bool isVisible;
@@ -86,16 +87,16 @@ class _IncorrectStreakAnimatedState extends State<IncorrectStreakAnimated> with 
       ),
       child: Container(
         padding: EdgeInsets.all(8.0),
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16.0)),
+        decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(16.0)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            StrikeIndicatorAnimated(widthSize: 40, heightSize: 40, color: widget.incorrectStreak > 0 ? Colors.red : Colors.black38),
+            StrikeIndicatorAnimated(widthSize: 35, heightSize: 35, color: widget.incorrectStreak > 0 ? Colors.red : Colors.black54),
             SizedBox(width: 8.0),
-            StrikeIndicatorAnimated(widthSize: 40, heightSize: 40, color: widget.incorrectStreak > 1 ? Colors.red : Colors.black38),
+            StrikeIndicatorAnimated(widthSize: 35, heightSize: 35, color: widget.incorrectStreak > 1 ? Colors.red : Colors.black54),
             SizedBox(width: 8.0),
-            StrikeIndicatorAnimated(widthSize: 40, heightSize: 40, color: widget.incorrectStreak > 2 ? Colors.red : Colors.black38),
+            StrikeIndicatorAnimated(widthSize: 35, heightSize: 35, color: widget.incorrectStreak > 2 ? Colors.red : Colors.black54),
           ],
         ),
       ),

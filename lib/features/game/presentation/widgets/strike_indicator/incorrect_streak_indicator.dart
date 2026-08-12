@@ -8,24 +8,7 @@ class StrikeIndicatorSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<GameCubit, GameState>(
-      listenWhen: (previous, current) {
-        if (previous.gameSession.incorrectStreak !=
-            current.gameSession.incorrectStreak) {
-          return true;
-        }
-        return false;
-      },
-      listener: (context, state) {
-        print('DO ANIMATION');
-      },
-      buildWhen: (previous, current) {
-        if (previous.gameSession.incorrectStreak !=
-            current.gameSession.incorrectStreak) {
-          return true;
-        }
-        return false;
-      },
+    return BlocBuilder<GameCubit, GameState>(
       builder: (context, state) {
         final incorrectStreak = state.gameSession.incorrectStreak;
 

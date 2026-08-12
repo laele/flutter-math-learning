@@ -6,8 +6,7 @@ class GameQuestionEvent extends Equatable {
   final int id;
   final GameQuestionEntity gameQuestion;
   final GameMode gameMode;
-  //final String indicationMessage;
-  //final String explanationMessage;
+
   final double questionWeight;
 
   String get currentGameModeOperator => switch (gameMode) {
@@ -18,6 +17,7 @@ class GameQuestionEvent extends Equatable {
     _ => '',
   };
 
+  String get resultExplained => '${gameQuestion.firstNum} $currentGameModeOperator ${gameQuestion.secNum} = ${gameQuestion.resultNum}';
   String get operationMessage => '${gameQuestion.firstNum} $currentGameModeOperator ${gameQuestion.secNum} ';
 
   const GameQuestionEvent({
@@ -25,8 +25,6 @@ class GameQuestionEvent extends Equatable {
     required this.id,
     required this.gameQuestion,
     required this.gameMode,
-    //required this.indicationMessage,
-    //required this.explanationMessage,
   });
 
   @override
@@ -34,8 +32,6 @@ class GameQuestionEvent extends Equatable {
     id,
     gameQuestion,
     gameMode,
-    //indicationMessage,
-    //explanationMessage,
     questionWeight,
   ];
 }
