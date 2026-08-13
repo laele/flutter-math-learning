@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_math_app/core/mixins/event_emitter.dart';
+import 'package:flutter_math_app/core/mixins/pausable_actions.dart';
 import 'package:flutter_math_app/features/game/domain/constants/difficulty_tiers.dart';
 import 'package:flutter_math_app/features/game/domain/constants/game_modes.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_phase_event.dart';
@@ -19,11 +20,9 @@ import 'package:flutter_math_app/features/game/domain/services/question_weight_c
 
 part 'game_state.dart';
 
-class GameCubit extends Cubit<GameState> with EventEmitter {
+class GameCubit extends Cubit<GameState> with EventEmitter, PausableActions {
   final MixModeSelector _mixModeSelector;
   final GameRulesPolicy _gameRulesPolicy;
-
-  VoidCallback? _nextAction;
 
   GameCubit({
     MixModeSelector? mixModeSelector,
@@ -54,23 +53,14 @@ class GameCubit extends Cubit<GameState> with EventEmitter {
     emit(state.copyWith(gamePhaseEvent: gamePhaseEvent));
   }
 
-  void _pause(GamePhase phase, VoidCallback nextAction) {
-    _emitNextGamePhaseEvent(gamePhase: phase);
-    _nextAction = nextAction;
-  }
-
-  void continueAction() {
-    final action = _nextAction;
-    _nextAction = null;
-    action?.call();
-  }
-
   void initGame() {
     emit(state.copyWith(gameSession: GameSessionEntity(), stats: {})); // Cambiar pot stats del profile player
     _emitNextGamePhaseEvent(gamePhase: GamePhase.starting);
-    _pause(GamePhase.starting, () {
-      generateNextLevel();
-    });
+    pauseFor(
+      () {
+        generateNextLevel();
+      },
+    );
   }
 
   void generateNextLevel() {
@@ -127,18 +117,17 @@ class GameCubit extends Cubit<GameState> with EventEmitter {
       newStats = newStats.copyWith(currentTierIndex: newStats.currentTierIndex + 1).resetRegistry();
     }
     _setNewStats(gameMode, newStats);
-    _pause(GamePhase.correct, _continueAfterAttempt);
+    _emitNextGamePhaseEvent(gamePhase: GamePhase.correct);
+    pauseFor(
+      () => _continueAfterAttempt(),
+    );
   }
 
   void _handleIncorrect({required GameSessionEntity session}) {
     final maxAttempts = _gameRulesPolicy.maxIncorrectAttemptsToSkip;
     if (maxAttempts == null || session.incorrectStreak < maxAttempts) {
-      _pause(
-        GamePhase.incorrect,
-        () {
-          _emitNextGamePhaseEvent(gamePhase: GamePhase.repeatQuestion);
-        },
-      );
+      _emitNextGamePhaseEvent(gamePhase: GamePhase.incorrect);
+      pauseFor(() => _emitNextGamePhaseEvent(gamePhase: GamePhase.repeatQuestion));
       return;
     }
 
@@ -151,12 +140,15 @@ class GameCubit extends Cubit<GameState> with EventEmitter {
     }
 
     _setNewStats(gameMode, newStats);
-    _pause(
-      GamePhase.skipByIncorrect,
+    _emitNextGamePhaseEvent(gamePhase: GamePhase.skipByIncorrect);
+    pauseFor(
       () {
         final cleanedSession = state.gameSession.cleanIncorrectStreak();
         emit(state.copyWith(gameSession: cleanedSession));
-        _pause(GamePhase.explanation, _continueAfterAttempt);
+        _emitNextGamePhaseEvent(gamePhase: GamePhase.explanation);
+        pauseFor(
+          () => _continueAfterAttempt(),
+        );
       },
     );
   }
@@ -165,16 +157,13 @@ class GameCubit extends Cubit<GameState> with EventEmitter {
     if (_gameRulesPolicy.shouldEndSession(state.gameSession)) {
       _emitNextGamePhaseEvent(gamePhase: GamePhase.finished);
     } else {
-      /*final cleanedSession = state.gameSession.cleanIncorrectStreak();
-      emit(state.copyWith(gameSession: cleanedSession));*/
       generateNextLevel();
     }
   }
 
   Future<void> setErrorGamePhase() async {
-    _pause(GamePhase.error, () {
-      _emitNextGamePhaseEvent(gamePhase: GamePhase.repeatQuestion);
-    });
+    _emitNextGamePhaseEvent(gamePhase: GamePhase.error);
+    pauseFor(() => _emitNextGamePhaseEvent(gamePhase: GamePhase.repeatQuestion));
   }
 
   Future<void> setFinishedGamePhase() async {
