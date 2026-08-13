@@ -24,6 +24,12 @@ class PlayerProfileLocalDatasourceImpl implements PlayerProfileLocalDataSource {
   @override
   Future<void> saveProfile(profile) async {
     try {
+      // get existing id register to avoid duplicated data
+      final existing = await _isar.playerProfileModels.where().findFirst();
+      if (existing != null) {
+        profile.id = existing.id;
+      }
+      // ---
       return await _isar.writeTxn(
         () async {
           await _isar.playerProfileModels.put(profile);

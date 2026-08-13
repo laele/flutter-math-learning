@@ -27,6 +27,7 @@ class PlayerProfileCubit extends Cubit<PlayerProfileState> {
     result.fold(
       (failure) => emit(state.copyWith(status: PlayerProfileStatus.error)),
       (profile) {
+        print(profile);
         emit(state.copyWith(status: PlayerProfileStatus.success, profile: profile));
       },
     );

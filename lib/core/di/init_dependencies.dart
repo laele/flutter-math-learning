@@ -41,6 +41,13 @@ Future<void> initDependencies() async {
   final sharedPrefs = await SharedPreferences.getInstance();
   final isarInstance = await Isar.open([PlayerProfileModelSchema], directory: (await getApplicationDocumentsDirectory()).path);
 
+  final count = await isarInstance.playerProfileModels.count();
+  print('🔍 Registros de perfil en Isar: $count');
+  final all = await isarInstance.playerProfileModels.where().findAll();
+  for (final p in all) {
+    print('  → id: ${p.id}, name: ${p.playerName}, bestScore: ${p.bestArcadeScore}');
+  }
+
   sl.registerLazySingleton<Isar>(() => isarInstance);
   await initInputRecognizer();
   await initAudio();

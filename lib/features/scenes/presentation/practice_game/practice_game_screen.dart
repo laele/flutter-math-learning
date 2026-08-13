@@ -23,7 +23,6 @@ import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubi
 import 'package:flutter_math_app/features/player_prefs/presentation/cubit/player_profile_cubit.dart';
 import 'package:flutter_math_app/features/scenes/presentation/practice_game/widgets/practice_game_top_bar.dart';
 import 'package:flutter_math_app/features/scenes/presentation/shared/widgets/game_message_mapper.dart';
-import 'package:flutter_math_app/features/scenes/presentation/arcade_game/score_overlay.dart';
 import 'package:flutter_math_app/features/input_recognition/presentation/input_recognition_cubit/input_recognition_cubit.dart';
 import 'package:flutter_math_app/features/scenes/presentation/arcade_game/widgets/game_fab.dart';
 import 'package:flutter_math_app/features/scenes/presentation/shared/widgets/scribble_canvas.dart';
