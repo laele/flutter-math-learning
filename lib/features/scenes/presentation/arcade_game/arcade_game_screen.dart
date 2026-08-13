@@ -153,6 +153,7 @@ class _ArcadeGameViewState extends State<ArcadeGameView> {
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: GameMessageMapper.messageKeyFor(state.gameQuestionEvent!.gameMode),
                   upperMessage: state.gameQuestionEvent!.operationMessage,
+                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
                 );
                 context.read<ScoreCubit>().onQuestionShown(weight: state.gameQuestionEvent!.questionWeight);
                 if (_firstCompleted) {
@@ -164,6 +165,7 @@ class _ArcadeGameViewState extends State<ArcadeGameView> {
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: GameMessageMapper.messageKeyFor(state.gameQuestionEvent!.gameMode),
                   upperMessage: state.gameQuestionEvent!.operationMessage,
+                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
                 );
                 break;
               /*case GamePhase.checkingResult:
@@ -181,7 +183,10 @@ class _ArcadeGameViewState extends State<ArcadeGameView> {
                 if (!_firstCompleted) _firstCompleted = true;
                 context.read<ScoreCubit>().onCorrectAnswer();
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.success);
-                context.read<DialogMessageCubit>().showMessageByKey(key: MessageKeyType.correct);
+                context.read<DialogMessageCubit>().showMessageByKey(
+                  key: MessageKeyType.correct,
+                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
+                );
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.stars);
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
                 context.read<AudioCubit>().playSound(soundType: SoundType.correct);
@@ -189,7 +194,10 @@ class _ArcadeGameViewState extends State<ArcadeGameView> {
                 break;
               case GamePhase.skipByIncorrect:
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.failed);
-                context.read<DialogMessageCubit>().showMessageByKey(key: MessageKeyType.skipByIncorrect);
+                context.read<DialogMessageCubit>().showMessageByKey(
+                  key: MessageKeyType.skipByIncorrect,
+                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
+                );
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
                 context.read<AudioCubit>().playSound(soundType: SoundType.incorrect);
                 break;
@@ -205,14 +213,20 @@ class _ArcadeGameViewState extends State<ArcadeGameView> {
               case GamePhase.finished:
                 _firstCompleted = false;
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.success);
-                context.read<DialogMessageCubit>().showMessageByKey(key: MessageKeyType.finished);
+                context.read<DialogMessageCubit>().showMessageByKey(
+                  key: MessageKeyType.finished,
+                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
+                );
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.confetti);
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
                 context.read<PlayerProfileCubit>().registerFinalScore(score: context.read<ScoreCubit>().state.currentScore);
                 break;
               case GamePhase.starting:
                 context.read<ScoreCubit>().startScore();
-                context.read<DialogMessageCubit>().showMessageByKey(key: MessageKeyType.starting);
+                context.read<DialogMessageCubit>().showMessageByKey(
+                  key: MessageKeyType.starting,
+                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
+                );
                 break;
               case (_):
                 break;

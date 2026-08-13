@@ -20,11 +20,14 @@ class DialogMessageCubit extends Cubit<DialogMessageState> {
         DialogMessageState(),
       );
 
-  void showMessageByKey({required MessageKeyType key, String? upperMessage}) {
-    final message = _repository.getMessage(key: key);
+  void showMessageByKey({required MessageKeyType key, String? upperMessage, required String playerName}) {
+    final message = _repository.getMessage(key: key, playerName: playerName);
     emit(
       state.copyWith(
-        dialogMessageEvent: _nextDialogMessage(message: message, upperMessage: upperMessage),
+        dialogMessageEvent: _nextDialogMessage(
+          message: message,
+          upperMessage: upperMessage,
+        ),
       ),
     );
   }

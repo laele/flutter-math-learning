@@ -20,6 +20,7 @@ import 'package:flutter_math_app/features/effects/presentation/widgets/shake_wid
 import 'package:flutter_math_app/features/game/domain/enums/game_phase.dart';
 import 'package:flutter_math_app/features/game/domain/services/game_rules_policy.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
+import 'package:flutter_math_app/features/player_prefs/presentation/cubit/player_profile_cubit.dart';
 import 'package:flutter_math_app/features/scenes/presentation/practice_game/widgets/practice_game_top_bar.dart';
 import 'package:flutter_math_app/features/scenes/presentation/shared/widgets/game_message_mapper.dart';
 import 'package:flutter_math_app/features/scenes/presentation/arcade_game/score_overlay.dart';
@@ -138,6 +139,7 @@ class _PracticeGameViewState extends State<PracticeGameView> {
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: GameMessageMapper.messageKeyFor(state.gameQuestionEvent!.gameMode),
                   upperMessage: state.gameQuestionEvent!.operationMessage,
+                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
                 );
                 break;
               case GamePhase.repeatQuestion:
@@ -145,53 +147,77 @@ class _PracticeGameViewState extends State<PracticeGameView> {
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: GameMessageMapper.messageKeyFor(state.gameQuestionEvent!.gameMode),
                   upperMessage: state.gameQuestionEvent!.operationMessage,
+                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
                 );
                 break;
               case GamePhase.checkingResult:
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.thinking);
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: MessageKeyType.thinking,
+                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
                 );
                 break;
               case GamePhase.incorrect:
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.failed);
-                context.read<DialogMessageCubit>().showMessageByKey(key: MessageKeyType.incorrect);
+                context.read<DialogMessageCubit>().showMessageByKey(
+                  key: MessageKeyType.incorrect,
+                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
+                );
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
                 context.read<AudioCubit>().playSound(soundType: SoundType.incorrect);
                 break;
               case GamePhase.correct:
                 if (!_firstCompleted) _firstCompleted = true;
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.success);
-                context.read<DialogMessageCubit>().showMessageByKey(key: MessageKeyType.correct);
+                context.read<DialogMessageCubit>().showMessageByKey(
+                  key: MessageKeyType.correct,
+                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
+                );
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.stars);
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
                 context.read<AudioCubit>().playSound(soundType: SoundType.correct);
                 break;
               case GamePhase.skipByIncorrect:
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.failed);
-                context.read<DialogMessageCubit>().showMessageByKey(key: MessageKeyType.skipByIncorrect);
+                context.read<DialogMessageCubit>().showMessageByKey(
+                  key: MessageKeyType.skipByIncorrect,
+                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
+                );
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
                 context.read<AudioCubit>().playSound(soundType: SoundType.incorrect);
                 break;
               case GamePhase.error:
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.failed);
-                context.read<DialogMessageCubit>().showMessageByKey(key: MessageKeyType.error);
+                context.read<DialogMessageCubit>().showMessageByKey(
+                  key: MessageKeyType.error,
+                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
+                );
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
                 context.read<AudioCubit>().playSound(soundType: SoundType.incorrect);
                 break;
               case GamePhase.explanation:
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.thinking);
-                context.read<DialogMessageCubit>().showMessageByKey(key: MessageKeyType.explanation, upperMessage: state.gameQuestionEvent!.resultExplained);
+                context.read<DialogMessageCubit>().showMessageByKey(
+                  key: MessageKeyType.explanation,
+                  upperMessage: state.gameQuestionEvent!.resultExplained,
+                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
+                );
                 break;
               case GamePhase.finished:
                 _firstCompleted = false;
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.success);
-                context.read<DialogMessageCubit>().showMessageByKey(key: MessageKeyType.finished);
+                context.read<DialogMessageCubit>().showMessageByKey(
+                  key: MessageKeyType.finished,
+                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
+                );
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.confetti);
                 context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
                 break;
               case GamePhase.starting:
-                context.read<DialogMessageCubit>().showMessageByKey(key: MessageKeyType.starting);
+                context.read<DialogMessageCubit>().showMessageByKey(
+                  key: MessageKeyType.starting,
+                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
+                );
                 break;
               case (_):
                 break;

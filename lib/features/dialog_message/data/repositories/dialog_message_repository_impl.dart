@@ -21,8 +21,14 @@ class DialogMessageRepositoryImpl implements DialogMessageRepository {
   }
 
   @override
-  String getMessage({required MessageKeyType key}) {
+  String getMessage({required MessageKeyType key, String? playerName}) {
     final pool = _poolsByLocale[_currentLocale] ?? _poolsByLocale.values.first;
-    return _picker.pick(pool.forKey(key));
+    final rawMessage = _picker.pick(pool.forKey(key));
+    return _applyPlaceholders(rawMessage, playerName: playerName);
+  }
+
+  String _applyPlaceholders(String message, {String? playerName}) {
+    final name = (playerName == null) || playerName.trim().isEmpty ? 'Player' : playerName.trim();
+    return message.replaceAll('{name}', name);
   }
 }
