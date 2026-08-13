@@ -1,18 +1,18 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_math_app/core/mixins/event_emitter.dart';
 import 'package:flutter_math_app/features/audio/domain/entities/sound_event.dart';
 import 'package:flutter_math_app/features/audio/domain/enums/sound_type.dart';
 import 'package:flutter_math_app/features/audio/domain/repositories/audio_repository.dart';
 
 part 'audio_state.dart';
 
-class AudioCubit extends Cubit<AudioState> {
+class AudioCubit extends Cubit<AudioState> with EventEmitter {
   final AudioRepository _audioRepository;
-  int _soundEventCounter = 0;
   AudioCubit({required AudioRepository audioRepository}) : _audioRepository = audioRepository, super(const AudioState());
 
   void _emitNewSoundEvent({required SoundType soundType}) {
-    final SoundEvent newSoundEvent = SoundEvent(type: soundType, id: ++_soundEventCounter);
+    final SoundEvent newSoundEvent = SoundEvent(type: soundType, id: nextEventId());
     emit(state.copyWith(soundEvent: newSoundEvent));
   }
 

@@ -1,15 +1,14 @@
-import 'package:equatable/equatable.dart';
+import 'package:flutter_math_app/core/entities/domain_event.dart';
 import 'package:flutter_math_app/features/game/domain/enums/game_phase.dart';
 
-class GamePhaseEvent extends Equatable {
-  final int id;
+class GamePhaseEvent extends DomainEvent {
   final GamePhase gamePhase;
 
-  const GamePhaseEvent({required this.id, required this.gamePhase});
+  const GamePhaseEvent({required super.id, required this.gamePhase});
 
   @override
   List<Object?> get props => [
-    id,
+    ...super.props,
     gamePhase,
   ];
 }

@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_math_app/core/mixins/event_emitter.dart';
 import 'package:flutter_math_app/features/game/domain/constants/difficulty_tiers.dart';
 import 'package:flutter_math_app/features/game/domain/constants/game_modes.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_phase_event.dart';
@@ -18,12 +19,9 @@ import 'package:flutter_math_app/features/game/domain/services/question_weight_c
 
 part 'game_state.dart';
 
-class GameCubit extends Cubit<GameState> {
+class GameCubit extends Cubit<GameState> with EventEmitter {
   final MixModeSelector _mixModeSelector;
   final GameRulesPolicy _gameRulesPolicy;
-
-  int _gameQuestionEventCounter = 0;
-  int _gamePhaseEventCounter = 0;
 
   VoidCallback? _nextAction;
 
@@ -44,7 +42,7 @@ class GameCubit extends Cubit<GameState> {
     required double questionWeight,
   }) {
     return GameQuestionEvent(
-      id: ++_gameQuestionEventCounter,
+      id: nextEventId(),
       gameQuestion: gameQuestion,
       gameMode: gameMode,
       questionWeight: questionWeight,
@@ -52,7 +50,7 @@ class GameCubit extends Cubit<GameState> {
   }
 
   void _emitNextGamePhaseEvent({required GamePhase gamePhase}) {
-    final gamePhaseEvent = GamePhaseEvent(id: ++_gamePhaseEventCounter, gamePhase: gamePhase);
+    final gamePhaseEvent = GamePhaseEvent(id: nextEventId(), gamePhase: gamePhase);
     emit(state.copyWith(gamePhaseEvent: gamePhaseEvent));
   }
 

@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_math_app/core/mixins/event_emitter.dart';
 import 'package:flutter_math_app/features/player_prefs/domain/entities/new_record_event.dart';
 import 'package:flutter_math_app/features/player_prefs/domain/entities/player_profile_entity.dart';
 import 'package:flutter_math_app/features/player_prefs/domain/enums/player_profile_status.dart';
@@ -7,9 +8,8 @@ import 'package:flutter_math_app/features/player_prefs/domain/repositories/playe
 
 part 'player_profile_state.dart';
 
-class PlayerProfileCubit extends Cubit<PlayerProfileState> {
+class PlayerProfileCubit extends Cubit<PlayerProfileState> with EventEmitter {
   final PlayerProfileRepository _repository;
-  int newRecordEventCounter = 0;
 
   PlayerProfileCubit({required PlayerProfileRepository repository})
     : _repository = repository,
@@ -18,7 +18,7 @@ class PlayerProfileCubit extends Cubit<PlayerProfileState> {
       );
 
   NewRecordEvent _nextRecordEvent({required int newScore}) {
-    return NewRecordEvent(id: ++newRecordEventCounter, score: newScore);
+    return NewRecordEvent(id: nextEventId(), score: newScore);
   }
 
   Future<void> loadProfile() async {
