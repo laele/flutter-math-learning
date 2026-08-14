@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_math_app/core/widgets/progress_bar/animated_progress_bar.dart';
-import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
+import 'package:flutter_math_app/features/tutorial/presentation/cubit/tutorial_cubit.dart';
 
-class GameSessionProgressIndicatorBar extends StatelessWidget {
-  const GameSessionProgressIndicatorBar({super.key});
+class TutorialProgressIndicatiorBar extends StatelessWidget {
+  const TutorialProgressIndicatiorBar({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GameCubit, GameState>(
+    return BlocBuilder<TutorialCubit, TutorialState>(
       buildWhen: (previous, current) {
-        if (previous.gameSession.questionsAnswered != current.gameSession.questionsAnswered) {
+        if (previous.progress != current.progress) {
           return true;
         }
         return false;
       },
       builder: (context, state) {
-        final progress = state.gameSession.progress;
+        final progress = state.progress;
         return AnimatedProgresBar(progress: progress);
       },
     );

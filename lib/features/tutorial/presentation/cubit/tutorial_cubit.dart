@@ -10,7 +10,7 @@ import 'package:flutter_math_app/features/tutorial/domain/enums/tutorial_phase.d
 part 'tutorial_state.dart';
 
 class TutorialCubit extends Cubit<TutorialState> with EventEmitter, PausableActions {
-  int _currentStepIndex = 0;
+  //int _currentStepIndex = 0;
 
   TutorialCubit() : super(TutorialState());
 
@@ -26,18 +26,17 @@ class TutorialCubit extends Cubit<TutorialState> with EventEmitter, PausableActi
   }
 
   void startTutorial() {
-    _currentStepIndex = 0;
     _emitNextTutorialPhaseEvent(phase: TutorialPhase.starting);
     _showCurrentStep();
   }
 
   void _showCurrentStep() {
-    if (_currentStepIndex >= TutorialSequence.steps.length) {
+    if (state.currentStepIndex >= TutorialSequence.steps.length) {
       _emitNextTutorialPhaseEvent(phase: TutorialPhase.finished);
       return;
     }
 
-    final step = TutorialSequence.steps[_currentStepIndex];
+    final step = TutorialSequence.steps[state.currentStepIndex];
     emit(state.copyWith(currentStep: step));
 
     if (step.requiresInput) {
@@ -71,7 +70,8 @@ class TutorialCubit extends Cubit<TutorialState> with EventEmitter, PausableActi
   }
 
   void _advanceStep() {
-    _currentStepIndex++;
+    final newIndex = state.currentStepIndex + 1;
+    emit(state.copyWith(currentStepIndex: newIndex));
     _showCurrentStep();
   }
 }

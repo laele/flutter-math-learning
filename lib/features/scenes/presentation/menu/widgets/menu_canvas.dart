@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_math_app/core/l10n/arb/app_localizations.dart';
 import 'package:flutter_math_app/core/theme/app_colors.dart';
+import 'package:flutter_math_app/core/widgets/custom_icon.dart';
 import 'package:flutter_math_app/core/widgets/score_badge.dart';
 import 'package:flutter_math_app/features/player_prefs/presentation/cubit/player_profile_cubit.dart';
 import 'package:flutter_math_app/features/scenes/presentation/practice_game/practice_game_screen.dart';
@@ -104,6 +105,7 @@ class MenuCanvas extends StatelessWidget {
                                               ),
                                             ],
                                           ),
+                                          SizedBox(height: 4.0),
                                           Text(
                                             l10n.bestScore,
                                             style: Theme.of(context).textTheme!.labelMedium!.copyWith(
@@ -136,7 +138,11 @@ class MenuCanvas extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            SizedBox(height: 32, width: 32, child: Image.asset('lib/core/assets/images/lang_icon.png')),
+                            CustomIcon(
+                              assetRoute: 'lib/core/assets/images/lang_icon.png',
+                              useColor: false,
+                              size: IconSize.lg,
+                            ),
                             SizedBox(width: 4),
                             Flexible(
                               child: Text(
@@ -160,7 +166,11 @@ class MenuCanvas extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            SizedBox(height: 32, width: 32, child: Image.asset('lib/core/assets/images/how_to_play_icon.png')),
+                            CustomIcon(
+                              assetRoute: 'lib/core/assets/images/how_to_play_icon.png',
+                              useColor: false,
+                              size: IconSize.lg,
+                            ),
                           ],
                         ),
                       ),
@@ -176,7 +186,11 @@ class MenuCanvas extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.play_arrow),
+                            CustomIcon(
+                              assetRoute: 'lib/core/assets/images/play_icon.png',
+                              useColor: false,
+                            ),
+                            SizedBox(width: 4.0),
                             Flexible(
                               child: Text(
                                 l10n.practiceMode,
@@ -225,7 +239,13 @@ class _EditablePlayerNameState extends State<EditablePlayerName> {
         return !_isEditing
             ? Badge(
                 padding: EdgeInsets.all(8.0),
-                label: Icon(Icons.edit),
+                backgroundColor: AppColors.onPrimaryBorder,
+                label: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: CustomIcon(
+                    assetRoute: 'lib/core/assets/images/edit.png',
+                  ),
+                ),
                 child: GestureDetector(
                   onTap: () {
                     setState(() => _isEditing = true);

@@ -1,5 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_math_app/core/widgets/custom_icon.dart';
 import 'package:flutter_math_app/features/scenes/presentation/arcade_game/arcade_game_screen.dart';
 
 class MenuFloatingActionButtons extends StatelessWidget {
@@ -24,11 +25,7 @@ class MenuFloatingActionButtons extends StatelessWidget {
                     MaterialPageRoute(builder: (_) => ArcadeGameScreen()),
                   );
                 },
-                child: SizedBox(
-                  height: 16,
-                  width: 16,
-                  child: Image.asset('lib/core/assets/images/play_icon.png'),
-                ),
+                child: CustomIcon(assetRoute: 'lib/core/assets/images/play_icon.png'),
               ),
             ],
           ),

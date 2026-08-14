@@ -1,5 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_math_app/core/widgets/custom_icon.dart';
 import 'package:flutter_math_app/features/scenes/presentation/menu/menu_screen.dart';
 
 class GameFloatingActionButtons extends StatelessWidget {
@@ -24,7 +25,7 @@ class GameFloatingActionButtons extends StatelessWidget {
                       MaterialPageRoute(builder: (_) => MenuScreen()),
                     );
                   },
-                  child: Icon(Icons.arrow_back),
+                  child: CustomIcon(assetRoute: 'lib/core/assets/images/arrow_left.png'),
                 ),
               ),
             ),

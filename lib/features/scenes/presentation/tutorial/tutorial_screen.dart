@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_math_app/core/di/init_dependencies.dart';
 import 'package:flutter_math_app/core/theme/app_gradients.dart';
+import 'package:flutter_math_app/core/widgets/custom_icon.dart';
 import 'package:flutter_math_app/features/character/domain/enums/character_animation_type.dart';
 import 'package:flutter_math_app/features/character/presentation/character_rive.dart';
 import 'package:flutter_math_app/features/character/presentation/cubit/character_cubit.dart';
@@ -15,10 +16,12 @@ import 'package:flutter_math_app/features/effects/presentation/widgets/shake_wid
 import 'package:flutter_math_app/features/input_recognition/presentation/input_recognition_cubit/input_recognition_cubit.dart';
 import 'package:flutter_math_app/features/player_prefs/presentation/cubit/player_profile_cubit.dart';
 import 'package:flutter_math_app/features/scenes/presentation/arcade_game/widgets/game_fab.dart';
+import 'package:flutter_math_app/features/scenes/presentation/arcade_game/widgets/game_top_bar.dart';
 import 'package:flutter_math_app/features/scenes/presentation/menu/menu_screen.dart';
 import 'package:flutter_math_app/features/scenes/presentation/shared/widgets/tutorial_scribble_canvas.dart';
 import 'package:flutter_math_app/features/scenes/presentation/tutorial/tutorial_message_maper.dart';
 import 'package:flutter_math_app/features/scenes/presentation/tutorial/widgets/tutorial_pencil_indicator.dart';
+import 'package:flutter_math_app/features/scenes/presentation/tutorial/widgets/tutorial_top_bar.dart';
 import 'package:flutter_math_app/features/tutorial/domain/enums/tutorial_phase.dart';
 import 'package:flutter_math_app/features/tutorial/domain/enums/tutorial_step_type.dart';
 import 'package:flutter_math_app/features/tutorial/presentation/cubit/tutorial_cubit.dart';
@@ -237,8 +240,6 @@ class _TutorialViewState extends State<TutorialView> {
               case (_):
                 break;
             }
-
-            //_waitForNextAction(tutorialPhase: tutorialPhase);
           },
         ),
       ],
@@ -281,7 +282,7 @@ class _TutorialViewState extends State<TutorialView> {
               ),
               TutorialScribbleCanvas(),
 
-              //GameTopBar(),
+              TutorialTopBar(),
               _showSkipStep
                   ? Padding(
                       padding: const EdgeInsets.all(16.0),
@@ -298,7 +299,7 @@ class _TutorialViewState extends State<TutorialView> {
                               context.read<TutorialCubit>().continueAction();
                             }
                           },
-                          child: Icon(Icons.arrow_circle_right_outlined),
+                          child: CustomIcon(assetRoute: 'lib/core/assets/images/arrow_right.png'),
                         ),
                       ),
                     )
