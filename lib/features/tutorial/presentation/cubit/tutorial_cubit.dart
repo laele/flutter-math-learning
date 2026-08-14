@@ -9,8 +9,7 @@ import 'package:flutter_math_app/features/tutorial/domain/enums/tutorial_phase.d
 
 part 'tutorial_state.dart';
 
-class TutorialCubit extends Cubit<TutorialState>
-    with EventEmitter, PausableActions {
+class TutorialCubit extends Cubit<TutorialState> with EventEmitter, PausableActions {
   int _currentStepIndex = 0;
 
   TutorialCubit() : super(TutorialState());
@@ -54,13 +53,19 @@ class TutorialCubit extends Cubit<TutorialState>
     if (expected == null) return;
 
     if (result == expected) {
-      print('correct');
-
-      _emitNextTutorialPhaseEvent(phase: TutorialPhase.stepCompleted);
-      pauseFor(_advanceStep);
+      _emitNextTutorialPhaseEvent(phase: TutorialPhase.correct);
+      pauseFor(
+        () {
+          _advanceStep();
+        },
+      );
     } else {
-      print('incorrect');
-      _emitNextTutorialPhaseEvent(phase: TutorialPhase.waitingInput);
+      _emitNextTutorialPhaseEvent(phase: TutorialPhase.incorrect);
+      pauseFor(
+        () {
+          _showCurrentStep();
+        },
+      );
     }
   }
 
@@ -68,7 +73,7 @@ class TutorialCubit extends Cubit<TutorialState>
     _emitNextTutorialPhaseEvent(phase: TutorialPhase.inputError);
     pauseFor(
       () {
-        _emitNextTutorialPhaseEvent(phase: TutorialPhase.waitingInput);
+        _showCurrentStep();
       },
     );
   }

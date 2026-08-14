@@ -10,5 +10,8 @@ class TutorialMessageMapper {
     TutorialStepType.practiceAdd => MessageKeyType.tutorialPracticeAdd,
     TutorialStepType.showScoreExplain => MessageKeyType.tutorialShowScore,
     TutorialStepType.ready => MessageKeyType.tutorialReady,
+    TutorialStepType.incorrect => MessageKeyType.incorrect,
+    TutorialStepType.correct => MessageKeyType.correct,
+    TutorialStepType.error => MessageKeyType.error,
   };
 }

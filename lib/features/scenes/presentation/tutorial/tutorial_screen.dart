@@ -15,6 +15,7 @@ import 'package:flutter_math_app/features/effects/presentation/widgets/shake_wid
 import 'package:flutter_math_app/features/input_recognition/presentation/input_recognition_cubit/input_recognition_cubit.dart';
 import 'package:flutter_math_app/features/player_prefs/presentation/cubit/player_profile_cubit.dart';
 import 'package:flutter_math_app/features/scenes/presentation/arcade_game/widgets/game_fab.dart';
+import 'package:flutter_math_app/features/scenes/presentation/menu/menu_screen.dart';
 import 'package:flutter_math_app/features/scenes/presentation/shared/widgets/tutorial_scribble_canvas.dart';
 import 'package:flutter_math_app/features/scenes/presentation/tutorial/tutorial_message_maper.dart';
 import 'package:flutter_math_app/features/scenes/presentation/tutorial/widgets/tutorial_pencil_indicator.dart';
@@ -49,6 +50,7 @@ class TutorialView extends StatefulWidget {
 class _TutorialViewState extends State<TutorialView> {
   bool _hasStarted = false;
   bool _showPencilSign = false;
+  bool _showSkipStep = true;
   Timer? _nextActionTimer;
 
   void _startTutorialIfReady() {
@@ -97,8 +99,7 @@ class _TutorialViewState extends State<TutorialView> {
       listeners: [
         BlocListener<CharacterCubit, CharacterState>(
           listenWhen: (previous, current) {
-            if (previous.controllerReady != current.controllerReady &&
-                current.controllerReady == true) {
+            if (previous.controllerReady != current.controllerReady && current.controllerReady == true) {
               return true;
             }
             return false;
@@ -110,33 +111,18 @@ class _TutorialViewState extends State<TutorialView> {
 
         BlocListener<TutorialCubit, TutorialState>(
           listenWhen: (previous, current) {
-            final bool isTutorialPhaseChanged =
-                previous.tutorialPhaseEvent != current.tutorialPhaseEvent;
-            final bool isTutorialStepChanged =
-                previous.currentStep != current.currentStep;
-            if ((isTutorialPhaseChanged || isTutorialStepChanged) &&
-                current.tutorialPhaseEvent != null &&
-                current.currentStep != null) {
+            final bool isTutorialPhaseChanged = previous.tutorialPhaseEvent != current.tutorialPhaseEvent;
+            final bool isTutorialStepChanged = previous.currentStep != current.currentStep;
+            if ((isTutorialPhaseChanged || isTutorialStepChanged) && current.tutorialPhaseEvent != null && current.currentStep != null) {
               return true;
             }
             return false;
           },
           listener: (context, state) {
             final tutorialPhase = state.tutorialPhaseEvent!.phase;
-            final playerName = context
-                .read<PlayerProfileCubit>()
-                .state
-                .profile
-                .playerName;
+            final playerName = context.read<PlayerProfileCubit>().state.profile.playerName;
 
-            /*if (state.currentStep != null) {
-              context.read<DialogMessageCubit>().showMessageByKey(
-                key: TutorialMessageMapper.keyFor(state.currentStep!.type),
-                playerName: playerName,
-              );
-            }*/
-
-            /*switch (state.tutorialPhaseEvent!.phase) {
+            switch (state.tutorialPhaseEvent!.phase) {
               case TutorialPhase.inputError:
                 context.read<CharacterCubit>().playCharacterAnimation(
                   CharacterAnimationType.failed,
@@ -171,7 +157,7 @@ class _TutorialViewState extends State<TutorialView> {
                 _waitForNextAction();
               case (_):
                 break;
-            }*/
+            }
 
             switch (state.currentStep!.type) {
               case TutorialStepType.welcome:
@@ -198,6 +184,9 @@ class _TutorialViewState extends State<TutorialView> {
                 });
                 break;
               case TutorialStepType.practiceDraw:
+                setState(() {
+                  _showSkipStep = false;
+                });
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: TutorialMessageMapper.keyFor(
                     TutorialStepType.practiceDraw,
@@ -214,14 +203,15 @@ class _TutorialViewState extends State<TutorialView> {
                   CharacterAnimationType.thinking,
                 );
                 context.read<DialogMessageCubit>().showMessageByKey(
-                  key: TutorialMessageMapper.keyFor(
-                    TutorialStepType.practiceDraw,
-                  ),
+                  key: TutorialMessageMapper.keyFor(TutorialStepType.practiceAdd),
                   upperMessage: '2 + 3',
                   playerName: playerName,
                 );
                 break;
               case TutorialStepType.ready:
+                setState(() {
+                  _showSkipStep = true;
+                });
                 context.read<CharacterCubit>().playCharacterAnimation(
                   CharacterAnimationType.success,
                 );
@@ -276,19 +266,29 @@ class _TutorialViewState extends State<TutorialView> {
                 ],
               ),
               TutorialScribbleCanvas(),
+
               //GameTopBar(),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Align(
-                  alignment: AlignmentGeometry.centerRight,
-                  child: FloatingActionButton(
-                    onPressed: () {
-                      context.read<TutorialCubit>().continueAction();
-                    },
-                    child: Icon(Icons.arrow_circle_right_outlined),
-                  ),
-                ),
-              ),
+              _showSkipStep
+                  ? Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Align(
+                        alignment: AlignmentGeometry.centerRight,
+                        child: FloatingActionButton(
+                          onPressed: () {
+                            if (context.read<TutorialCubit>().state.currentStep?.type == TutorialStepType.ready) {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (_) => MenuScreen()),
+                              );
+                            } else {
+                              context.read<TutorialCubit>().continueAction();
+                            }
+                          },
+                          child: Icon(Icons.arrow_circle_right_outlined),
+                        ),
+                      ),
+                    )
+                  : SizedBox.shrink(),
               EffectsLayer(),
             ],
           ),
