@@ -202,5 +202,8 @@ final dialogMessagePoolEs = MessagePoolEntity(
     MessageKeyType.tutorialReady: [
       '¡Genial, {name}! Ya estás listo para jugar de verdad',
     ],
+    MessageKeyType.tutorialCorrectPracticeDraw: [
+      '¡Genial, Dibujaste un {number}',
+    ],
   },
 );

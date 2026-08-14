@@ -40,7 +40,7 @@ class TutorialCubit extends Cubit<TutorialState> with EventEmitter, PausableActi
     final step = TutorialSequence.steps[_currentStepIndex];
     emit(state.copyWith(currentStep: step));
 
-    if (step.expectedResult != null) {
+    if (step.requiresInput) {
       _emitNextTutorialPhaseEvent(phase: TutorialPhase.waitingInput);
     } else {
       _emitNextTutorialPhaseEvent(phase: TutorialPhase.showingStep);
@@ -49,33 +49,25 @@ class TutorialCubit extends Cubit<TutorialState> with EventEmitter, PausableActi
   }
 
   void submitAnswer({required int result}) {
-    final expected = state.currentStep?.expectedResult;
-    if (expected == null) return;
+    emit(state.copyWith(numberRecognized: result));
+    final step = state.currentStep;
+    if (step == null || !step.requiresInput) return;
 
-    if (result == expected) {
+    if (step.expectedResult == null) {
+      _emitNextTutorialPhaseEvent(phase: TutorialPhase.correctPracticeDraw);
+      pauseFor(_advanceStep);
+    } else if (result == step.expectedResult) {
       _emitNextTutorialPhaseEvent(phase: TutorialPhase.correct);
-      pauseFor(
-        () {
-          _advanceStep();
-        },
-      );
+      pauseFor(_advanceStep);
     } else {
       _emitNextTutorialPhaseEvent(phase: TutorialPhase.incorrect);
-      pauseFor(
-        () {
-          _showCurrentStep();
-        },
-      );
+      pauseFor(_showCurrentStep);
     }
   }
 
   void setErrorPhase() {
     _emitNextTutorialPhaseEvent(phase: TutorialPhase.inputError);
-    pauseFor(
-      () {
-        _showCurrentStep();
-      },
-    );
+    pauseFor(_showCurrentStep);
   }
 
   void _advanceStep() {

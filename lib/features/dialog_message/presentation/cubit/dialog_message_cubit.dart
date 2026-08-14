@@ -20,8 +20,13 @@ class DialogMessageCubit extends Cubit<DialogMessageState> with EventEmitter {
         DialogMessageState(),
       );
 
-  void showMessageByKey({required MessageKeyType key, String? upperMessage, required String playerName}) {
-    final message = _repository.getMessage(key: key, playerName: playerName);
+  void showMessageByKey({required MessageKeyType key, String? upperMessage, required String playerName, String? number}) {
+    /*print('KEY: $key');
+    print('PLAYER: $playerName');
+    print('NUMBER: $number');*/
+
+    final message = _repository.getMessage(key: key, playerName: playerName, number: number);
+    //print('MESSAGE RESULT: $message');
     emit(
       state.copyWith(
         dialogMessageEvent: _nextDialogMessage(

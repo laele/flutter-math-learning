@@ -4,9 +4,14 @@ import 'package:flutter_math_app/features/tutorial/domain/enums/tutorial_step_ty
 class TutorialStepEntity extends Equatable {
   final TutorialStepType type;
   final int? expectedResult;
+  final bool requiresInput;
 
-  const TutorialStepEntity({required this.type, this.expectedResult});
+  const TutorialStepEntity({required this.type, this.expectedResult, required this.requiresInput});
 
   @override
-  List<Object?> get props => [type, expectedResult];
+  List<Object?> get props => [
+    type,
+    expectedResult,
+    requiresInput,
+  ];
 }

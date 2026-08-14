@@ -8,4 +8,5 @@ enum TutorialStepType {
   incorrect,
   correct,
   error,
+  correctPracticeDraw,
 }

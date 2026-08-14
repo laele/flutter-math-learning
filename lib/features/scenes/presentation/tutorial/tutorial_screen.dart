@@ -149,7 +149,21 @@ class _TutorialViewState extends State<TutorialView> {
                 );
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: TutorialMessageMapper.keyFor(TutorialStepType.correct),
+                  //upperMessage: state.currentStep!.type == TutorialStepType.practiceDraw ? state.numberRecognized.toString() : null,
                   playerName: playerName,
+                );
+                _waitForNextAction();
+                return;
+              case TutorialPhase.correctPracticeDraw:
+                context.read<CharacterCubit>().playCharacterAnimation(
+                  CharacterAnimationType.success,
+                );
+                context.read<DialogMessageCubit>().showMessageByKey(
+                  key: TutorialMessageMapper.keyFor(
+                    TutorialStepType.correctPracticeDraw,
+                  ),
+                  playerName: playerName,
+                  number: state.numberRecognized.toString(),
                 );
                 _waitForNextAction();
                 return;

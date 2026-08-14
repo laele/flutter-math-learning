@@ -7,4 +7,5 @@ enum TutorialPhase {
   incorrect,
   inputError,
   correct,
+  correctPracticeDraw,
 }

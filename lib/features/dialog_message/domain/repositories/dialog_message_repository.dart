@@ -1,6 +1,6 @@
 import 'package:flutter_math_app/features/dialog_message/domain/enums/message_key_type.dart';
 
 abstract interface class DialogMessageRepository {
-  String getMessage({required MessageKeyType key, String? playerName});
+  String getMessage({required MessageKeyType key, String? playerName, String? number});
   void setLocale({required String languageCode});
 }

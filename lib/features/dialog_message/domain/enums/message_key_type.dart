@@ -19,4 +19,5 @@ enum MessageKeyType {
   tutorialPracticeAdd,
   tutorialShowScore,
   tutorialReady,
+  tutorialCorrectPracticeDraw,
 }
