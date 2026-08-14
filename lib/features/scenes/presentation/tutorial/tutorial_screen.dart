@@ -97,7 +97,8 @@ class _TutorialViewState extends State<TutorialView> {
       listeners: [
         BlocListener<CharacterCubit, CharacterState>(
           listenWhen: (previous, current) {
-            if (previous.controllerReady != current.controllerReady && current.controllerReady == true) {
+            if (previous.controllerReady != current.controllerReady &&
+                current.controllerReady == true) {
               return true;
             }
             return false;
@@ -109,14 +110,24 @@ class _TutorialViewState extends State<TutorialView> {
 
         BlocListener<TutorialCubit, TutorialState>(
           listenWhen: (previous, current) {
-            if ((previous.tutorialPhaseEvent != current.tutorialPhaseEvent) && current.tutorialPhaseEvent != null && current.currentStep != null) {
+            final bool isTutorialPhaseChanged =
+                previous.tutorialPhaseEvent != current.tutorialPhaseEvent;
+            final bool isTutorialStepChanged =
+                previous.currentStep != current.currentStep;
+            if ((isTutorialPhaseChanged || isTutorialStepChanged) &&
+                current.tutorialPhaseEvent != null &&
+                current.currentStep != null) {
               return true;
             }
             return false;
           },
           listener: (context, state) {
             final tutorialPhase = state.tutorialPhaseEvent!.phase;
-            final playerName = context.read<PlayerProfileCubit>().state.profile.playerName;
+            final playerName = context
+                .read<PlayerProfileCubit>()
+                .state
+                .profile
+                .playerName;
 
             /*if (state.currentStep != null) {
               context.read<DialogMessageCubit>().showMessageByKey(
@@ -125,9 +136,11 @@ class _TutorialViewState extends State<TutorialView> {
               );
             }*/
 
-            switch (state.tutorialPhaseEvent!.phase) {
+            /*switch (state.tutorialPhaseEvent!.phase) {
               case TutorialPhase.inputError:
-                context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.failed);
+                context.read<CharacterCubit>().playCharacterAnimation(
+                  CharacterAnimationType.failed,
+                );
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: TutorialMessageMapper.keyFor(TutorialStepType.error),
                   playerName: playerName,
@@ -135,9 +148,21 @@ class _TutorialViewState extends State<TutorialView> {
                 _waitForNextAction();
                 return;
               case TutorialPhase.incorrect:
-                context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.failed);
+                context.read<CharacterCubit>().playCharacterAnimation(
+                  CharacterAnimationType.failed,
+                );
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: TutorialMessageMapper.keyFor(TutorialStepType.incorrect),
+                  playerName: playerName,
+                );
+                _waitForNextAction();
+                return;
+              case TutorialPhase.correct:
+                context.read<CharacterCubit>().playCharacterAnimation(
+                  CharacterAnimationType.success,
+                );
+                context.read<DialogMessageCubit>().showMessageByKey(
+                  key: TutorialMessageMapper.keyFor(TutorialStepType.correct),
                   playerName: playerName,
                 );
                 _waitForNextAction();
@@ -146,41 +171,60 @@ class _TutorialViewState extends State<TutorialView> {
                 _waitForNextAction();
               case (_):
                 break;
-            }
+            }*/
 
             switch (state.currentStep!.type) {
               case TutorialStepType.welcome:
-                context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.success);
+                context.read<CharacterCubit>().playCharacterAnimation(
+                  CharacterAnimationType.success,
+                );
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: TutorialMessageMapper.keyFor(TutorialStepType.welcome),
                   playerName: playerName,
                 );
                 break;
               case TutorialStepType.showingPencil:
-                context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.success);
-                _showPencilSign = true;
+                context.read<DialogMessageCubit>().showMessageByKey(
+                  key: TutorialMessageMapper.keyFor(
+                    TutorialStepType.showingPencil,
+                  ),
+                  playerName: playerName,
+                );
+                context.read<CharacterCubit>().playCharacterAnimation(
+                  CharacterAnimationType.success,
+                );
+                setState(() {
+                  _showPencilSign = true;
+                });
                 break;
               case TutorialStepType.practiceDraw:
                 context.read<DialogMessageCubit>().showMessageByKey(
-                  key: TutorialMessageMapper.keyFor(TutorialStepType.practiceDraw),
-                  upperMessage: '8',
+                  key: TutorialMessageMapper.keyFor(
+                    TutorialStepType.practiceDraw,
+                  ),
                   playerName: playerName,
                 );
-                context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.thinking);
+                context.read<CharacterCubit>().playCharacterAnimation(
+                  CharacterAnimationType.thinking,
+                );
 
                 break;
               case TutorialStepType.practiceAdd:
-                context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.thinking);
+                context.read<CharacterCubit>().playCharacterAnimation(
+                  CharacterAnimationType.thinking,
+                );
                 context.read<DialogMessageCubit>().showMessageByKey(
-                  key: TutorialMessageMapper.keyFor(TutorialStepType.practiceDraw),
+                  key: TutorialMessageMapper.keyFor(
+                    TutorialStepType.practiceDraw,
+                  ),
                   upperMessage: '2 + 3',
                   playerName: playerName,
                 );
                 break;
-              /*case TutorialStepType.showScoreExplain:
-                break;*/
               case TutorialStepType.ready:
-                context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.success);
+                context.read<CharacterCubit>().playCharacterAnimation(
+                  CharacterAnimationType.success,
+                );
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: TutorialMessageMapper.keyFor(TutorialStepType.ready),
                   playerName: playerName,
@@ -210,12 +254,20 @@ class _TutorialViewState extends State<TutorialView> {
                           ),
                         ),
 
-                        _showPencilSign ? Align(alignment: AlignmentGeometry.center, child: TutorialPencilIndicator()) : SizedBox.shrink(),
+                        _showPencilSign
+                            ? Align(
+                                alignment: AlignmentGeometry.center,
+                                child: TutorialPencilIndicator(),
+                              )
+                            : SizedBox.shrink(),
                         /*Align(
                           alignment: AlignmentGeometry.center,
                           child: ScoreOverlay(),
                         ),*/
-                        Align(alignment: AlignmentGeometry.bottomCenter, child: DialogMessageText()),
+                        Align(
+                          alignment: AlignmentGeometry.bottomCenter,
+                          child: DialogMessageText(),
+                        ),
                       ],
                     ),
                   ),

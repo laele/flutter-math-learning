@@ -6,4 +6,5 @@ enum TutorialPhase {
   incorrect,
   stepCompleted,
   finished,
+  correct,
 }

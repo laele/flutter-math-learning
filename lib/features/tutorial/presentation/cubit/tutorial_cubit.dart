@@ -6,11 +6,11 @@ import 'package:flutter_math_app/features/tutorial/domain/constants/tutorial_seq
 import 'package:flutter_math_app/features/tutorial/domain/entities/tutorial_phase_event.dart';
 import 'package:flutter_math_app/features/tutorial/domain/entities/tutorial_step_entity.dart';
 import 'package:flutter_math_app/features/tutorial/domain/enums/tutorial_phase.dart';
-import 'package:flutter_math_app/features/tutorial/domain/enums/tutorial_step_type.dart';
 
 part 'tutorial_state.dart';
 
-class TutorialCubit extends Cubit<TutorialState> with EventEmitter, PausableActions {
+class TutorialCubit extends Cubit<TutorialState>
+    with EventEmitter, PausableActions {
   int _currentStepIndex = 0;
 
   TutorialCubit() : super(TutorialState());
@@ -54,9 +54,12 @@ class TutorialCubit extends Cubit<TutorialState> with EventEmitter, PausableActi
     if (expected == null) return;
 
     if (result == expected) {
+      print('correct');
+
       _emitNextTutorialPhaseEvent(phase: TutorialPhase.stepCompleted);
       pauseFor(_advanceStep);
     } else {
+      print('incorrect');
       _emitNextTutorialPhaseEvent(phase: TutorialPhase.waitingInput);
     }
   }

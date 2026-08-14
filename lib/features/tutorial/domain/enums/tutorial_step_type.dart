@@ -5,6 +5,4 @@ enum TutorialStepType {
   practiceAdd,
   showScoreExplain,
   ready,
-  error,
-  incorrect,
 }
