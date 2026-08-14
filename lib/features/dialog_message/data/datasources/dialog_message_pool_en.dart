@@ -186,5 +186,25 @@ final dialogMessagePoolEn = MessagePoolEntity(
       'What do we get when we multiply?',
       'Let’s see what this multiplication gives us!',
     ],
+
+    MessageKeyType.tutorialWelcome: [
+      'Hi, {name}! Let’s learn how to play!',
+    ],
+
+    MessageKeyType.tutorialShowPencil: [
+      'When you see the pencil icon, it means you can start drawing!',
+    ],
+
+    MessageKeyType.tutorialPracticeDraw: [
+      'Try drawing any number here!',
+    ],
+
+    MessageKeyType.tutorialPracticeAdd: [
+      'Now try to solve this: draw the answer!',
+    ],
+
+    MessageKeyType.tutorialReady: [
+      'Awesome, {name}! You’re ready to start playing for real!',
+    ],
   },
 );

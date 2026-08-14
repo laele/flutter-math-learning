@@ -28,8 +28,8 @@ import 'package:flutter_math_app/features/input_recognition/presentation/input_r
 import 'package:flutter_math_app/features/player_prefs/presentation/cubit/player_profile_cubit.dart';
 import 'package:flutter_math_app/features/scenes/presentation/arcade_game/widgets/game_fab.dart';
 import 'package:flutter_math_app/features/scenes/presentation/arcade_game/widgets/game_top_bar.dart';
-import 'package:flutter_math_app/features/scenes/presentation/shared/widgets/scribble_canvas.dart';
-import 'package:flutter_math_app/features/game/presentation/widgets/pencil_sign.dart';
+import 'package:flutter_math_app/features/scenes/presentation/shared/widgets/game_scribble_canvas.dart';
+import 'package:flutter_math_app/features/game/presentation/widgets/game_pencil_indicator.dart';
 
 class ArcadeGameScreen extends StatelessWidget {
   const ArcadeGameScreen({super.key});
@@ -251,7 +251,7 @@ class _ArcadeGameViewState extends State<ArcadeGameView> {
                             gradient: AppGradients.background,
                           ),
                         ),
-                        Align(alignment: AlignmentGeometry.center, child: PencilSign()),
+                        Align(alignment: AlignmentGeometry.center, child: GamePencilIndicator()),
                         Align(
                           alignment: AlignmentGeometry.center,
                           child: ScoreOverlay(),
@@ -264,7 +264,7 @@ class _ArcadeGameViewState extends State<ArcadeGameView> {
                   CharacterRive(),
                 ],
               ),
-              ScribbleCanvas(),
+              GameScribbleCanvas(),
               GameTopBar(),
               EffectsLayer(),
             ],

@@ -1,0 +1,47 @@
+import 'package:animate_do/animate_do.dart';
+import 'package:flutter/material.dart';
+
+class AnimatedPencil extends StatefulWidget {
+  const AnimatedPencil({super.key});
+
+  @override
+  State<AnimatedPencil> createState() => AnimatedPencilState();
+}
+
+class AnimatedPencilState extends State<AnimatedPencil> {
+  double _opacity = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(
+      const Duration(milliseconds: 20),
+      () {
+        if (!mounted) return;
+        setState(() {
+          _opacity = 0.25;
+        });
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BounceInDown(
+      from: 20,
+      duration: Duration(milliseconds: 500),
+      child: AnimatedOpacity(
+        duration: Duration(seconds: 1),
+        opacity: _opacity,
+        child: Container(
+          width: 160,
+          height: 160,
+          child: Image.asset(
+            'lib/core/assets/images/pencil.png',
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+}

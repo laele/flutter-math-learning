@@ -30,6 +30,7 @@ import 'package:flutter_math_app/features/player_prefs/presentation/cubit/player
 import 'package:flutter_math_app/features/settings/data/repositories/settings_repository_impl.dart';
 import 'package:flutter_math_app/features/settings/domain/repository/settings_repository.dart';
 import 'package:flutter_math_app/features/settings/presentation/cubit/settings_cubit.dart';
+import 'package:flutter_math_app/features/tutorial/presentation/cubit/tutorial_cubit.dart';
 import 'package:get_it/get_it.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:isar_community/isar.dart';
@@ -40,13 +41,6 @@ final sl = GetIt.instance;
 Future<void> initDependencies() async {
   final sharedPrefs = await SharedPreferences.getInstance();
   final isarInstance = await Isar.open([PlayerProfileModelSchema], directory: (await getApplicationDocumentsDirectory()).path);
-
-  final count = await isarInstance.playerProfileModels.count();
-  print('🔍 Registros de perfil en Isar: $count');
-  final all = await isarInstance.playerProfileModels.where().findAll();
-  for (final p in all) {
-    print('  → id: ${p.id}, name: ${p.playerName}, bestScore: ${p.bestArcadeScore}');
-  }
 
   sl.registerLazySingleton<Isar>(() => isarInstance);
   await initInputRecognizer();
@@ -60,6 +54,7 @@ Future<void> initDependencies() async {
   sl.registerFactory<CharacterCubit>(() => CharacterCubit()); // Character Animation Cubit
   sl.registerFactory<TimerCubit>(() => TimerCubit());
   sl.registerFactory<ScoreCubit>(() => ScoreCubit());
+  sl.registerFactory<TutorialCubit>(() => TutorialCubit());
 }
 
 Future<void> initPlayerProfile() async {

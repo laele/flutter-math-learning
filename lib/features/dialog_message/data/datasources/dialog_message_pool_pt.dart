@@ -186,5 +186,24 @@ final dialogMessagePoolPt = MessagePoolEntity(
       'Quanto obtemos quando multiplicamos?',
       'Vamos ver quanto dá esta multiplicação!',
     ],
+    MessageKeyType.tutorialWelcome: [
+      'Olá, {name}! Vamos aprender a jogar!',
+    ],
+
+    MessageKeyType.tutorialShowPencil: [
+      'Quando você vir o ícone de lápis, significa que pode começar a desenhar!',
+    ],
+
+    MessageKeyType.tutorialPracticeDraw: [
+      'Tente desenhar qualquer número aqui!',
+    ],
+
+    MessageKeyType.tutorialPracticeAdd: [
+      'Agora tente resolver esta conta: desenhe a resposta!',
+    ],
+
+    MessageKeyType.tutorialReady: [
+      'Muito bem, {name}! Agora você está pronto para começar a jogar de verdade!',
+    ],
   },
 );

@@ -11,4 +11,12 @@ enum MessageKeyType {
   questionDiv,
   explanation,
   starting,
+
+  // tutorial
+  tutorialWelcome,
+  tutorialShowPencil,
+  tutorialPracticeDraw,
+  tutorialPracticeAdd,
+  tutorialShowScore,
+  tutorialReady,
 }

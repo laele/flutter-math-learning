@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_math_app/features/game/domain/entities/game_phase_event.dart';
 import 'package:flutter_math_app/features/game/domain/enums/game_phase.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
 import 'package:flutter_math_app/features/input_recognition/presentation/input_recognition_cubit/input_recognition_cubit.dart';
+import 'package:flutter_math_app/features/tutorial/domain/enums/tutorial_phase.dart';
+import 'package:flutter_math_app/features/tutorial/presentation/cubit/tutorial_cubit.dart';
 import 'package:scribble/scribble.dart';
 
-class ScribbleCanvas extends StatefulWidget {
-  const ScribbleCanvas({super.key});
+class TutorialScribbleCanvas extends StatefulWidget {
+  const TutorialScribbleCanvas({super.key});
 
   @override
-  State<ScribbleCanvas> createState() => _ScribbleCanvas();
+  State<TutorialScribbleCanvas> createState() => _TutorialScribbleCanvas();
 }
 
-class _ScribbleCanvas extends State<ScribbleCanvas> with SingleTickerProviderStateMixin {
+class _TutorialScribbleCanvas extends State<TutorialScribbleCanvas> with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _fade;
   late final Animation<double> _scale;
@@ -87,9 +88,7 @@ class _ScribbleCanvas extends State<ScribbleCanvas> with SingleTickerProviderSta
         return false;
       },
       listener: (context, state) async {
-        final isQuestionGamePhase =
-            (context.read<GameCubit>().state.gamePhaseEvent?.gamePhase == GamePhase.newQuestion ||
-            context.read<GameCubit>().state.gamePhaseEvent?.gamePhase == GamePhase.repeatQuestion);
+        final isWaitingInput = (context.read<TutorialCubit>().state.tutorialPhaseEvent?.phase == TutorialPhase.waitingInput);
 
         if (state.status == InputRecognitionStatus.processing) {
           await playOutAnimation();
@@ -97,11 +96,11 @@ class _ScribbleCanvas extends State<ScribbleCanvas> with SingleTickerProviderSta
           context.read<InputRecognitionCubit>().clearCanvas();
           resetAnimation();
         }
-        if (state.isStatusFailure && isQuestionGamePhase) {
-          context.read<GameCubit>().setErrorGamePhase();
+        if (state.isStatusFailure && isWaitingInput) {
+          context.read<TutorialCubit>().setErrorPhase();
         }
-        if (state.status == InputRecognitionStatus.success && isQuestionGamePhase) {
-          context.read<GameCubit>().checkResult(result: state.numberRecognized!);
+        if (state.status == InputRecognitionStatus.success && isWaitingInput) {
+          context.read<TutorialCubit>().submitAnswer(result: state.numberRecognized!);
         }
       },
       child: Listener(
@@ -121,12 +120,12 @@ class _ScribbleCanvas extends State<ScribbleCanvas> with SingleTickerProviderSta
                     opacity: _fade.value,
                     child: Transform.scale(
                       scale: _scale.value,
-                      child: BlocBuilder<GameCubit, GameState>(
-                        buildWhen: (previous, current) => (previous.gamePhaseEvent != current.gamePhaseEvent) && current.gamePhaseEvent != null,
+                      child: BlocBuilder<TutorialCubit, TutorialState>(
+                        buildWhen: (previous, current) => (previous.tutorialPhaseEvent != current.tutorialPhaseEvent) && current.tutorialPhaseEvent != null,
                         builder: (context, state) {
                           context.read<InputRecognitionCubit>().clearCanvas(); // clear canvas for each gamePhase changed
                           return IgnorePointer(
-                            ignoring: state.gamePhaseEvent?.gamePhase != GamePhase.newQuestion && state.gamePhaseEvent?.gamePhase != GamePhase.repeatQuestion,
+                            ignoring: state.tutorialPhaseEvent?.phase != TutorialPhase.waitingInput,
                             child: Scribble(
                               notifier: inputRecognitionCubit.notifier,
                               drawPen: true,

@@ -25,8 +25,8 @@ import 'package:flutter_math_app/features/scenes/presentation/practice_game/widg
 import 'package:flutter_math_app/features/scenes/presentation/shared/widgets/game_message_mapper.dart';
 import 'package:flutter_math_app/features/input_recognition/presentation/input_recognition_cubit/input_recognition_cubit.dart';
 import 'package:flutter_math_app/features/scenes/presentation/arcade_game/widgets/game_fab.dart';
-import 'package:flutter_math_app/features/scenes/presentation/shared/widgets/scribble_canvas.dart';
-import 'package:flutter_math_app/features/game/presentation/widgets/pencil_sign.dart';
+import 'package:flutter_math_app/features/scenes/presentation/shared/widgets/game_scribble_canvas.dart';
+import 'package:flutter_math_app/features/game/presentation/widgets/game_pencil_indicator.dart';
 
 class PracticeGameScreen extends StatelessWidget {
   const PracticeGameScreen({super.key});
@@ -241,7 +241,7 @@ class _PracticeGameViewState extends State<PracticeGameView> {
                             gradient: AppGradients.background,
                           ),
                         ),
-                        Align(alignment: AlignmentGeometry.center, child: PencilSign()),
+                        Align(alignment: AlignmentGeometry.center, child: GamePencilIndicator()),
                         /*Align(
                           alignment: AlignmentGeometry.center,
                           child: ScoreOverlay(),
@@ -254,7 +254,7 @@ class _PracticeGameViewState extends State<PracticeGameView> {
                   CharacterRive(),
                 ],
               ),
-              ScribbleCanvas(),
+              GameScribbleCanvas(),
               PracticeGameTopBar(),
               EffectsLayer(),
             ],
