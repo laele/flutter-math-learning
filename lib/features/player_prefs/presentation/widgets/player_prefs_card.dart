@@ -34,8 +34,8 @@ class PlayerPrefsCard extends StatelessWidget {
                     ScoreBadge(
                       widthSize: 50,
                       heightSize: 50,
-                      best: true,
-                      child: Text(context.read<PlayerProfileCubit>().state.profile.bestArcadeScore.toString()),
+                      showBackground: true,
+                      child: FittedBox(child: Text(context.read<PlayerProfileCubit>().state.profile.bestArcadeScore.toString())),
                     ),
                     /*SizedBox(height: 4.0),
                     Text(

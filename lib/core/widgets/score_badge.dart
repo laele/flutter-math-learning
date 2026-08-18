@@ -4,16 +4,16 @@ import 'package:flutter_math_app/core/theme/app_colors.dart';
 class ScoreBadge extends StatelessWidget {
   final double widthSize;
   final double heightSize;
-  final bool best;
+  final bool showBackground;
   final Widget child;
-  const ScoreBadge({super.key, required this.widthSize, required this.heightSize, required this.child, this.best = false});
+  const ScoreBadge({super.key, required this.widthSize, required this.heightSize, required this.child, this.showBackground = false});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: widthSize,
       height: heightSize,
-      decoration: best
+      decoration: showBackground
           ? BoxDecoration(
               color: AppColors.onPrimaryBorder,
               borderRadius: BorderRadius.circular(12.0),
@@ -27,8 +27,8 @@ class ScoreBadge extends StatelessWidget {
           children: [
             Center(
               child: Image.asset(
-                !best ? 'lib/core/assets/images/star_1.png' : 'lib/core/assets/images/star_badge_3.png',
-                color: best ? null : Colors.white,
+                'lib/core/assets/images/star_1.png',
+                color: Colors.white,
               ),
             ),
             Center(
