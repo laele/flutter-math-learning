@@ -178,7 +178,13 @@ class _ScoreOverlayState extends State<ScoreOverlay> with SingleTickerProviderSt
 
                                     //StarsSection(accuracy: state.gameSession.accuracy),
                                     SizedBox(height: 12.0),
-                                    PlayAgainButton(),
+                                    PlayAgainButton(
+                                      function: () async {
+                                        await playOutAnimation();
+                                        if (!mounted) return;
+                                        context.read<GameCubit>().initGame();
+                                      },
+                                    ),
                                   ],
                                 ),
                               ),

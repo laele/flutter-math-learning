@@ -16,7 +16,7 @@ class MenuButton extends StatelessWidget {
       children: [
         FilledButton.icon(
           onPressed: function,
-          label: Text(title, style: Theme.of(context).textTheme.headlineLarge!.copyWith(color: Colors.white)),
+          label: Text(title, style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: Colors.white)),
           icon: CustomIcon(
             assetRoute: assetIconRoute,
             useColor: false,

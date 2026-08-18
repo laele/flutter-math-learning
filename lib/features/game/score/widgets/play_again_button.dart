@@ -5,16 +5,19 @@ import 'package:flutter_math_app/core/theme/app_colors.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
 
 class PlayAgainButton extends StatelessWidget {
-  const PlayAgainButton({super.key});
+  final VoidCallback function;
+
+  const PlayAgainButton({
+    super.key,
+    required this.function,
+  });
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return FilledButton(
       style: FilledButton.styleFrom(backgroundColor: AppColors.onPrimaryBorder),
-      onPressed: () {
-        context.read<GameCubit>().initGame();
-      },
+      onPressed: function,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
