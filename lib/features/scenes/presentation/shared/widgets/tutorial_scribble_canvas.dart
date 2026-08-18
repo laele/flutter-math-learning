@@ -123,7 +123,6 @@ class _TutorialScribbleCanvas extends State<TutorialScribbleCanvas> with SingleT
                       child: BlocBuilder<TutorialCubit, TutorialState>(
                         buildWhen: (previous, current) => (previous.tutorialPhaseEvent != current.tutorialPhaseEvent) && current.tutorialPhaseEvent != null,
                         builder: (context, state) {
-                          context.read<InputRecognitionCubit>().clearCanvas(); // clear canvas for each gamePhase changed
                           return IgnorePointer(
                             ignoring: state.tutorialPhaseEvent?.phase != TutorialPhase.waitingInput,
                             child: Scribble(

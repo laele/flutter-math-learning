@@ -124,7 +124,6 @@ class _GameScribbleCanvas extends State<GameScribbleCanvas> with SingleTickerPro
                       child: BlocBuilder<GameCubit, GameState>(
                         buildWhen: (previous, current) => (previous.gamePhaseEvent != current.gamePhaseEvent) && current.gamePhaseEvent != null,
                         builder: (context, state) {
-                          context.read<InputRecognitionCubit>().clearCanvas(); // clear canvas for each gamePhase changed
                           return IgnorePointer(
                             ignoring: state.gamePhaseEvent?.gamePhase != GamePhase.newQuestion && state.gamePhaseEvent?.gamePhase != GamePhase.repeatQuestion,
                             child: Scribble(

@@ -86,7 +86,7 @@ class InputRecognitionCubit extends Cubit<InputRecognitionState> {
         );
       },
     ).toList();
-
+    print('processing');
     emit(state.copyWith(status: InputRecognitionStatus.processing));
 
     final result = await _recognizeNumberUseCase(
