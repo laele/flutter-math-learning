@@ -21,6 +21,19 @@ class AppMainTitleText extends StatelessWidget {
               fontFamily: 'Gocake',
               fontWeight: FontWeight.bold,
               color: Colors.white,
+              fontSize: 72,
+              shadows: [
+                Shadow(
+                  color: Colors.black.withOpacity(0.4),
+                  offset: const Offset(0, 2),
+                  blurRadius: 8,
+                ),
+                Shadow(
+                  color: Colors.black.withOpacity(0.6),
+                  offset: const Offset(0, 0),
+                  blurRadius: 3,
+                ),
+              ],
             ),
           ),
         ),
