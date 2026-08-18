@@ -18,6 +18,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get practiceMode => 'Practice Mode';
 
   @override
+  String get enterYourName => 'Enter your name';
+
+  @override
+  String get minimumCharacters => 'Minimum 3 characters';
+
+  @override
+  String get play => 'Play';
+
+  @override
+  String get tutorial => 'How to play?';
+
+  @override
   String get gameOver => 'Game Over!';
 
   @override

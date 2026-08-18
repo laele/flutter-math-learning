@@ -2,6 +2,10 @@
   "bestScore": "Melhor Pontuação!",
   "hello": "Olá!",
   "practiceMode": "Modo de Prática",
+  "enterYourName": "Digite seu nome",
+  "minimumCharacters": "Mínimo de 3 caracteres",
+  "play": "Jogar",
+  "tutorial": "Como jogar?",
 
   "gameOver": "Fim de Jogo!",
   "yourScore": "Sua Pontuação",

@@ -2,6 +2,11 @@
   "bestScore": "Mejor Puntaje!",
   "hello": "Hola!",
   "practiceMode": "Modo Práctica",
+
+  "enterYourName": "Intorduce tu nombre",
+  "minimumCharacters": "Minimo 3 carácteres",
+  "play" : "Jugar",
+  "tutorial" : "¿Como Jugar?",
   
   "gameOver": "Juego Terminado!",
   "yourScore": "Tu Puntaje",
@@ -11,3 +16,4 @@
 
   "selectLanguage": "Seleccionar idioma"
 }
+

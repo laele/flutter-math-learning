@@ -3,6 +3,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_math_app/core/l10n/arb/app_localizations.dart';
+import 'package:flutter_math_app/core/theme/app_colors.dart';
 import 'package:flutter_math_app/features/game/domain/enums/game_phase.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
 import 'package:flutter_math_app/features/game/score/cubit/score_cubit.dart';
@@ -110,7 +111,7 @@ class _ScoreOverlayState extends State<ScoreOverlay> with SingleTickerProviderSt
                                             animatedTexts: [
                                               WavyAnimatedText(
                                                 l10n.gameOver,
-                                                textStyle: textTheme.displayLarge,
+                                                textStyle: textTheme.displayLarge!.copyWith(fontFamily: 'Gocake', color: AppColors.titleOnPrimary),
                                                 speed: Duration(
                                                   milliseconds: 300,
                                                 ),
@@ -145,6 +146,7 @@ class _ScoreOverlayState extends State<ScoreOverlay> with SingleTickerProviderSt
                                         ),
                                         SizedBox(width: 8),
                                         ScoreBadge(
+                                          best: true,
                                           widthSize: 75,
                                           heightSize: 75,
                                           child: FittedBox(child: Text(context.read<PlayerProfileCubit>().state.profile.bestArcadeScore.toString())),
@@ -175,8 +177,6 @@ class _ScoreOverlayState extends State<ScoreOverlay> with SingleTickerProviderSt
                                     ),
 
                                     //StarsSection(accuracy: state.gameSession.accuracy),
-                                    SizedBox(height: 8.0),
-
                                     SizedBox(height: 12.0),
                                     PlayAgainButton(),
                                   ],

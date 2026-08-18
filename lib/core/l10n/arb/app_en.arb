@@ -2,6 +2,11 @@
   "bestScore": "Best Score!",
   "hello": "Hello!",
   "practiceMode": "Practice Mode",
+
+  "enterYourName": "Enter your name",
+  "minimumCharacters": "Minimum 3 characters",
+  "play": "Play",
+  "tutorial": "How to play?",
   
   "gameOver": "Game Over!",
   "yourScore": "Your Score",

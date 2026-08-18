@@ -118,6 +118,30 @@ abstract class AppLocalizations {
   /// **'Practice Mode'**
   String get practiceMode;
 
+  /// No description provided for @enterYourName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your name'**
+  String get enterYourName;
+
+  /// No description provided for @minimumCharacters.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum 3 characters'**
+  String get minimumCharacters;
+
+  /// No description provided for @play.
+  ///
+  /// In en, this message translates to:
+  /// **'Play'**
+  String get play;
+
+  /// No description provided for @tutorial.
+  ///
+  /// In en, this message translates to:
+  /// **'How to play?'**
+  String get tutorial;
+
   /// No description provided for @gameOver.
   ///
   /// In en, this message translates to:

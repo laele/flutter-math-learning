@@ -265,10 +265,6 @@ class _TutorialViewState extends State<TutorialView> {
                                 child: TutorialPencilIndicator(),
                               )
                             : SizedBox.shrink(),
-                        /*Align(
-                          alignment: AlignmentGeometry.center,
-                          child: ScoreOverlay(),
-                        ),*/
                         Align(
                           alignment: AlignmentGeometry.bottomCenter,
                           child: DialogMessageText(),
