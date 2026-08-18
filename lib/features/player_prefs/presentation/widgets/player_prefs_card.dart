@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_math_app/core/l10n/arb/app_localizations.dart';
 import 'package:flutter_math_app/core/theme/app_colors.dart';
 import 'package:flutter_math_app/core/widgets/app_card.dart';
 import 'package:flutter_math_app/core/widgets/score_badge.dart';
@@ -13,7 +12,6 @@ class PlayerPrefsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     return AppCard(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -35,16 +33,8 @@ class PlayerPrefsCard extends StatelessWidget {
                       widthSize: 50,
                       heightSize: 50,
                       showBackground: true,
-                      child: FittedBox(child: Text(context.read<PlayerProfileCubit>().state.profile.bestArcadeScore.toString())),
+                      text: context.read<PlayerProfileCubit>().state.profile.bestArcadeScore.toString(),
                     ),
-                    /*SizedBox(height: 4.0),
-                    Text(
-                      l10n.bestScore,
-                      style: Theme.of(context).textTheme!.labelSmall!.copyWith(
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),*/
                   ],
                 ),
               ],

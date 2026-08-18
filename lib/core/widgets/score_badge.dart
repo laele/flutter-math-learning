@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_math_app/core/theme/app_colors.dart';
+import 'package:flutter_math_app/features/game/score/widgets/text_score_animated.dart';
 
 class ScoreBadge extends StatelessWidget {
   final double widthSize;
   final double heightSize;
   final bool showBackground;
-  final Widget child;
-  const ScoreBadge({super.key, required this.widthSize, required this.heightSize, required this.child, this.showBackground = false});
+  final String? text;
+  const ScoreBadge({super.key, required this.widthSize, required this.heightSize, this.text, this.showBackground = false});
 
   @override
   Widget build(BuildContext context) {
@@ -31,12 +32,18 @@ class ScoreBadge extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: child,
-              ),
-            ),
+            text != null
+                ? Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: FittedBox(
+                        child: TextScoreAnimated(
+                          scoreText: '${text}',
+                        ),
+                      ),
+                    ),
+                  )
+                : SizedBox.shrink(),
           ],
         ),
       ),

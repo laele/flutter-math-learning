@@ -17,9 +17,7 @@ class ScoreAnimated extends StatelessWidget {
           child: ScoreBadge(
             widthSize: 80,
             heightSize: 80,
-            child: TextScoreAnimated(
-              scoreText: '${state.currentScore}',
-            ),
+            text: state.currentScore.toString(),
           ),
         );
       },

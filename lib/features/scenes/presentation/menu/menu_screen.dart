@@ -40,15 +40,11 @@ class MenuScreen extends StatelessWidget {
                         ),
                       ),
 
-                      Container(
-                        width: double.infinity,
-                        //height: MediaQuery.of(context).size.height * 0.5,
-                        child: Center(
-                          child: FloatingMathSymbolsBackground(
-                            symbolCount: 35,
-                            color: Colors.white,
-                            opacity: 0.45,
-                          ),
+                      Positioned.fill(
+                        child: FloatingMathSymbolsBackground(
+                          symbolCount: 35,
+                          color: Colors.white,
+                          opacity: 0.45,
                         ),
                       ),
 

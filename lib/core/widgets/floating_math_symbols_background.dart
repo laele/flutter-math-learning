@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class FloatingMathSymbolsBackground extends StatefulWidget {
@@ -62,27 +63,41 @@ class _FloatingMathSymbolsBackgroundState extends State<FloatingMathSymbolsBackg
           animation: _controller,
           builder: (context, child) {
             final t = _controller.value * 2 * pi;
-            return Stack(
-              children: _particles.map((p) {
-                final driftOffset = sin(t * p.driftSpeed + p.phaseOffset) * 20;
-                final rotation = p.baseRotation + t * p.rotationSpeed;
+            return ShaderMask(
+              blendMode: BlendMode.dstIn,
+              shaderCallback: (bounds) {
+                return LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: const [
+                    Colors.black,
+                    Colors.transparent,
+                  ],
+                  stops: const [0.75, 1.0],
+                ).createShader(bounds);
+              },
+              child: Stack(
+                children: _particles.map((p) {
+                  final driftOffset = sin(t * p.driftSpeed + p.phaseOffset) * 20;
+                  final rotation = p.baseRotation + t * p.rotationSpeed;
 
-                return Positioned(
-                  left: p.left * constraints.maxWidth,
-                  top: p.top * constraints.maxHeight + driftOffset,
-                  child: Transform.rotate(
-                    angle: rotation,
-                    child: Text(
-                      p.symbol,
-                      style: TextStyle(
-                        fontSize: p.size,
-                        fontWeight: FontWeight.bold,
-                        color: widget.color.withOpacity(widget.opacity),
+                  return Positioned(
+                    left: p.left * constraints.maxWidth,
+                    top: p.top * constraints.maxHeight + driftOffset,
+                    child: Transform.rotate(
+                      angle: rotation,
+                      child: Text(
+                        p.symbol,
+                        style: TextStyle(
+                          fontSize: p.size,
+                          fontWeight: FontWeight.bold,
+                          color: widget.color.withOpacity(widget.opacity),
+                        ),
                       ),
                     ),
-                  ),
-                );
-              }).toList(),
+                  );
+                }).toList(),
+              ),
             );
           },
         );
