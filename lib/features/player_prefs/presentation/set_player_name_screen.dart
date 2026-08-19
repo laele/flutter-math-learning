@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_math_app/core/l10n/arb/app_localizations.dart';
 import 'package:flutter_math_app/core/theme/app_colors.dart';
 import 'package:flutter_math_app/core/widgets/app_card.dart';
 import 'package:flutter_math_app/core/widgets/custom_icon.dart';
@@ -19,6 +20,7 @@ class _SetPlayerNameScreenState extends State<SetPlayerNameScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.appBackground,
       body: SafeArea(
@@ -35,7 +37,7 @@ class _SetPlayerNameScreenState extends State<SetPlayerNameScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'What is your name?',
+                    l10n.whatIsYourName,
                     style:
                         Theme.of(
                           context,

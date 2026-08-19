@@ -100,6 +100,12 @@ abstract class AppLocalizations {
     Locale('pt'),
   ];
 
+  /// No description provided for @whatIsYourName.
+  ///
+  /// In en, this message translates to:
+  /// **'What is your name?'**
+  String get whatIsYourName;
+
   /// No description provided for @bestScore.
   ///
   /// In en, this message translates to:

@@ -9,6 +9,9 @@ class AppLocalizationsPt extends AppLocalizations {
   AppLocalizationsPt([String locale = 'pt']) : super(locale);
 
   @override
+  String get whatIsYourName => 'Qual é o seu nome?';
+
+  @override
   String get bestScore => 'Melhor Pontuação!';
 
   @override

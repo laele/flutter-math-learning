@@ -9,6 +9,9 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get whatIsYourName => 'What is your name?';
+
+  @override
   String get bestScore => 'Best Score!';
 
   @override
