@@ -11,10 +11,10 @@ class EditablePlayerName extends StatefulWidget {
   });
 
   @override
-  State<EditablePlayerName> createState() => _EditablePlayerNameState();
+  State<EditablePlayerName> createState() => EditablePlayerNameState();
 }
 
-class _EditablePlayerNameState extends State<EditablePlayerName> {
+class EditablePlayerNameState extends State<EditablePlayerName> {
   final _formKey = GlobalKey<FormState>();
   final _controller = TextEditingController();
   final _focusNode = FocusNode();
@@ -22,7 +22,11 @@ class _EditablePlayerNameState extends State<EditablePlayerName> {
   @override
   void initState() {
     super.initState();
-    _controller.text = context.read<PlayerProfileCubit>().state.profile.playerName;
+    _controller.text = context
+        .read<PlayerProfileCubit>()
+        .state
+        .profile
+        .playerName;
     _focusNode.addListener(_onFocusChanged);
   }
 
@@ -37,15 +41,24 @@ class _EditablePlayerNameState extends State<EditablePlayerName> {
     super.dispose();
   }
 
+  bool validate() {
+    return _formKey.currentState?.validate() ?? false;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return BlocConsumer<PlayerProfileCubit, PlayerProfileState>(
       listenWhen: (previous, current) => previous.profile != current.profile,
       listener: (context, state) {
-        _controller.text = context.read<PlayerProfileCubit>().state.profile.playerName;
+        _controller.text = context
+            .read<PlayerProfileCubit>()
+            .state
+            .profile
+            .playerName;
       },
-      buildWhen: (previous, current) => previous.profile.playerName != current.profile.playerName,
+      buildWhen: (previous, current) =>
+          previous.profile.playerName != current.profile.playerName,
       builder: (context, state) {
         return Form(
           key: _formKey,
@@ -76,23 +89,43 @@ class _EditablePlayerNameState extends State<EditablePlayerName> {
               isDense: true,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(24.0)),
-                borderSide: BorderSide(color: AppColors.onPrimaryBorder, strokeAlign: 1.0, width: 4),
+                borderSide: BorderSide(
+                  color: AppColors.onPrimaryBorder,
+                  strokeAlign: 1.0,
+                  width: 4,
+                ),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(24),
-                borderSide: BorderSide(color: AppColors.onPrimaryBorder.withValues(alpha: 0.55), strokeAlign: 1.0, width: 4),
+                borderSide: BorderSide(
+                  color: AppColors.onPrimaryBorder.withValues(alpha: 0.55),
+                  strokeAlign: 1.0,
+                  width: 4,
+                ),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(24),
-                borderSide: BorderSide(color: AppColors.onPrimaryBorder, strokeAlign: 1.0, width: 4),
+                borderSide: BorderSide(
+                  color: AppColors.onPrimaryBorder,
+                  strokeAlign: 1.0,
+                  width: 4,
+                ),
               ),
               focusedErrorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(24),
-                borderSide: BorderSide(color: Colors.red, strokeAlign: 1.0, width: 4),
+                borderSide: BorderSide(
+                  color: Colors.red,
+                  strokeAlign: 1.0,
+                  width: 4,
+                ),
               ),
               errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(24),
-                borderSide: BorderSide(color: Colors.red, strokeAlign: 1.0, width: 4),
+                borderSide: BorderSide(
+                  color: Colors.red,
+                  strokeAlign: 1.0,
+                  width: 4,
+                ),
               ),
               contentPadding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             ),
@@ -115,7 +148,9 @@ class _EditablePlayerNameState extends State<EditablePlayerName> {
                     ),
                   );
                 },
-            style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: Colors.white),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall!.copyWith(color: Colors.white),
             controller: _controller,
             focusNode: _focusNode,
             autofocus: false,
@@ -131,15 +166,25 @@ class _EditablePlayerNameState extends State<EditablePlayerName> {
               return null;
             },
             onTapOutside: (event) {
-              _controller.text = context.read<PlayerProfileCubit>().state.profile.playerName;
+              _controller.text = context
+                  .read<PlayerProfileCubit>()
+                  .state
+                  .profile
+                  .playerName;
               _focusNode.unfocus();
             },
             onFieldSubmitted: (value) {
               setState(() {
                 if (_formKey.currentState!.validate()) {
-                  context.read<PlayerProfileCubit>().updateName(name: value.trim());
+                  context.read<PlayerProfileCubit>().updateName(
+                    name: value.trim(),
+                  );
                 } else {
-                  _controller.text = context.read<PlayerProfileCubit>().state.profile.playerName;
+                  _controller.text = context
+                      .read<PlayerProfileCubit>()
+                      .state
+                      .profile
+                      .playerName;
                 }
               });
             },

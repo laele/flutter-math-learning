@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_math_app/core/theme/app_colors.dart';
 import 'package:flutter_math_app/core/widgets/floating_math_symbols_background.dart';
 import 'package:flutter_math_app/features/audio/presentation/cubit/audio_cubit.dart';
 import 'package:flutter_math_app/features/audio/presentation/widgets/audio_listener.dart';
 import 'package:flutter_math_app/features/player_prefs/domain/enums/player_profile_status.dart';
 import 'package:flutter_math_app/features/player_prefs/presentation/cubit/player_profile_cubit.dart';
+import 'package:flutter_math_app/features/player_prefs/presentation/set_player_name_screen.dart';
 import 'package:flutter_math_app/features/scenes/presentation/menu/menu_screen.dart';
 import 'package:flutter_math_app/features/input_recognition/presentation/input_recognition_cubit/input_recognition_cubit.dart';
 
@@ -38,16 +40,25 @@ class _SplashScreenState extends State<SplashScreen> {
     if (_hasNavigated || !_minDurationElpased) return;
 
     final audioReady = context.read<AudioCubit>().state.audioLoaded == true;
-    final inputReady = context.read<InputRecognitionCubit>().state.isLoaded == true;
-    final profileReady = context.read<PlayerProfileCubit>().state.status == PlayerProfileStatus.success;
+    final inputReady =
+        context.read<InputRecognitionCubit>().state.isLoaded == true;
+    final profileReady =
+        context.read<PlayerProfileCubit>().state.status ==
+        PlayerProfileStatus.success;
 
     if (audioReady && inputReady && profileReady) {
       _hasNavigated = true;
-      /* Navigator.of(context).pushReplacement(
+      bool isNewUser =
+          context.read<PlayerProfileCubit>().state.profile.bestArcadeScore ==
+              0 &&
+          context.read<PlayerProfileCubit>().state.profile.playerName ==
+              'Player';
+      Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => const MenuScreen(),
+          builder: (context) =>
+              isNewUser ? const SetPlayerNameScreen() : const MenuScreen(),
         ),
-      );*/ // TODO First Time Playing  ?? go to Tutorial
+      );
     }
   }
 
@@ -58,7 +69,8 @@ class _SplashScreenState extends State<SplashScreen> {
     return MultiBlocListener(
       listeners: [
         BlocListener<AudioCubit, AudioState>(
-          listenWhen: (previous, current) => previous.audioLoaded != current.audioLoaded,
+          listenWhen: (previous, current) =>
+              previous.audioLoaded != current.audioLoaded,
           listener: (context, state) {
             if (state.audioLoaded) {
               _tryNavigate();
@@ -84,33 +96,19 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       ],
       child: Scaffold(
+        backgroundColor: AppColors.appBackground,
         body: Stack(
           children: [
-            Column(
-              children: [
-                Expanded(
-                  child: Center(
-                    child: Container(
-                      width: double.infinity,
-                      color: Colors.amber,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CircularProgressIndicator(
-                            color: Colors.deepOrange,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+            FloatingMathSymbolsBackground(
+              color: Colors.white,
+              opacity: 0.85,
+              symbolCount: 60,
             ),
-            Expanded(
-              child: FloatingMathSymbolsBackground(
-                color: Colors.white,
-                opacity: 0.5,
-                symbolCount: 60,
+
+            Align(
+              alignment: AlignmentGeometry.center,
+              child: CircularProgressIndicator(
+                color: AppColors.iconColor,
               ),
             ),
           ],

@@ -2,11 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_math_app/core/l10n/arb/app_localizations.dart';
-import 'package:flutter_math_app/core/theme/app_colors.dart';
 import 'package:flutter_math_app/core/widgets/app_main_title_text.dart';
 import 'package:flutter_math_app/core/widgets/custom_icon.dart';
-
 import 'package:flutter_math_app/features/player_prefs/presentation/widgets/player_prefs_card.dart';
 import 'package:flutter_math_app/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:flutter_math_app/features/settings/presentation/widgets/language_sheet.dart';
@@ -16,8 +13,6 @@ class MenuCanvas extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -46,7 +41,11 @@ class MenuCanvas extends StatelessWidget {
                       LanguageSheet.show(context);
                     },
                     label: Text(
-                      context.read<SettingsCubit>().state.locale!.languageCode, // current lang string,
+                      context
+                          .read<SettingsCubit>()
+                          .state
+                          .locale!
+                          .languageCode, // current lang string,
                       maxLines: 1,
                       overflow: TextOverflow.fade,
                     ),

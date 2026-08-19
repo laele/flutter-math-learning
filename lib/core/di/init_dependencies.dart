@@ -40,7 +40,17 @@ final sl = GetIt.instance;
 
 Future<void> initDependencies() async {
   final sharedPrefs = await SharedPreferences.getInstance();
-  final isarInstance = await Isar.open([PlayerProfileModelSchema], directory: (await getApplicationDocumentsDirectory()).path);
+  final isarInstance = await Isar.open([
+    PlayerProfileModelSchema,
+  ], directory: (await getApplicationDocumentsDirectory()).path);
+
+  // TODO DELETE clear shared prefs
+  await sharedPrefs.clear();
+  // TODO CLEAR ISAR DATA
+  await isarInstance.writeTxn(() async {
+    await isarInstance.playerProfileModels.clear();
+  });
+  //
 
   sl.registerLazySingleton<Isar>(() => isarInstance);
   await initInputRecognizer();
@@ -49,9 +59,13 @@ Future<void> initDependencies() async {
   await initDialogMessage();
   await initSettings(instance: sharedPrefs);
 
-  sl.registerFactoryParam<GameCubit, GameRulesPolicy, void>((policy, _) => GameCubit(rulesPolicy: policy));
+  sl.registerFactoryParam<GameCubit, GameRulesPolicy, void>(
+    (policy, _) => GameCubit(rulesPolicy: policy),
+  );
   sl.registerFactory<EffectsCubit>(() => EffectsCubit()); // effect animaiton
-  sl.registerFactory<CharacterCubit>(() => CharacterCubit()); // Character Animation Cubit
+  sl.registerFactory<CharacterCubit>(
+    () => CharacterCubit(),
+  ); // Character Animation Cubit
   sl.registerFactory<TimerCubit>(() => TimerCubit());
   sl.registerFactory<ScoreCubit>(() => ScoreCubit());
   sl.registerFactory<TutorialCubit>(() => TutorialCubit());
@@ -59,8 +73,12 @@ Future<void> initDependencies() async {
 
 Future<void> initPlayerProfile() async {
   sl
-    ..registerLazySingleton<PlayerProfileLocalDataSource>(() => PlayerProfileLocalDatasourceImpl(isar: sl()))
-    ..registerLazySingleton<PlayerProfileRepository>(() => PlayerProfileReporitoryImpl(localDataSource: sl()))
+    ..registerLazySingleton<PlayerProfileLocalDataSource>(
+      () => PlayerProfileLocalDatasourceImpl(isar: sl()),
+    )
+    ..registerLazySingleton<PlayerProfileRepository>(
+      () => PlayerProfileReporitoryImpl(localDataSource: sl()),
+    )
     ..registerFactory<PlayerProfileCubit>(
       () => PlayerProfileCubit(repository: sl()),
     );
@@ -91,8 +109,12 @@ Future<void> initInputRecognizer() async {
 Future<void> initAudio() async {
   sl
     ..registerLazySingleton<AudioDataSource>(() => AudioDataSourceImpl())
-    ..registerLazySingleton<AudioRepository>(() => AudioRepositoryImpl(datasource: sl()))
-    ..registerLazySingleton<AudioCubit>(() => AudioCubit(audioRepository: sl()));
+    ..registerLazySingleton<AudioRepository>(
+      () => AudioRepositoryImpl(datasource: sl()),
+    )
+    ..registerLazySingleton<AudioCubit>(
+      () => AudioCubit(audioRepository: sl()),
+    );
 }
 
 Future<void> initSettings({required SharedPreferences instance}) async {
@@ -120,5 +142,7 @@ Future<void> initDialogMessage() async {
         },
       ),
     )
-    ..registerFactory<DialogMessageCubit>(() => DialogMessageCubit(repository: sl()));
+    ..registerFactory<DialogMessageCubit>(
+      () => DialogMessageCubit(repository: sl()),
+    );
 }
