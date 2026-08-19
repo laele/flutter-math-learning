@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_math_app/core/widgets/floating_math_symbols_background.dart';
 import 'package:flutter_math_app/features/audio/presentation/cubit/audio_cubit.dart';
 import 'package:flutter_math_app/features/audio/presentation/widgets/audio_listener.dart';
 import 'package:flutter_math_app/features/player_prefs/domain/enums/player_profile_status.dart';
@@ -42,11 +43,11 @@ class _SplashScreenState extends State<SplashScreen> {
 
     if (audioReady && inputReady && profileReady) {
       _hasNavigated = true;
-      Navigator.of(context).pushReplacement(
+      /* Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) => const MenuScreen(),
         ),
-      ); // TODO First Time Playing  ?? go to Tutorial
+      );*/ // TODO First Time Playing  ?? go to Tutorial
     }
   }
 
@@ -83,22 +84,33 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       ],
       child: Scaffold(
-        body: Column(
+        body: Stack(
           children: [
-            Expanded(
-              child: Center(
-                child: Container(
-                  width: double.infinity,
-                  color: Colors.amber,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircularProgressIndicator(
-                        color: Colors.deepOrange,
+            Column(
+              children: [
+                Expanded(
+                  child: Center(
+                    child: Container(
+                      width: double.infinity,
+                      color: Colors.amber,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CircularProgressIndicator(
+                            color: Colors.deepOrange,
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
+              ],
+            ),
+            Expanded(
+              child: FloatingMathSymbolsBackground(
+                color: Colors.white,
+                opacity: 0.5,
+                symbolCount: 60,
               ),
             ),
           ],
