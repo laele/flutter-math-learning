@@ -8,6 +8,7 @@ import 'package:flutter_math_app/features/input_recognition/domain/repository/in
 
 class InputRecognitionRepositoryImpl implements InputRecognitionRepository {
   final InputRecognitionDataSource datasource;
+
   InputRecognitionRepositoryImpl({required this.datasource});
 
   @override

@@ -49,4 +49,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get selectLanguage => 'Select Language';
+
+  @override
+  String get errorModelNotDownloaded => 'Hold on, getting ready...';
+
+  @override
+  String get errorUnknown => 'Something went wrong, try again';
 }

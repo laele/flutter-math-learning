@@ -6,26 +6,26 @@ final class InputRecognitionState extends Equatable {
   final bool isLoaded;
   final InputRecognitionStatus status;
   final int? numberRecognized;
-  final String? errorMessage;
+  final InputRecognitionErrorType? errorType;
 
   const InputRecognitionState({
     this.isLoaded = false,
     this.status = InputRecognitionStatus.idle,
     this.numberRecognized,
-    this.errorMessage,
+    this.errorType,
   });
 
   InputRecognitionState copyWith({
     bool? isLoaded,
     InputRecognitionStatus? status,
     int? numberRecognized,
-    String? errorMessage,
+    InputRecognitionErrorType? errorType,
   }) {
     return InputRecognitionState(
       isLoaded: isLoaded ?? this.isLoaded,
       status: status ?? this.status,
       numberRecognized: numberRecognized ?? this.numberRecognized,
-      errorMessage: errorMessage,
+      errorType: errorType,
     );
   }
 
@@ -36,6 +36,6 @@ final class InputRecognitionState extends Equatable {
     isLoaded,
     status,
     numberRecognized,
-    errorMessage,
+    errorType,
   ];
 }

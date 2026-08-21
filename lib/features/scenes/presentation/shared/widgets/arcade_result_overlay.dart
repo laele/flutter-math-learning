@@ -16,10 +16,10 @@ class ArcadeResultOverlay extends StatefulWidget {
   const ArcadeResultOverlay({super.key});
 
   @override
-  State<ArcadeResultOverlay> createState() => _AracdeResultOverlayState();
+  State<ArcadeResultOverlay> createState() => _ArcadeResultOverlayState();
 }
 
-class _AracdeResultOverlayState extends State<ArcadeResultOverlay> {
+class _ArcadeResultOverlayState extends State<ArcadeResultOverlay> {
   final GlobalKey<AnimatedOverlayState> _animatedOverlayKey = GlobalKey<AnimatedOverlayState>();
 
   @override

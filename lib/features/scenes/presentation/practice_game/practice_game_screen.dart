@@ -27,6 +27,7 @@ import 'package:flutter_math_app/features/input_recognition/presentation/input_r
 import 'package:flutter_math_app/features/scenes/presentation/arcade_game/widgets/game_fab.dart';
 import 'package:flutter_math_app/features/scenes/presentation/shared/widgets/game_scribble_canvas.dart';
 import 'package:flutter_math_app/features/game/presentation/widgets/game_pencil_indicator.dart';
+import 'package:flutter_math_app/features/scenes/presentation/shared/widgets/practice_result_overlay.dart';
 
 class PracticeGameScreen extends StatelessWidget {
   const PracticeGameScreen({super.key});
@@ -242,10 +243,10 @@ class _PracticeGameViewState extends State<PracticeGameView> {
                           ),
                         ),
                         Align(alignment: AlignmentGeometry.center, child: GamePencilIndicator()),
-                        /*Align(
+                        Align(
                           alignment: AlignmentGeometry.center,
-                          child: ScoreOverlay(),
-                        ),*/
+                          child: PracticeResultOverlay(),
+                        ),
                         Align(alignment: AlignmentGeometry.bottomCenter, child: DialogMessageText()),
                       ],
                     ),

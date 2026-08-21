@@ -8,6 +8,7 @@ import 'package:flutter_math_app/core/error/failure.dart';
 import 'package:flutter_math_app/core/usecase/usecase.dart';
 import 'package:flutter_math_app/features/input_recognition/domain/entities/drawn_point_entity.dart';
 import 'package:flutter_math_app/features/input_recognition/domain/entities/drawn_stroke_entity.dart';
+import 'package:flutter_math_app/features/input_recognition/domain/enums/input_recognition_error_type.dart';
 import 'package:flutter_math_app/features/input_recognition/domain/failures/input_recognition_failure.dart';
 import 'package:flutter_math_app/features/input_recognition/domain/usecases/ensure_model_downloaded_usecase.dart';
 import 'package:flutter_math_app/features/input_recognition/domain/usecases/recognize_number_usecase.dart';
@@ -55,14 +56,17 @@ class InputRecognitionCubit extends Cubit<InputRecognitionState> {
   }
 
   void ensureModelDownloaded() async {
+    emit(state.copyWith(status: InputRecognitionStatus.processing));
     final ensuremodelDownloaded = await _ensureModelDownloadedUseCase(
       NoParams(),
     );
     ensuremodelDownloaded.fold(
       (failure) {
-        emit(state.copyWith(status: InputRecognitionStatus.failed, errorMessage: _errorMessageFromFailure(failure)));
+        print('🔴 emit failed: ${failure.runtimeType}');
+        emit(state.copyWith(status: InputRecognitionStatus.failed, errorType: _errorTypeFromFailure(failure)));
       },
       (_) {
+         print('🟢 emit success — previous status era: ${state.status}, isLoaded: ${state.isLoaded}');
         emit(state.copyWith(status: InputRecognitionStatus.success, isLoaded: true));
       },
     );
@@ -86,7 +90,6 @@ class InputRecognitionCubit extends Cubit<InputRecognitionState> {
         );
       },
     ).toList();
-    print('processing');
     emit(state.copyWith(status: InputRecognitionStatus.processing));
 
     final result = await _recognizeNumberUseCase(
@@ -99,7 +102,7 @@ class InputRecognitionCubit extends Cubit<InputRecognitionState> {
 
     result.fold(
       (failure) {
-        emit(state.copyWith(status: InputRecognitionStatus.failed, errorMessage: _errorMessageFromFailure(failure)));
+        emit(state.copyWith(status: InputRecognitionStatus.failed, errorType: _errorTypeFromFailure(failure)));
       },
       (number) {
         emit(state.copyWith(numberRecognized: number, status: InputRecognitionStatus.success));
@@ -109,18 +112,19 @@ class InputRecognitionCubit extends Cubit<InputRecognitionState> {
     emit(state.copyWith(status: InputRecognitionStatus.idle));
   }
 
-  String _errorMessageFromFailure(Failure failure) => switch (failure) {
-    ModelNotDownloadedFailure() => 'Hold on, getting ready..',
-    EmptyInputFailure() => 'Draw a number first!',
-    UnrecognizedInputFailure() => 'I couldn\'t read that, want to try again?',
-    UnknownInputRecognitionFailure() => 'Something went wrong, try again',
-    (_) => 'Something went wrong, try again',
-  };
-
   @override
   Future<void> close() {
     notifier.dispose();
     _timer?.cancel();
     return super.close();
+  }
+
+  InputRecognitionErrorType? _errorTypeFromFailure(Failure failure) {
+    return switch (failure) {
+      ModelNotDownloadedFailure() => InputRecognitionErrorType.modelNotDownloaded,
+      EmptyInputFailure() => InputRecognitionErrorType.emptyInput,
+      UnrecognizedInputFailure() => InputRecognitionErrorType.unrecognized,
+      _ => InputRecognitionErrorType.unknown,
+    };
   }
 }

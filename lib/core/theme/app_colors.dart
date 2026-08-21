@@ -9,7 +9,7 @@ class AppColors {
   static const primary = Color.fromARGB(255, 240, 198, 62);
   static const onPrimary = Color.fromRGBO(255, 255, 255, 1);
   static const onPrimaryBorder = Color.fromARGB(255, 207, 159, 24);
-  static const iconColor = Color.fromARGB(255, 254, 58, 19);
+  static const iconColor = Color(0xFF4A3700);
 
   static const primaryContainer = Color.fromARGB(255, 240, 198, 62);
 

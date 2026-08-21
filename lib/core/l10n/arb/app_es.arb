@@ -15,6 +15,9 @@
   "newScore": "Nuevo Mejor Puntaje!",
   "playAgain": "Jugar de Nuevo",
 
-  "selectLanguage": "Seleccionar idioma"
+  "selectLanguage": "Seleccionar idioma",
+
+  "errorModelNotDownloaded": "Un momento, preparando todo...",
+  "errorUnknown": "Algo salió mal, intenta de nuevo"
 }
 

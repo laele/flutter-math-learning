@@ -15,6 +15,7 @@
   "newScore": "New Best Score!",
   "playAgain": "Play again",
 
-  "selectLanguage": "Select Language"
-
+  "selectLanguage": "Select Language",
+  "errorModelNotDownloaded": "Hold on, getting ready...",
+  "errorUnknown": "Something went wrong, try again"
 }

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_math_app/core/l10n/arb/app_localizations.dart';
 import 'package:flutter_math_app/core/theme/app_colors.dart';
+import 'package:flutter_math_app/core/widgets/animated_overlay.dart';
+import 'package:flutter_math_app/core/widgets/app_filled_button.dart';
 import 'package:flutter_math_app/core/widgets/floating_math_symbols_background.dart';
 import 'package:flutter_math_app/features/audio/presentation/cubit/audio_cubit.dart';
+import 'package:flutter_math_app/features/input_recognition/domain/enums/input_recognition_error_type.dart';
 import 'package:flutter_math_app/features/player_prefs/domain/enums/player_profile_status.dart';
 import 'package:flutter_math_app/features/player_prefs/presentation/cubit/player_profile_cubit.dart';
 import 'package:flutter_math_app/features/scenes/presentation/set_player_name/set_player_name_screen.dart';
@@ -17,8 +21,12 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final GlobalKey<AnimatedOverlayState> _animatedOverlayKey = GlobalKey<AnimatedOverlayState>();
   bool _hasNavigated = false;
   bool _minDurationElpased = false;
+
+  bool error = false;
+  String? errorMessage;
 
   @override
   void initState() {
@@ -54,7 +62,20 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
-  void _showErrorMessage({required String message}) {} // TODO ERROR MESSAGE
+  void _showErrorMessage({required String message}) {
+    setState(() {
+      error = true;
+      errorMessage = message;
+    });
+  }
+
+  String _localizedErrorMessage(BuildContext context, InputRecognitionErrorType type) {
+    final l10n = AppLocalizations.of(context)!;
+    return switch (type) {
+      InputRecognitionErrorType.modelNotDownloaded => l10n.errorModelNotDownloaded,
+      _ => l10n.errorUnknown,
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,9 +94,8 @@ class _SplashScreenState extends State<SplashScreen> {
           listener: (context, state) {
             if (state.status == InputRecognitionStatus.success) {
               _tryNavigate();
-            }
-            if (state.status == InputRecognitionStatus.failed) {
-              _showErrorMessage(message: state.errorMessage!);
+            } else if (state.status == InputRecognitionStatus.failed) {
+              _showErrorMessage(message: _localizedErrorMessage(context, state.errorType!));
             }
           },
         ),
@@ -102,6 +122,33 @@ class _SplashScreenState extends State<SplashScreen> {
                 color: AppColors.iconColor,
               ),
             ),
+
+            error
+                ? Align(
+                    alignment: AlignmentGeometry.center,
+                    child: AnimatedOverlay(
+                      key: _animatedOverlayKey,
+                      child: Column(
+                        children: [
+                          Text(errorMessage!),
+                          AppFilledButton(
+                            title: 'Retry',
+                            function: () async {
+                              await _animatedOverlayKey.currentState?.playOutAnimation();
+                              ();
+                              if (!mounted) return;
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (context) => const SplashScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : SizedBox.shrink(),
           ],
         ),
       ),
