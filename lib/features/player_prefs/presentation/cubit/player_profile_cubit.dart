@@ -27,8 +27,9 @@ class PlayerProfileCubit extends Cubit<PlayerProfileState> with EventEmitter {
     result.fold(
       (failure) => emit(state.copyWith(status: PlayerProfileStatus.error)),
       (profile) {
-        print(profile);
-        emit(state.copyWith(status: PlayerProfileStatus.success, profile: profile));
+        emit(
+          state.copyWith(status: PlayerProfileStatus.success, profile: profile),
+        );
       },
     );
   }
@@ -39,7 +40,9 @@ class PlayerProfileCubit extends Cubit<PlayerProfileState> with EventEmitter {
     result.fold(
       (failure) => emit(state.copyWith(status: PlayerProfileStatus.error)),
       (profile) {
-        final isNewScore = profile.bestArcadeScore == score && score > state.profile.bestArcadeScore;
+        final isNewScore =
+            profile.bestArcadeScore == score &&
+            score > state.profile.bestArcadeScore;
         if (isNewScore) {
           emit(
             state.copyWith(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_math_app/features/game/presentation/widgets/practice_number_indicator_row.dart';
 import 'package:flutter_math_app/features/game/presentation/widgets/session_progress/game_session_progress_indicator_bar.dart';
 import 'package:flutter_math_app/features/game/presentation/widgets/strike_indicator/incorrect_streak_indicator.dart';
 
@@ -18,6 +19,9 @@ class PracticeGameTopBar extends StatelessWidget {
                 alignment: AlignmentGeometry.topCenter,
                 child: Column(
                   children: [
+                    PracticeNumberIndicatorRow(),
+                    SizedBox(height: 8),
+
                     GameSessionProgressIndicatorBar(),
                     SizedBox(height: 16),
                     StrikeIndicatorSection(),

@@ -6,10 +6,17 @@ class TutorialState extends Equatable {
   final int? numberRecognized;
   final int currentStepIndex;
 
-  const TutorialState({this.tutorialPhaseEvent, this.currentStep, this.numberRecognized, this.currentStepIndex = 0});
+  const TutorialState({
+    this.tutorialPhaseEvent,
+    this.currentStep,
+    this.numberRecognized,
+    this.currentStepIndex = 0,
+  });
 
-  double get progress => currentStepIndex == 0 ? 0 : (currentStepIndex / TutorialSequence.steps.length);
-
+  double get progress => currentStepIndex == 0
+      ? 0
+      : (currentStepIndex / TutorialSequence.steps.length);
+  int get tutorialSteps => TutorialSequence.steps.length;
   TutorialState copyWith({
     TutorialPhaseEvent? tutorialPhaseEvent,
     TutorialStepEntity? currentStep,

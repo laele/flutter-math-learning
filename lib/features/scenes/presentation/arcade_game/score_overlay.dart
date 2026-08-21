@@ -18,7 +18,8 @@ class ScoreOverlay extends StatefulWidget {
   State<ScoreOverlay> createState() => _ScoreOverlayState();
 }
 
-class _ScoreOverlayState extends State<ScoreOverlay> with SingleTickerProviderStateMixin {
+class _ScoreOverlayState extends State<ScoreOverlay>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _fade;
   late final Animation<double> _scale;
@@ -31,11 +32,14 @@ class _ScoreOverlayState extends State<ScoreOverlay> with SingleTickerProviderSt
       duration: const Duration(milliseconds: 200),
     );
 
-    _scale = TweenSequence<double>(
-      [
-        TweenSequenceItem(tween: Tween(begin: 0.0, end: 1.0), weight: 40),
-      ],
-    ).animate(CurvedAnimation(parent: _controller, curve: const Interval(0.0, 1)));
+    _scale =
+        TweenSequence<double>(
+          [
+            TweenSequenceItem(tween: Tween(begin: 0.0, end: 1.0), weight: 40),
+          ],
+        ).animate(
+          CurvedAnimation(parent: _controller, curve: const Interval(0.0, 1)),
+        );
 
     _fade = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(parent: _controller, curve: const Interval(0.0, 1.0)),
@@ -63,13 +67,17 @@ class _ScoreOverlayState extends State<ScoreOverlay> with SingleTickerProviderSt
     final l10n = AppLocalizations.of(context)!;
 
     return BlocConsumer<GameCubit, GameState>(
-      listenWhen: (previous, current) => (previous.gamePhaseEvent != current.gamePhaseEvent) && current.gamePhaseEvent != null,
+      listenWhen: (previous, current) =>
+          (previous.gamePhaseEvent != current.gamePhaseEvent) &&
+          current.gamePhaseEvent != null,
       listener: (context, state) async {
         if (state.gamePhaseEvent!.gamePhase == GamePhase.finished) {
           playInAnimation();
         }
       },
-      buildWhen: (previous, current) => (previous.gamePhaseEvent != current.gamePhaseEvent) && current.gamePhaseEvent != null,
+      buildWhen: (previous, current) =>
+          (previous.gamePhaseEvent != current.gamePhaseEvent) &&
+          current.gamePhaseEvent != null,
 
       builder: (context, state) {
         return (state.gamePhaseEvent?.gamePhase == GamePhase.finished)
@@ -84,11 +92,16 @@ class _ScoreOverlayState extends State<ScoreOverlay> with SingleTickerProviderSt
                         padding: const EdgeInsets.all(16.0),
                         child: Center(
                           child: ConstrainedBox(
-                            constraints: BoxConstraints(maxWidth: 300, maxHeight: 500),
+                            constraints: BoxConstraints(
+                              maxWidth: 300,
+                              maxHeight: 500,
+                            ),
                             child: Card(
                               color: colorScheme.primary,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadiusGeometry.circular(36.0),
+                                borderRadius: BorderRadiusGeometry.circular(
+                                  36.0,
+                                ),
                               ),
                               elevation: 25,
                               child: Padding(
@@ -99,7 +112,8 @@ class _ScoreOverlayState extends State<ScoreOverlay> with SingleTickerProviderSt
                                   children: [
                                     FittedBox(
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           AnimatedTextKit(
@@ -111,7 +125,13 @@ class _ScoreOverlayState extends State<ScoreOverlay> with SingleTickerProviderSt
                                             animatedTexts: [
                                               WavyAnimatedText(
                                                 l10n.gameOver,
-                                                textStyle: textTheme.displayLarge!.copyWith(fontFamily: 'Gocake', color: AppColors.titleOnPrimary),
+                                                textStyle: textTheme
+                                                    .displayLarge!
+                                                    .copyWith(
+                                                      fontFamily: 'Gocake',
+                                                      color: AppColors
+                                                          .titleOnPrimary,
+                                                    ),
                                                 speed: Duration(
                                                   milliseconds: 300,
                                                 ),
@@ -122,62 +142,89 @@ class _ScoreOverlayState extends State<ScoreOverlay> with SingleTickerProviderSt
                                       ),
                                     ),
                                     SizedBox(height: 8.0),
+                                    context
+                                                .read<PlayerProfileCubit>()
+                                                .state
+                                                .profile
+                                                .bestArcadeScore ==
+                                            context
+                                                .read<ScoreCubit>()
+                                                .state
+                                                .currentScore
+                                        ? FittedBox(
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                AnimatedTextKit(
+                                                  pause: Duration(
+                                                    milliseconds: 200,
+                                                  ),
+                                                  repeatForever: false,
+                                                  isRepeatingAnimation: false,
+                                                  animatedTexts: [
+                                                    BounceAnimatedText(
+                                                      l10n.newScore,
+                                                      textStyle: textTheme
+                                                          .displayLarge,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        : SizedBox.shrink(),
+                                    SizedBox(height: 8.0),
+
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           l10n.yourScore,
-                                          style: Theme.of(context).textTheme.titleLarge,
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.titleLarge,
                                         ),
                                         SizedBox(width: 8),
                                         ScoreBadge(
                                           showBackground: true,
                                           widthSize: 50,
                                           heightSize: 50,
-                                          text: context.read<PlayerProfileCubit>().state.profile.bestArcadeScore.toString(),
+                                          text: context
+                                              .read<ScoreCubit>()
+                                              .state
+                                              .currentScore
+                                              .toString(),
                                         ),
                                       ],
                                     ),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           l10n.best,
-                                          style: Theme.of(context).textTheme.titleLarge,
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.titleLarge,
                                         ),
                                         SizedBox(width: 8),
                                         ScoreBadge(
                                           showBackground: true,
                                           widthSize: 50,
                                           heightSize: 50,
-                                          text: context.read<PlayerProfileCubit>().state.profile.bestArcadeScore.toString(),
+                                          text: context
+                                              .read<PlayerProfileCubit>()
+                                              .state
+                                              .profile
+                                              .bestArcadeScore
+                                              .toString(),
                                         ),
                                       ],
                                     ),
-                                    SizedBox(height: 8.0),
-                                    FittedBox(
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          AnimatedTextKit(
-                                            pause: Duration(
-                                              milliseconds: 200,
-                                            ),
-                                            repeatForever: false,
-                                            isRepeatingAnimation: false,
-                                            animatedTexts: [
-                                              BounceAnimatedText(
-                                                l10n.newScore,
-                                                textStyle: textTheme.displayLarge,
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
 
-                                    //StarsSection(accuracy: state.gameSession.accuracy),
                                     SizedBox(height: 12.0),
                                     PlayAgainButton(
                                       function: () async {

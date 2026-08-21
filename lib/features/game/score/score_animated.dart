@@ -11,7 +11,8 @@ class ScoreAnimated extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ScoreCubit, ScoreState>(
-      buildWhen: (previous, current) => previous.currentScore != current.currentScore,
+      buildWhen: (previous, current) =>
+          previous.currentScore != current.currentScore,
       builder: (context, state) {
         return BounceInDown(
           child: ScoreBadge(

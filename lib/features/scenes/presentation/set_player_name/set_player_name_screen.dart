@@ -38,13 +38,23 @@ class _SetPlayerNameScreenState extends State<SetPlayerNameScreen> {
                 children: [
                   Text(
                     l10n.whatIsYourName,
-                    style:
-                        Theme.of(
-                          context,
-                        ).textTheme.headlineLarge!.copyWith(
-                          fontFamily: 'Gocake',
-                          color: AppColors.iconColor,
+                    style: Theme.of(context).textTheme.headlineLarge!.copyWith(
+                      fontFamily: 'Gocake',
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black.withOpacity(0.4),
+                          offset: const Offset(0, 2),
+                          blurRadius: 8,
                         ),
+                        Shadow(
+                          color: Colors.black.withOpacity(0.6),
+                          offset: const Offset(0, 0),
+                          blurRadius: 3,
+                        ),
+                      ],
+                    ),
                   ),
                   SizedBox(height: 16.0),
                   AppCard(
@@ -58,7 +68,9 @@ class _SetPlayerNameScreenState extends State<SetPlayerNameScreen> {
                           SizedBox(width: 8.0),
                           IconButton(
                             onPressed: () {
-                              final isValid = _playerNameKey.currentState?.validate() ?? false;
+                              final isValid =
+                                  _playerNameKey.currentState?.validate() ??
+                                  false;
 
                               if (!isValid) return;
                               Navigator.of(context).pushReplacement(
@@ -68,7 +80,8 @@ class _SetPlayerNameScreenState extends State<SetPlayerNameScreen> {
                               );
                             },
                             icon: CustomIcon(
-                              assetRoute: 'lib/core/assets/images/arrow_right.png',
+                              assetRoute:
+                                  'lib/core/assets/images/arrow_right.png',
                             ),
                           ),
                         ],
