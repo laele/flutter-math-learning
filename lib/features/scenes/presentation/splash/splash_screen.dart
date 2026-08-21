@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_math_app/core/theme/app_colors.dart';
 import 'package:flutter_math_app/core/widgets/floating_math_symbols_background.dart';
 import 'package:flutter_math_app/features/audio/presentation/cubit/audio_cubit.dart';
-import 'package:flutter_math_app/features/audio/presentation/widgets/audio_listener.dart';
 import 'package:flutter_math_app/features/player_prefs/domain/enums/player_profile_status.dart';
 import 'package:flutter_math_app/features/player_prefs/presentation/cubit/player_profile_cubit.dart';
 import 'package:flutter_math_app/features/scenes/presentation/set_player_name/set_player_name_screen.dart';
@@ -40,23 +39,16 @@ class _SplashScreenState extends State<SplashScreen> {
     if (_hasNavigated || !_minDurationElpased) return;
 
     final audioReady = context.read<AudioCubit>().state.audioLoaded == true;
-    final inputReady =
-        context.read<InputRecognitionCubit>().state.isLoaded == true;
-    final profileReady =
-        context.read<PlayerProfileCubit>().state.status ==
-        PlayerProfileStatus.success;
+    final inputReady = context.read<InputRecognitionCubit>().state.isLoaded == true;
+    final profileReady = context.read<PlayerProfileCubit>().state.status == PlayerProfileStatus.success;
 
     if (audioReady && inputReady && profileReady) {
       _hasNavigated = true;
       bool isNewUser =
-          context.read<PlayerProfileCubit>().state.profile.bestArcadeScore ==
-              0 &&
-          context.read<PlayerProfileCubit>().state.profile.playerName ==
-              'Player';
+          context.read<PlayerProfileCubit>().state.profile.bestArcadeScore == 0 && context.read<PlayerProfileCubit>().state.profile.playerName == 'Player';
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) =>
-              isNewUser ? const SetPlayerNameScreen() : const MenuScreen(),
+          builder: (context) => isNewUser ? const SetPlayerNameScreen() : const MenuScreen(),
         ),
       );
     }
@@ -69,8 +61,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return MultiBlocListener(
       listeners: [
         BlocListener<AudioCubit, AudioState>(
-          listenWhen: (previous, current) =>
-              previous.audioLoaded != current.audioLoaded,
+          listenWhen: (previous, current) => previous.audioLoaded != current.audioLoaded,
           listener: (context, state) {
             if (state.audioLoaded) {
               _tryNavigate();

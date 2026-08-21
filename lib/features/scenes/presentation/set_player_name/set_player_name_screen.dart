@@ -5,7 +5,6 @@ import 'package:flutter_math_app/core/widgets/app_card.dart';
 import 'package:flutter_math_app/core/widgets/custom_icon.dart';
 import 'package:flutter_math_app/core/widgets/floating_math_symbols_background.dart';
 import 'package:flutter_math_app/features/player_prefs/presentation/widgets/editable_player_name.dart';
-import 'package:flutter_math_app/features/scenes/presentation/menu/menu_screen.dart';
 import 'package:flutter_math_app/features/scenes/presentation/tutorial/tutorial_screen.dart';
 
 class SetPlayerNameScreen extends StatefulWidget {
@@ -68,9 +67,7 @@ class _SetPlayerNameScreenState extends State<SetPlayerNameScreen> {
                           SizedBox(width: 8.0),
                           IconButton(
                             onPressed: () {
-                              final isValid =
-                                  _playerNameKey.currentState?.validate() ??
-                                  false;
+                              final isValid = _playerNameKey.currentState?.validate() ?? false;
 
                               if (!isValid) return;
                               Navigator.of(context).pushReplacement(
@@ -80,8 +77,7 @@ class _SetPlayerNameScreenState extends State<SetPlayerNameScreen> {
                               );
                             },
                             icon: CustomIcon(
-                              assetRoute:
-                                  'lib/core/assets/images/arrow_right.png',
+                              assetRoute: 'lib/core/assets/images/arrow_right.png',
                             ),
                           ),
                         ],

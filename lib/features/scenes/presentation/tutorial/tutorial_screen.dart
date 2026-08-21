@@ -5,18 +5,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_math_app/core/di/init_dependencies.dart';
 import 'package:flutter_math_app/core/theme/app_gradients.dart';
 import 'package:flutter_math_app/core/widgets/custom_icon.dart';
+import 'package:flutter_math_app/features/audio/domain/enums/sound_type.dart';
+import 'package:flutter_math_app/features/audio/presentation/cubit/audio_cubit.dart';
 import 'package:flutter_math_app/features/character/domain/enums/character_animation_type.dart';
 import 'package:flutter_math_app/features/character/presentation/character_rive.dart';
 import 'package:flutter_math_app/features/character/presentation/cubit/character_cubit.dart';
 import 'package:flutter_math_app/features/dialog_message/presentation/cubit/dialog_message_cubit.dart';
 import 'package:flutter_math_app/features/dialog_message/presentation/dialog_message_text.dart';
+import 'package:flutter_math_app/features/effects/domain/enums/effect_type.dart';
 import 'package:flutter_math_app/features/effects/presentation/cubit/effects_cubit.dart';
 import 'package:flutter_math_app/features/effects/presentation/effects_layer.dart';
 import 'package:flutter_math_app/features/effects/presentation/widgets/shake_widget.dart';
 import 'package:flutter_math_app/features/input_recognition/presentation/input_recognition_cubit/input_recognition_cubit.dart';
 import 'package:flutter_math_app/features/player_prefs/presentation/cubit/player_profile_cubit.dart';
 import 'package:flutter_math_app/features/scenes/presentation/arcade_game/widgets/game_fab.dart';
-import 'package:flutter_math_app/features/scenes/presentation/arcade_game/widgets/game_top_bar.dart';
 import 'package:flutter_math_app/features/scenes/presentation/menu/menu_screen.dart';
 import 'package:flutter_math_app/features/scenes/presentation/shared/widgets/tutorial_scribble_canvas.dart';
 import 'package:flutter_math_app/features/scenes/presentation/tutorial/tutorial_message_maper.dart';
@@ -72,13 +74,13 @@ class _TutorialViewState extends State<TutorialView> {
     super.dispose();
   }
 
-  void _waitForNextAction(/*{required TutorialPhase tutorialPhase}*/) {
+  void _waitForNextAction() {
+    setState(() {
+      _showSkipStep = false;
+    });
     _nextActionTimer?.cancel();
     final duration = Duration(seconds: 4);
 
-    /*if (duration == null) {
-      return;
-    }*/
     _nextActionTimer = Timer(duration, () {
       if (!mounted) return;
       context.read<TutorialCubit>().continueAction();
@@ -115,18 +117,18 @@ class _TutorialViewState extends State<TutorialView> {
         BlocListener<TutorialCubit, TutorialState>(
           listenWhen: (previous, current) {
             final bool isTutorialPhaseChanged = previous.tutorialPhaseEvent != current.tutorialPhaseEvent;
-            final bool isTutorialStepChanged = previous.currentStep != current.currentStep;
-            if ((isTutorialPhaseChanged || isTutorialStepChanged) && current.tutorialPhaseEvent != null && current.currentStep != null) {
+            if ((isTutorialPhaseChanged) && current.tutorialPhaseEvent != null && current.currentStep != null) {
               return true;
             }
             return false;
           },
-          listener: (context, state) {
-            final tutorialPhase = state.tutorialPhaseEvent!.phase;
+          listener: (context, state) async {
             final playerName = context.read<PlayerProfileCubit>().state.profile.playerName;
 
             switch (state.tutorialPhaseEvent!.phase) {
               case TutorialPhase.inputError:
+                context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
+                context.read<AudioCubit>().playSound(soundType: SoundType.incorrect);
                 context.read<CharacterCubit>().playCharacterAnimation(
                   CharacterAnimationType.failed,
                 );
@@ -137,6 +139,8 @@ class _TutorialViewState extends State<TutorialView> {
                 _waitForNextAction();
                 return;
               case TutorialPhase.incorrect:
+                context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
+                context.read<AudioCubit>().playSound(soundType: SoundType.incorrect);
                 context.read<CharacterCubit>().playCharacterAnimation(
                   CharacterAnimationType.failed,
                 );
@@ -147,17 +151,22 @@ class _TutorialViewState extends State<TutorialView> {
                 _waitForNextAction();
                 return;
               case TutorialPhase.correct:
+                context.read<EffectsCubit>().playEffect(effect: EffectsType.stars);
+                context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
+                context.read<AudioCubit>().playSound(soundType: SoundType.correct);
                 context.read<CharacterCubit>().playCharacterAnimation(
                   CharacterAnimationType.success,
                 );
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: TutorialMessageMapper.keyFor(TutorialStepType.correct),
-                  //upperMessage: state.currentStep!.type == TutorialStepType.practiceDraw ? state.numberRecognized.toString() : null,
                   playerName: playerName,
                 );
                 _waitForNextAction();
                 return;
               case TutorialPhase.correctPracticeDraw:
+                context.read<EffectsCubit>().playEffect(effect: EffectsType.stars);
+                context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
+                context.read<AudioCubit>().playSound(soundType: SoundType.correct);
                 context.read<CharacterCubit>().playCharacterAnimation(
                   CharacterAnimationType.success,
                 );
@@ -172,9 +181,37 @@ class _TutorialViewState extends State<TutorialView> {
                 return;
               case TutorialPhase.stepCompleted:
                 _waitForNextAction();
+                return;
+              case TutorialPhase.finished:
+                if (state.currentStep!.type == TutorialStepType.ready) {
+                  await Future.delayed(Duration(seconds: 2));
+                  if (!mounted) return;
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => MenuScreen()),
+                  );
+                }
+                return;
+              case TutorialPhase.showingStep:
+                if (state.currentStep!.type == TutorialStepType.ready) {
+                  _waitForNextAction();
+                }
               case (_):
                 break;
             }
+          },
+        ),
+
+        BlocListener<TutorialCubit, TutorialState>(
+          listenWhen: (previous, current) {
+            final bool isTutorialStepChanged = previous.currentStep != current.currentStep;
+            if ((isTutorialStepChanged) && current.tutorialPhaseEvent != null && current.currentStep != null) {
+              return true;
+            }
+            return false;
+          },
+          listener: (context, state) {
+            final playerName = context.read<PlayerProfileCubit>().state.profile.playerName;
 
             switch (state.currentStep!.type) {
               case TutorialStepType.welcome:
@@ -229,6 +266,8 @@ class _TutorialViewState extends State<TutorialView> {
                 setState(() {
                   _showSkipStep = true;
                 });
+                context.read<EffectsCubit>().playEffect(effect: EffectsType.confetti);
+                context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
                 context.read<CharacterCubit>().playCharacterAnimation(
                   CharacterAnimationType.success,
                 );
@@ -285,15 +324,8 @@ class _TutorialViewState extends State<TutorialView> {
                       child: Align(
                         alignment: AlignmentGeometry.centerRight,
                         child: FloatingActionButton(
-                          onPressed: () {
-                            if (context.read<TutorialCubit>().state.currentStep?.type == TutorialStepType.ready) {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(builder: (_) => MenuScreen()),
-                              );
-                            } else {
-                              context.read<TutorialCubit>().continueAction();
-                            }
+                          onPressed: () async {
+                            context.read<TutorialCubit>().continueAction();
                           },
                           child: CustomIcon(assetRoute: 'lib/core/assets/images/arrow_right.png'),
                         ),

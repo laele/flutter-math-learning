@@ -32,10 +32,11 @@ class TutorialCubit extends Cubit<TutorialState> with EventEmitter, PausableActi
 
   void _showCurrentStep() {
     if (state.currentStepIndex >= TutorialSequence.steps.length) {
+      print('**************************finished step ${state.currentStepIndex}');
       _emitNextTutorialPhaseEvent(phase: TutorialPhase.finished);
       return;
     }
-
+    print('**************************start step ${state.currentStepIndex}');
     final step = TutorialSequence.steps[state.currentStepIndex];
     emit(state.copyWith(currentStep: step));
 
@@ -71,6 +72,7 @@ class TutorialCubit extends Cubit<TutorialState> with EventEmitter, PausableActi
 
   void _advanceStep() {
     final newIndex = state.currentStepIndex + 1;
+    print('MOVING TO NEW INDEX STEP *************************$newIndex');
     emit(state.copyWith(currentStepIndex: newIndex));
     _showCurrentStep();
   }
