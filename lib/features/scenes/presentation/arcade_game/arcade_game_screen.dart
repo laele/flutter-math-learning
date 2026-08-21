@@ -22,7 +22,7 @@ import 'package:flutter_math_app/features/game/domain/services/game_rules_policy
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
 import 'package:flutter_math_app/features/game/score/cubit/score_cubit.dart';
 import 'package:flutter_math_app/features/scenes/presentation/shared/widgets/game_message_mapper.dart';
-import 'package:flutter_math_app/features/scenes/presentation/arcade_game/score_overlay.dart';
+import 'package:flutter_math_app/features/scenes/presentation/arcade_game/arcade_result_overlay.dart';
 import 'package:flutter_math_app/features/game/timer/presentation/cubit/timer_cubit.dart';
 import 'package:flutter_math_app/features/input_recognition/presentation/input_recognition_cubit/input_recognition_cubit.dart';
 import 'package:flutter_math_app/features/player_prefs/presentation/cubit/player_profile_cubit.dart';
@@ -254,7 +254,7 @@ class _ArcadeGameViewState extends State<ArcadeGameView> {
                         Align(alignment: AlignmentGeometry.center, child: GamePencilIndicator()),
                         Align(
                           alignment: AlignmentGeometry.center,
-                          child: ScoreOverlay(),
+                          child: ArcadeResultOverlay(),
                         ),
                         Align(alignment: AlignmentGeometry.bottomCenter, child: DialogMessageText()),
                       ],
