@@ -22,7 +22,7 @@ class _SetPlayerNameScreenState extends State<SetPlayerNameScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: AppColors.appBackground,
+      backgroundColor: AppColors.appSplashBackground,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -58,9 +58,7 @@ class _SetPlayerNameScreenState extends State<SetPlayerNameScreen> {
                           SizedBox(width: 8.0),
                           IconButton(
                             onPressed: () {
-                              final isValid =
-                                  _playerNameKey.currentState?.validate() ??
-                                  false;
+                              final isValid = _playerNameKey.currentState?.validate() ?? false;
 
                               if (!isValid) return;
                               Navigator.of(context).pushReplacement(
@@ -70,8 +68,7 @@ class _SetPlayerNameScreenState extends State<SetPlayerNameScreen> {
                               );
                             },
                             icon: CustomIcon(
-                              assetRoute:
-                                  'lib/core/assets/images/arrow_right.png',
+                              assetRoute: 'lib/core/assets/images/arrow_right.png',
                             ),
                           ),
                         ],

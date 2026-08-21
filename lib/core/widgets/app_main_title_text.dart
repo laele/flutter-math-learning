@@ -16,7 +16,7 @@ class AppMainTitleText extends StatelessWidget {
         ),
         child: Center(
           child: Text(
-            'MathHop',
+            'MathScrib',
             style: Theme.of(context).textTheme.displayLarge!.copyWith(
               fontFamily: 'Gocake',
               fontWeight: FontWeight.bold,

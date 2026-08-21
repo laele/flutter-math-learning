@@ -25,7 +25,7 @@ class GameFloatingActionButtons extends StatelessWidget {
                       MaterialPageRoute(builder: (_) => MenuScreen()),
                     );
                   },
-                  child: CustomIcon(assetRoute: 'lib/core/assets/images/arrow_left.png'),
+                  child: CustomIcon(assetRoute: 'lib/core/assets/images/menu_icon.png'),
                 ),
               ),
             ),

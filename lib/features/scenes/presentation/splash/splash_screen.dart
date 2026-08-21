@@ -40,23 +40,16 @@ class _SplashScreenState extends State<SplashScreen> {
     if (_hasNavigated || !_minDurationElpased) return;
 
     final audioReady = context.read<AudioCubit>().state.audioLoaded == true;
-    final inputReady =
-        context.read<InputRecognitionCubit>().state.isLoaded == true;
-    final profileReady =
-        context.read<PlayerProfileCubit>().state.status ==
-        PlayerProfileStatus.success;
+    final inputReady = context.read<InputRecognitionCubit>().state.isLoaded == true;
+    final profileReady = context.read<PlayerProfileCubit>().state.status == PlayerProfileStatus.success;
 
     if (audioReady && inputReady && profileReady) {
       _hasNavigated = true;
       bool isNewUser =
-          context.read<PlayerProfileCubit>().state.profile.bestArcadeScore ==
-              0 &&
-          context.read<PlayerProfileCubit>().state.profile.playerName ==
-              'Player';
+          context.read<PlayerProfileCubit>().state.profile.bestArcadeScore == 0 && context.read<PlayerProfileCubit>().state.profile.playerName == 'Player';
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) =>
-              isNewUser ? const SetPlayerNameScreen() : const MenuScreen(),
+          builder: (context) => isNewUser ? const SetPlayerNameScreen() : const MenuScreen(),
         ),
       );
     }
@@ -69,8 +62,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return MultiBlocListener(
       listeners: [
         BlocListener<AudioCubit, AudioState>(
-          listenWhen: (previous, current) =>
-              previous.audioLoaded != current.audioLoaded,
+          listenWhen: (previous, current) => previous.audioLoaded != current.audioLoaded,
           listener: (context, state) {
             if (state.audioLoaded) {
               _tryNavigate();
@@ -96,7 +88,7 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       ],
       child: Scaffold(
-        backgroundColor: AppColors.appBackground,
+        backgroundColor: AppColors.appSplashBackground,
         body: Stack(
           children: [
             FloatingMathSymbolsBackground(
