@@ -23,16 +23,16 @@ class _SetPlayerNameScreenState extends State<SetPlayerNameScreen> {
     return Scaffold(
       backgroundColor: AppColors.appSplashBackground,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Stack(
-            children: [
-              FloatingMathSymbolsBackground(
-                color: Colors.white,
-                opacity: 0.85,
-                symbolCount: 60,
-              ),
-              Column(
+        child: Stack(
+          children: [
+            FloatingMathSymbolsBackground(
+              color: Colors.white,
+              opacity: 0.85,
+              symbolCount: 60,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
@@ -67,7 +67,9 @@ class _SetPlayerNameScreenState extends State<SetPlayerNameScreen> {
                           SizedBox(width: 8.0),
                           IconButton(
                             onPressed: () {
-                              final isValid = _playerNameKey.currentState?.validate() ?? false;
+                              final isValid =
+                                  _playerNameKey.currentState?.validate() ??
+                                  false;
 
                               if (!isValid) return;
                               Navigator.of(context).pushReplacement(
@@ -77,7 +79,8 @@ class _SetPlayerNameScreenState extends State<SetPlayerNameScreen> {
                               );
                             },
                             icon: CustomIcon(
-                              assetRoute: 'lib/core/assets/images/arrow_right.png',
+                              assetRoute:
+                                  'lib/core/assets/images/arrow_right.png',
                             ),
                           ),
                         ],
@@ -86,8 +89,8 @@ class _SetPlayerNameScreenState extends State<SetPlayerNameScreen> {
                   ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -12,6 +12,7 @@ import 'package:flutter_math_app/features/player_prefs/presentation/cubit/player
 import 'package:flutter_math_app/features/scenes/presentation/set_player_name/set_player_name_screen.dart';
 import 'package:flutter_math_app/features/scenes/presentation/menu/menu_screen.dart';
 import 'package:flutter_math_app/features/input_recognition/presentation/input_recognition_cubit/input_recognition_cubit.dart';
+import 'package:flutter_math_app/main.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -21,7 +22,8 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  final GlobalKey<AnimatedOverlayState> _animatedOverlayKey = GlobalKey<AnimatedOverlayState>();
+  final GlobalKey<AnimatedOverlayState> _animatedOverlayKey =
+      GlobalKey<AnimatedOverlayState>();
   bool _hasNavigated = false;
   bool _minDurationElpased = false;
 
@@ -47,16 +49,23 @@ class _SplashScreenState extends State<SplashScreen> {
     if (_hasNavigated || !_minDurationElpased) return;
 
     final audioReady = context.read<AudioCubit>().state.audioLoaded == true;
-    final inputReady = context.read<InputRecognitionCubit>().state.isLoaded == true;
-    final profileReady = context.read<PlayerProfileCubit>().state.status == PlayerProfileStatus.success;
+    final inputReady =
+        context.read<InputRecognitionCubit>().state.isLoaded == true;
+    final profileReady =
+        context.read<PlayerProfileCubit>().state.status ==
+        PlayerProfileStatus.success;
 
     if (audioReady && inputReady && profileReady) {
       _hasNavigated = true;
       bool isNewUser =
-          context.read<PlayerProfileCubit>().state.profile.bestArcadeScore == 0 && context.read<PlayerProfileCubit>().state.profile.playerName == 'Player';
+          context.read<PlayerProfileCubit>().state.profile.bestArcadeScore ==
+              0 &&
+          context.read<PlayerProfileCubit>().state.profile.playerName ==
+              'Player';
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => isNewUser ? const SetPlayerNameScreen() : const MenuScreen(),
+          builder: (context) =>
+              isNewUser ? const SetPlayerNameScreen() : const MenuScreen(),
         ),
       );
     }
@@ -69,10 +78,14 @@ class _SplashScreenState extends State<SplashScreen> {
     });
   }
 
-  String _localizedErrorMessage(BuildContext context, InputRecognitionErrorType type) {
+  String _localizedErrorMessage(
+    BuildContext context,
+    InputRecognitionErrorType type,
+  ) {
     final l10n = AppLocalizations.of(context)!;
     return switch (type) {
-      InputRecognitionErrorType.modelNotDownloaded => l10n.errorModelNotDownloaded,
+      InputRecognitionErrorType.modelNotDownloaded =>
+        l10n.errorModelNotDownloaded,
       _ => l10n.errorUnknown,
     };
   }
@@ -82,7 +95,8 @@ class _SplashScreenState extends State<SplashScreen> {
     return MultiBlocListener(
       listeners: [
         BlocListener<AudioCubit, AudioState>(
-          listenWhen: (previous, current) => previous.audioLoaded != current.audioLoaded,
+          listenWhen: (previous, current) =>
+              previous.audioLoaded != current.audioLoaded,
           listener: (context, state) {
             if (state.audioLoaded) {
               _tryNavigate();
@@ -95,7 +109,9 @@ class _SplashScreenState extends State<SplashScreen> {
             if (state.status == InputRecognitionStatus.success) {
               _tryNavigate();
             } else if (state.status == InputRecognitionStatus.failed) {
-              _showErrorMessage(message: _localizedErrorMessage(context, state.errorType!));
+              _showErrorMessage(
+                message: _localizedErrorMessage(context, state.errorType!),
+              );
             }
           },
         ),
@@ -129,17 +145,20 @@ class _SplashScreenState extends State<SplashScreen> {
                     child: AnimatedOverlay(
                       key: _animatedOverlayKey,
                       child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(errorMessage!),
+                          SizedBox(height: 8),
                           AppFilledButton(
                             title: 'Retry',
                             function: () async {
-                              await _animatedOverlayKey.currentState?.playOutAnimation();
+                              await _animatedOverlayKey.currentState
+                                  ?.playOutAnimation();
                               ();
                               if (!mounted) return;
                               Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
-                                  builder: (context) => const SplashScreen(),
+                                  builder: (context) => const MyApp(),
                                 ),
                               );
                             },

@@ -18,9 +18,9 @@ abstract class InputRecognitionDataSource {
 class InputRecognitionDataSourceImpl extends InputRecognitionDataSource {
   final _modelManager = DigitalInkRecognizerModelManager();
   late final DigitalInkRecognizer _recognizer;
-  static bool debugForceDownloadFailure = false;
+  static bool debugForceDownloadFailure = true;
   final Connectivity _connectivity;
-  static const _downloadTimeout = Duration(seconds: 8);
+  static const _downloadTimeout = Duration(seconds: 15);
 
   //InputRecognitionDataSourceImpl({required DigitalInkRecognizer recognizer}) : _recognizer = recognizer;
 
@@ -30,6 +30,10 @@ class InputRecognitionDataSourceImpl extends InputRecognitionDataSource {
 
   @override
   Future<void> ensureModelDownloaded() async {
+    if (debugForceDownloadFailure) {
+      throw const ModelNotDownloadedException();
+    }
+
     final isModelDownloaded = await _modelManager.isModelDownloaded('en');
     if (isModelDownloaded) return;
 
@@ -40,7 +44,9 @@ class InputRecognitionDataSourceImpl extends InputRecognitionDataSource {
     }
 
     try {
-      final result = await _modelManager.downloadModel('en').timeout(_downloadTimeout);
+      final result = await _modelManager
+          .downloadModel('en')
+          .timeout(_downloadTimeout);
       if (!result) throw const ModelNotDownloadedException();
     } on TimeoutException {
       throw const ModelNotDownloadedException();

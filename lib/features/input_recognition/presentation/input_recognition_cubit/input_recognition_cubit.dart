@@ -40,7 +40,10 @@ class InputRecognitionCubit extends Cubit<InputRecognitionState> {
     _timer?.cancel();
   }
 
-  void onFinishedStroke({required double canvasWidth, required double canvasHeight}) {
+  void onFinishedStroke({
+    required double canvasWidth,
+    required double canvasHeight,
+  }) {
     _timer?.cancel();
     _timer = Timer(
       _submitTime,
@@ -63,11 +66,23 @@ class InputRecognitionCubit extends Cubit<InputRecognitionState> {
     ensuremodelDownloaded.fold(
       (failure) {
         print('🔴 emit failed: ${failure.runtimeType}');
-        emit(state.copyWith(status: InputRecognitionStatus.failed, errorType: _errorTypeFromFailure(failure)));
+        emit(
+          state.copyWith(
+            status: InputRecognitionStatus.failed,
+            errorType: _errorTypeFromFailure(failure),
+          ),
+        );
       },
       (_) {
-         print('🟢 emit success — previous status era: ${state.status}, isLoaded: ${state.isLoaded}');
-        emit(state.copyWith(status: InputRecognitionStatus.success, isLoaded: true));
+        print(
+          '🟢 emit success — previous status era: ${state.status}, isLoaded: ${state.isLoaded}',
+        );
+        emit(
+          state.copyWith(
+            status: InputRecognitionStatus.success,
+            isLoaded: true,
+          ),
+        );
       },
     );
   }
@@ -102,10 +117,20 @@ class InputRecognitionCubit extends Cubit<InputRecognitionState> {
 
     result.fold(
       (failure) {
-        emit(state.copyWith(status: InputRecognitionStatus.failed, errorType: _errorTypeFromFailure(failure)));
+        emit(
+          state.copyWith(
+            status: InputRecognitionStatus.failed,
+            errorType: _errorTypeFromFailure(failure),
+          ),
+        );
       },
       (number) {
-        emit(state.copyWith(numberRecognized: number, status: InputRecognitionStatus.success));
+        emit(
+          state.copyWith(
+            numberRecognized: number,
+            status: InputRecognitionStatus.success,
+          ),
+        );
       },
     );
 
@@ -121,7 +146,8 @@ class InputRecognitionCubit extends Cubit<InputRecognitionState> {
 
   InputRecognitionErrorType? _errorTypeFromFailure(Failure failure) {
     return switch (failure) {
-      ModelNotDownloadedFailure() => InputRecognitionErrorType.modelNotDownloaded,
+      ModelNotDownloadedFailure() =>
+        InputRecognitionErrorType.modelNotDownloaded,
       EmptyInputFailure() => InputRecognitionErrorType.emptyInput,
       UnrecognizedInputFailure() => InputRecognitionErrorType.unrecognized,
       _ => InputRecognitionErrorType.unknown,

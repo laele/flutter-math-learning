@@ -17,7 +17,8 @@
 
   "selectLanguage": "Seleccionar idioma",
 
-  "errorModelNotDownloaded": "Un momento, preparando todo...",
+  "retry" : "Volver a intentar",
+  "errorModelNotDownloaded": "Verifica tu conexión...",
   "errorUnknown": "Algo salió mal, intenta de nuevo"
 }
 
