@@ -2,6 +2,7 @@ part of 'audio_cubit.dart';
 
 class AudioState extends Equatable {
   final bool audioLoaded;
+  final bool hasError;
   final bool musicMuted;
   final bool sfxMuted;
   final double sfxVolume;
@@ -16,6 +17,7 @@ class AudioState extends Equatable {
     this.sfxMuted = false,
     this.sfxVolume = 1.0,
     this.musicVolume = 0.6,
+    this.hasError = false,
   });
 
   AudioState copyWith({
@@ -25,8 +27,10 @@ class AudioState extends Equatable {
     double? sfxVolume,
     double? musicVolume,
     SoundEvent? soundEvent,
+    bool? hasError,
   }) {
     return AudioState(
+      hasError: hasError ?? this.hasError,
       soundEvent: soundEvent ?? this.soundEvent,
       audioLoaded: audioLoaded ?? this.audioLoaded,
       musicMuted: musicMuted ?? this.musicMuted,
@@ -44,5 +48,6 @@ class AudioState extends Equatable {
     sfxMuted,
     sfxVolume,
     musicVolume,
+    hasError,
   ];
 }

@@ -18,7 +18,7 @@ abstract class InputRecognitionDataSource {
 class InputRecognitionDataSourceImpl extends InputRecognitionDataSource {
   final _modelManager = DigitalInkRecognizerModelManager();
   late final DigitalInkRecognizer _recognizer;
-  static bool debugForceDownloadFailure = true;
+  static bool debugForceDownloadFailure = false;
   final Connectivity _connectivity;
   static const _downloadTimeout = Duration(seconds: 15);
 

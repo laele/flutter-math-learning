@@ -15,5 +15,8 @@
   "playAgain": "Jogar Novamente",
   "selectLanguage": "Selecionar idioma",
   "errorModelNotDownloaded": "Aguarde, estamos preparando tudo...",
-  "errorUnknown": "Algo deu errado, tente novamente"
+  "errorUnknown": "Algo deu errado, tente novamente",
+  "errorUnknown": "Algo deu errado, tente novamente",
+"retry": "Tentar novamente",
+"loading": "Carregando..."
 }

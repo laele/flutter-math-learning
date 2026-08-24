@@ -184,17 +184,23 @@ abstract class AppLocalizations {
   /// **'Select Language'**
   String get selectLanguage;
 
-  /// No description provided for @errorModelNotDownloaded.
-  ///
-  /// In en, this message translates to:
-  /// **'Hold on, getting ready...'**
-  String get errorModelNotDownloaded;
-
   /// No description provided for @errorUnknown.
   ///
   /// In en, this message translates to:
   /// **'Something went wrong, try again'**
   String get errorUnknown;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// No description provided for @loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get loading;
 }
 
 class _AppLocalizationsDelegate

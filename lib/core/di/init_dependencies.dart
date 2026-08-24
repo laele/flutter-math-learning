@@ -27,6 +27,7 @@ import 'package:flutter_math_app/features/player_prefs/data/models/player_profil
 import 'package:flutter_math_app/features/player_prefs/data/repositories/player_profile_reporitory_impl.dart';
 import 'package:flutter_math_app/features/player_prefs/domain/repositories/player_profile_repository.dart';
 import 'package:flutter_math_app/features/player_prefs/presentation/cubit/player_profile_cubit.dart';
+import 'package:flutter_math_app/features/scenes/presentation/splash/splash_cubit/splash_cubit.dart';
 import 'package:flutter_math_app/features/settings/data/repositories/settings_repository_impl.dart';
 import 'package:flutter_math_app/features/settings/domain/repository/settings_repository.dart';
 import 'package:flutter_math_app/features/settings/presentation/cubit/settings_cubit.dart';

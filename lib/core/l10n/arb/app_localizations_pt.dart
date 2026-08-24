@@ -51,8 +51,11 @@ class AppLocalizationsPt extends AppLocalizations {
   String get selectLanguage => 'Selecionar idioma';
 
   @override
-  String get errorModelNotDownloaded => 'Aguarde, estamos preparando tudo...';
+  String get errorUnknown => 'Algo deu errado, tente novamente';
 
   @override
-  String get errorUnknown => 'Algo deu errado, tente novamente';
+  String get retry => 'Tentar novamente';
+
+  @override
+  String get loading => 'Carregando...';
 }

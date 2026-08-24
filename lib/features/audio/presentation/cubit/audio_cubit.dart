@@ -9,10 +9,15 @@ part 'audio_state.dart';
 
 class AudioCubit extends Cubit<AudioState> with EventEmitter {
   final AudioRepository _audioRepository;
-  AudioCubit({required AudioRepository audioRepository}) : _audioRepository = audioRepository, super(const AudioState());
+  AudioCubit({required AudioRepository audioRepository})
+    : _audioRepository = audioRepository,
+      super(const AudioState());
 
   void _emitNewSoundEvent({required SoundType soundType}) {
-    final SoundEvent newSoundEvent = SoundEvent(type: soundType, id: nextEventId());
+    final SoundEvent newSoundEvent = SoundEvent(
+      type: soundType,
+      id: nextEventId(),
+    );
     emit(state.copyWith(soundEvent: newSoundEvent));
   }
 
@@ -21,8 +26,12 @@ class AudioCubit extends Cubit<AudioState> with EventEmitter {
   }
 
   void initAudio() async {
-    await _audioRepository.initAudio();
-    emit(state.copyWith(audioLoaded: true));
+    try {
+      await _audioRepository.initAudio();
+      emit(state.copyWith(audioLoaded: true));
+    } catch (e) {
+      emit(state.copyWith(hasError: true));
+    }
     //playBackgroundMusic();
   }
 

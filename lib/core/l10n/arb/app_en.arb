@@ -16,6 +16,8 @@
   "playAgain": "Play again",
 
   "selectLanguage": "Select Language",
-  "errorModelNotDownloaded": "Hold on, getting ready...",
-  "errorUnknown": "Something went wrong, try again"
+
+  "errorUnknown": "Something went wrong, try again",
+  "retry": "Retry",
+  "loading": "Loading..."
 }

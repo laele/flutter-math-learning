@@ -65,7 +65,6 @@ class InputRecognitionCubit extends Cubit<InputRecognitionState> {
     );
     ensuremodelDownloaded.fold(
       (failure) {
-        print('🔴 emit failed: ${failure.runtimeType}');
         emit(
           state.copyWith(
             status: InputRecognitionStatus.failed,
@@ -74,9 +73,6 @@ class InputRecognitionCubit extends Cubit<InputRecognitionState> {
         );
       },
       (_) {
-        print(
-          '🟢 emit success — previous status era: ${state.status}, isLoaded: ${state.isLoaded}',
-        );
         emit(
           state.copyWith(
             status: InputRecognitionStatus.success,
@@ -85,6 +81,10 @@ class InputRecognitionCubit extends Cubit<InputRecognitionState> {
         );
       },
     );
+  }
+
+  void retry() {
+    ensureModelDownloaded();
   }
 
   void submitResult({

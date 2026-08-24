@@ -22,12 +22,23 @@ class SettingsCubit extends Cubit<SettingsState> {
     final result = await _settingsRepository.getLocaleCode();
     result.fold(
       (failure) {
-        emit(state.copyWith(locale: Locale(_deviceLanguageCode())));
+        emit(
+          state.copyWith(locale: Locale(_deviceLanguageCode()), isLoaded: true),
+        );
         _dialogMessageRepository.setLocale(languageCode: _deviceLanguageCode());
       },
       (localeCode) {
-        emit(state.copyWith(locale: localeCode != null ? Locale(localeCode) : Locale(_deviceLanguageCode())));
-        _dialogMessageRepository.setLocale(languageCode: localeCode ?? _deviceLanguageCode());
+        emit(
+          state.copyWith(
+            isLoaded: true,
+            locale: localeCode != null
+                ? Locale(localeCode)
+                : Locale(_deviceLanguageCode()),
+          ),
+        );
+        _dialogMessageRepository.setLocale(
+          languageCode: localeCode ?? _deviceLanguageCode(),
+        );
       },
     );
   }
