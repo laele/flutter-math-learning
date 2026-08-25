@@ -22,8 +22,6 @@ class InputRecognitionDataSourceImpl extends InputRecognitionDataSource {
   final Connectivity _connectivity;
   static const _downloadTimeout = Duration(seconds: 15);
 
-  //InputRecognitionDataSourceImpl({required DigitalInkRecognizer recognizer}) : _recognizer = recognizer;
-
   InputRecognitionDataSourceImpl({Connectivity? connectivity})
     : _connectivity = connectivity ?? Connectivity(),
       _recognizer = DigitalInkRecognizer(languageCode: 'en');
@@ -70,7 +68,6 @@ class InputRecognitionDataSourceImpl extends InputRecognitionDataSource {
     );
     final candidates = await _recognizer.recognize(ink, context: context);
     if (candidates.isEmpty) throw const NoRecognitionCandidateException();
-    //print('Candidato reconocido: "${candidates.first.text}"');
     return candidates.first.text;
   }
 

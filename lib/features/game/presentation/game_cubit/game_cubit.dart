@@ -77,9 +77,6 @@ class GameCubit extends Cubit<GameState> with EventEmitter, PausableActions {
           return stats;
         },
       );
-      print('---- LOADED STATS------');
-      print(loadedStats);
-      print('----------');
       stats = loadedStats;
     } else {
       stats = {};
@@ -205,10 +202,6 @@ class GameCubit extends Cubit<GameState> with EventEmitter, PausableActions {
     if (_gameRulesPolicy.shouldEndSession(state.gameSession)) {
       // save stats
       final currentStats = state.stats;
-      print('---- SAVED STATS------');
-      print(currentStats);
-      print('----------');
-
       _saveGameStatsUseCase(currentStats);
 
       _emitNextGamePhaseEvent(gamePhase: GamePhase.finished);

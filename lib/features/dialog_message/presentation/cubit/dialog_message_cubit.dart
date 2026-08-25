@@ -10,8 +10,15 @@ part 'dialog_message_state.dart';
 class DialogMessageCubit extends Cubit<DialogMessageState> with EventEmitter {
   final DialogMessageRepository _repository;
 
-  DialogMessageEvent _nextDialogMessage({required String message, String? upperMessage}) {
-    return DialogMessageEvent(message: message, id: nextEventId(), upperMessage: upperMessage);
+  DialogMessageEvent _nextDialogMessage({
+    required String message,
+    String? upperMessage,
+  }) {
+    return DialogMessageEvent(
+      message: message,
+      id: nextEventId(),
+      upperMessage: upperMessage,
+    );
   }
 
   DialogMessageCubit({required DialogMessageRepository repository})
@@ -20,13 +27,17 @@ class DialogMessageCubit extends Cubit<DialogMessageState> with EventEmitter {
         DialogMessageState(),
       );
 
-  void showMessageByKey({required MessageKeyType key, String? upperMessage, required String playerName, String? number}) {
-    /*print('KEY: $key');
-    print('PLAYER: $playerName');
-    print('NUMBER: $number');*/
-
-    final message = _repository.getMessage(key: key, playerName: playerName, number: number);
-    //print('MESSAGE RESULT: $message');
+  void showMessageByKey({
+    required MessageKeyType key,
+    String? upperMessage,
+    required String playerName,
+    String? number,
+  }) {
+    final message = _repository.getMessage(
+      key: key,
+      playerName: playerName,
+      number: number,
+    );
     emit(
       state.copyWith(
         dialogMessageEvent: _nextDialogMessage(

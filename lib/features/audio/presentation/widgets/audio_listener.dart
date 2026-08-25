@@ -11,22 +11,18 @@ class AudioListener extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<AudioCubit, AudioState>(
       listenWhen: (previous, current) {
-        if (previous.soundEvent != current.soundEvent && current.soundEvent != null) {
-          print('true');
+        if (previous.soundEvent != current.soundEvent &&
+            current.soundEvent != null) {
           return true;
         }
-        print('false');
-
         return false;
       },
       listener: (context, state) {
         switch (state.soundEvent!.type) {
           case SoundType.correct:
-            print('correct sound');
             context.read<AudioCubit>().playSfxCorrect();
             return;
           case SoundType.incorrect:
-            print('incorrect sound');
             context.read<AudioCubit>().playSfxIncorrect();
             return;
           case _:

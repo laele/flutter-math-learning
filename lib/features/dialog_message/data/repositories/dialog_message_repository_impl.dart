@@ -17,26 +17,36 @@ class DialogMessageRepositoryImpl implements DialogMessageRepository {
 
   @override
   void setLocale({required String languageCode}) {
-    _currentLocale = _poolsByLocale.containsKey(languageCode) ? languageCode : _poolsByLocale.keys.first;
+    _currentLocale = _poolsByLocale.containsKey(languageCode)
+        ? languageCode
+        : _poolsByLocale.keys.first;
   }
 
   @override
-  String getMessage({required MessageKeyType key, String? playerName, String? number}) {
+  String getMessage({
+    required MessageKeyType key,
+    String? playerName,
+    String? number,
+  }) {
     final pool = _poolsByLocale[_currentLocale] ?? _poolsByLocale.values.first;
     final rawMessage = _picker.pick(pool.forKey(key));
-    return _applyPlaceholders(rawMessage, playerName: playerName, number: number);
+    return _applyPlaceholders(
+      rawMessage,
+      playerName: playerName,
+      number: number,
+    );
   }
 
-  String _applyPlaceholders(String message, {String? playerName, String? number}) {
-    print('RAW MESSAGE: "$message"');
-    print('PLAYER NAME: "$playerName"');
-    print('NUMBER: "$number"');
-
-    final name = (playerName == null) || playerName.trim().isEmpty ? 'Player' : playerName.trim();
+  String _applyPlaceholders(
+    String message, {
+    String? playerName,
+    String? number,
+  }) {
+    final name = (playerName == null) || playerName.trim().isEmpty
+        ? 'Player'
+        : playerName.trim();
     String newMessage = message.replaceAll('{name}', name);
     if (number != null) newMessage = newMessage.replaceAll('{number}', number);
-
-    print('FINAL MESSAGE: "$newMessage"');
     return newMessage;
   }
 }
