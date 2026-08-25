@@ -36,7 +36,9 @@ class PracticeGameScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => sl<GameCubit>(param1: PracticeRulesPolicy())),
+        BlocProvider(
+          create: (_) => sl<GameCubit>(param1: PracticeRulesPolicy()),
+        ),
         BlocProvider(create: (_) => sl<CharacterCubit>()),
         BlocProvider(create: (_) => sl<DialogMessageCubit>()),
         BlocProvider(create: (_) => sl<EffectsCubit>()),
@@ -115,7 +117,8 @@ class _PracticeGameViewState extends State<PracticeGameView> {
       listeners: [
         BlocListener<CharacterCubit, CharacterState>(
           listenWhen: (previous, current) {
-            if (previous.controllerReady != current.controllerReady && current.controllerReady == true) {
+            if (previous.controllerReady != current.controllerReady &&
+                current.controllerReady == true) {
               return true;
             }
             return false;
@@ -126,7 +129,8 @@ class _PracticeGameViewState extends State<PracticeGameView> {
         ),
         BlocListener<GameCubit, GameState>(
           listenWhen: (previous, current) {
-            if ((previous.gamePhaseEvent != current.gamePhaseEvent) && current.gamePhaseEvent != null) {
+            if ((previous.gamePhaseEvent != current.gamePhaseEvent) &&
+                current.gamePhaseEvent != null) {
               return true;
             }
             return false;
@@ -135,88 +139,172 @@ class _PracticeGameViewState extends State<PracticeGameView> {
             final gamePhase = state.gamePhaseEvent!.gamePhase;
             switch (gamePhase) {
               case GamePhase.newQuestion:
-                context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.thinking);
+                context.read<CharacterCubit>().playCharacterAnimation(
+                  CharacterAnimationType.thinking,
+                );
                 context.read<DialogMessageCubit>().showMessageByKey(
-                  key: GameMessageMapper.messageKeyFor(state.gameQuestionEvent!.gameMode),
+                  key: GameMessageMapper.messageKeyFor(
+                    state.gameQuestionEvent!.operationType,
+                  ),
                   upperMessage: state.gameQuestionEvent!.operationMessage,
-                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
+                  playerName: context
+                      .read<PlayerProfileCubit>()
+                      .state
+                      .profile
+                      .playerName,
                 );
                 break;
               case GamePhase.repeatQuestion:
-                context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.thinking);
+                context.read<CharacterCubit>().playCharacterAnimation(
+                  CharacterAnimationType.thinking,
+                );
                 context.read<DialogMessageCubit>().showMessageByKey(
-                  key: GameMessageMapper.messageKeyFor(state.gameQuestionEvent!.gameMode),
+                  key: GameMessageMapper.messageKeyFor(
+                    state.gameQuestionEvent!.operationType,
+                  ),
                   upperMessage: state.gameQuestionEvent!.operationMessage,
-                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
+                  playerName: context
+                      .read<PlayerProfileCubit>()
+                      .state
+                      .profile
+                      .playerName,
                 );
                 break;
               case GamePhase.checkingResult:
-                context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.thinking);
+                context.read<CharacterCubit>().playCharacterAnimation(
+                  CharacterAnimationType.thinking,
+                );
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: MessageKeyType.thinking,
-                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
+                  playerName: context
+                      .read<PlayerProfileCubit>()
+                      .state
+                      .profile
+                      .playerName,
                 );
                 break;
               case GamePhase.incorrect:
-                context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.failed);
+                context.read<CharacterCubit>().playCharacterAnimation(
+                  CharacterAnimationType.failed,
+                );
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: MessageKeyType.incorrect,
-                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
+                  playerName: context
+                      .read<PlayerProfileCubit>()
+                      .state
+                      .profile
+                      .playerName,
                 );
-                context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
-                context.read<AudioCubit>().playSound(soundType: SoundType.incorrect);
+                context.read<EffectsCubit>().playEffect(
+                  effect: EffectsType.shake,
+                );
+                context.read<AudioCubit>().playSound(
+                  soundType: SoundType.incorrect,
+                );
                 break;
               case GamePhase.correct:
                 if (!_firstCompleted) _firstCompleted = true;
-                context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.success);
+                context.read<CharacterCubit>().playCharacterAnimation(
+                  CharacterAnimationType.success,
+                );
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: MessageKeyType.correct,
-                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
+                  playerName: context
+                      .read<PlayerProfileCubit>()
+                      .state
+                      .profile
+                      .playerName,
                 );
-                context.read<EffectsCubit>().playEffect(effect: EffectsType.stars);
-                context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
-                context.read<AudioCubit>().playSound(soundType: SoundType.correct);
+                context.read<EffectsCubit>().playEffect(
+                  effect: EffectsType.stars,
+                );
+                context.read<EffectsCubit>().playEffect(
+                  effect: EffectsType.shake,
+                );
+                context.read<AudioCubit>().playSound(
+                  soundType: SoundType.correct,
+                );
                 break;
               case GamePhase.skipByIncorrect:
-                context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.failed);
+                context.read<CharacterCubit>().playCharacterAnimation(
+                  CharacterAnimationType.failed,
+                );
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: MessageKeyType.skipByIncorrect,
-                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
+                  playerName: context
+                      .read<PlayerProfileCubit>()
+                      .state
+                      .profile
+                      .playerName,
                 );
-                context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
-                context.read<AudioCubit>().playSound(soundType: SoundType.incorrect);
+                context.read<EffectsCubit>().playEffect(
+                  effect: EffectsType.shake,
+                );
+                context.read<AudioCubit>().playSound(
+                  soundType: SoundType.incorrect,
+                );
                 break;
               case GamePhase.error:
-                context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.failed);
+                context.read<CharacterCubit>().playCharacterAnimation(
+                  CharacterAnimationType.failed,
+                );
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: MessageKeyType.error,
-                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
+                  playerName: context
+                      .read<PlayerProfileCubit>()
+                      .state
+                      .profile
+                      .playerName,
                 );
-                context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
-                context.read<AudioCubit>().playSound(soundType: SoundType.incorrect);
+                context.read<EffectsCubit>().playEffect(
+                  effect: EffectsType.shake,
+                );
+                context.read<AudioCubit>().playSound(
+                  soundType: SoundType.incorrect,
+                );
                 break;
               case GamePhase.explanation:
-                context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.thinking);
+                context.read<CharacterCubit>().playCharacterAnimation(
+                  CharacterAnimationType.thinking,
+                );
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: MessageKeyType.explanation,
                   upperMessage: state.gameQuestionEvent!.resultExplained,
-                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
+                  playerName: context
+                      .read<PlayerProfileCubit>()
+                      .state
+                      .profile
+                      .playerName,
                 );
                 break;
               case GamePhase.finished:
                 _firstCompleted = false;
-                context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.success);
+                context.read<CharacterCubit>().playCharacterAnimation(
+                  CharacterAnimationType.success,
+                );
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: MessageKeyType.finished,
-                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
+                  playerName: context
+                      .read<PlayerProfileCubit>()
+                      .state
+                      .profile
+                      .playerName,
                 );
-                context.read<EffectsCubit>().playEffect(effect: EffectsType.confetti);
-                context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
+                context.read<EffectsCubit>().playEffect(
+                  effect: EffectsType.confetti,
+                );
+                context.read<EffectsCubit>().playEffect(
+                  effect: EffectsType.shake,
+                );
                 break;
               case GamePhase.starting:
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: MessageKeyType.starting,
-                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
+                  playerName: context
+                      .read<PlayerProfileCubit>()
+                      .state
+                      .profile
+                      .playerName,
                 );
                 break;
               case (_):
@@ -242,12 +330,18 @@ class _PracticeGameViewState extends State<PracticeGameView> {
                             gradient: AppGradients.background,
                           ),
                         ),
-                        Align(alignment: AlignmentGeometry.center, child: GamePencilIndicator()),
+                        Align(
+                          alignment: AlignmentGeometry.center,
+                          child: GamePencilIndicator(),
+                        ),
                         Align(
                           alignment: AlignmentGeometry.center,
                           child: PracticeResultOverlay(),
                         ),
-                        Align(alignment: AlignmentGeometry.bottomCenter, child: DialogMessageText()),
+                        Align(
+                          alignment: AlignmentGeometry.bottomCenter,
+                          child: DialogMessageText(),
+                        ),
                       ],
                     ),
                   ),

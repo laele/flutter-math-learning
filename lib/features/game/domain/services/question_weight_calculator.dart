@@ -4,9 +4,9 @@ import 'package:flutter_math_app/features/game/domain/enums/operation_type.dart'
 
 class QuestionWeightCalculator {
   static double calculate({
-    required OperationType gameMode,
+    required OperationType operationType,
     required MinMaxTierEntity tier,
   }) {
-    return GameModeWeights.of(mode: gameMode) * tier.weight;
+    return operationTypeWeights.of(mode: operationType) * tier.weight;
   }
 }

@@ -39,58 +39,75 @@ class GameCubit extends Cubit<GameState> with EventEmitter, PausableActions {
        _gameRulesPolicy = rulesPolicy,
        super(
          GameState(
-           selectedGameModes: GameModes.items.map((e) => e.gameMode).toList(),
+           selectedoperationTypes: operationTypes.items
+               .map((e) => e.operationType)
+               .toList(),
          ),
        );
 
   GameQuestionEvent _nextGameQuestionEvent({
     required GameQuestionEntity gameQuestion,
-    required OperationType gameMode,
+    required OperationType operationType,
     required double questionWeight,
   }) {
     return GameQuestionEvent(
       id: nextEventId(),
       gameQuestion: gameQuestion,
-      gameMode: gameMode,
+      operationType: operationType,
       questionWeight: questionWeight,
     );
   }
 
   void _emitNextGamePhaseEvent({required GamePhase gamePhase}) {
-    final gamePhaseEvent = GamePhaseEvent(id: nextEventId(), gamePhase: gamePhase);
+    final gamePhaseEvent = GamePhaseEvent(
+      id: nextEventId(),
+      gamePhase: gamePhase,
+    );
     emit(state.copyWith(gamePhaseEvent: gamePhaseEvent));
   }
 
   void initGame() async {
-    final statsResult = await _getGameStatsUseCase(NoParams());
-    final loadedStats = statsResult.fold((l) => <OperationType, GameStatsEntity>{}, (stats) {
-      print("--------------------------------------");
-      print(stats);
-      return stats;
-    });
+    Map<OperationType, GameStatsEntity> stats;
 
-    emit(state.copyWith(gameSession: GameSessionEntity(), stats: loadedStats)); // Cambiar pot stats del profile player
+    if (_gameRulesPolicy.useStats) {
+      final statsResult = await _getGameStatsUseCase(NoParams());
+      final loadedStats = statsResult.fold(
+        (l) => <OperationType, GameStatsEntity>{},
+        (stats) {
+          return stats;
+        },
+      );
+      print('---- LOADED STATS------');
+      print(loadedStats);
+      print('----------');
+      stats = loadedStats;
+    } else {
+      stats = {};
+    }
+
+    emit(state.copyWith(gameSession: GameSessionEntity(), stats: stats));
     _emitNextGamePhaseEvent(gamePhase: GamePhase.starting);
-    pauseFor(
-      () {
-        generateNextLevel();
-      },
-    );
+    pauseFor(() {
+      generateNextLevel();
+    });
   }
 
   void generateNextLevel() {
-    final nextGameMode = _mixModeSelector.pickNext(
-      candidates: state.selectedGameModes,
+    final nextoperationType = _mixModeSelector.pickNext(
+      candidates: state.selectedoperationTypes,
       stats: state.stats,
     );
-    final tiers = DifficultyTiers.byMode[nextGameMode];
+    final tiers = DifficultyTiers.byMode[nextoperationType];
     if (tiers == null) return;
 
-    final currentGameStats = state.gameStats(nextGameMode);
+    final currentGameStats = state.gameStats(nextoperationType);
 
     final currentTier = tiers[currentGameStats.currentTierIndex];
-    final generator = QuestionGeneratorFactory.forMode(nextGameMode);
-    final questionWeight = QuestionWeightCalculator.calculate(gameMode: nextGameMode, tier: currentTier);
+    final generator = QuestionGeneratorFactory.forMode(nextoperationType);
+    final questionWeight = QuestionWeightCalculator.calculate(
+      operationType: nextoperationType,
+      tier: currentTier,
+    );
     final question = generator.generate(currentTier);
 
     emit(
@@ -98,7 +115,7 @@ class GameCubit extends Cubit<GameState> with EventEmitter, PausableActions {
         gameQuestionEvent: _nextGameQuestionEvent(
           questionWeight: questionWeight,
           gameQuestion: question,
-          gameMode: nextGameMode,
+          operationType: nextoperationType,
         ),
       ),
     );
@@ -107,9 +124,12 @@ class GameCubit extends Cubit<GameState> with EventEmitter, PausableActions {
 
   void checkResult({required int result}) async {
     _emitNextGamePhaseEvent(gamePhase: GamePhase.checkingResult);
-    final wasCorrect = (result == state.gameQuestionEvent!.gameQuestion.resultNum);
+    final wasCorrect =
+        (result == state.gameQuestionEvent!.gameQuestion.resultNum);
 
-    final updatedGameSession = state.gameSession.recordAttempt(wasCorrect: wasCorrect);
+    final updatedGameSession = state.gameSession.recordAttempt(
+      wasCorrect: wasCorrect,
+    );
     emit(state.copyWith(gameSession: updatedGameSession));
 
     if (wasCorrect) {
@@ -120,18 +140,24 @@ class GameCubit extends Cubit<GameState> with EventEmitter, PausableActions {
   }
 
   void _handleCorrect() {
-    final gameMode = state.gameQuestionEvent!.gameMode;
+    final operationType = state.gameQuestionEvent!.operationType;
     var newStats = state.currentGameStats.recordAttempt(true);
-    final tiers = DifficultyTiers.byMode[gameMode];
+    final tiers = DifficultyTiers.byMode[operationType];
 
     final cleanedSession = state.gameSession.cleanIncorrectStreak();
     emit(state.copyWith(gameSession: cleanedSession));
 
-    final isLevelUp = _gameRulesPolicy.allowLevelUp && tiers != null && newStats.shouldLevelUp && newStats.currentTierIndex < tiers.length - 1;
+    final isLevelUp =
+        _gameRulesPolicy.allowLevelUp &&
+        tiers != null &&
+        newStats.shouldLevelUp &&
+        newStats.currentTierIndex < tiers.length - 1;
     if (isLevelUp) {
-      newStats = newStats.copyWith(currentTierIndex: newStats.currentTierIndex + 1).resetRegistry();
+      newStats = newStats
+          .copyWith(currentTierIndex: newStats.currentTierIndex + 1)
+          .resetRegistry();
     }
-    _setNewStats(gameMode, newStats);
+    _setNewStats(operationType, newStats);
     _emitNextGamePhaseEvent(gamePhase: GamePhase.correct);
     pauseFor(
       () => _continueAfterAttempt(),
@@ -142,19 +168,26 @@ class GameCubit extends Cubit<GameState> with EventEmitter, PausableActions {
     final maxAttempts = _gameRulesPolicy.maxIncorrectAttemptsToSkip;
     if (maxAttempts == null || session.incorrectStreak < maxAttempts) {
       _emitNextGamePhaseEvent(gamePhase: GamePhase.incorrect);
-      pauseFor(() => _emitNextGamePhaseEvent(gamePhase: GamePhase.repeatQuestion));
+      pauseFor(
+        () => _emitNextGamePhaseEvent(gamePhase: GamePhase.repeatQuestion),
+      );
       return;
     }
 
-    final gameMode = state.gameQuestionEvent!.gameMode;
+    final operationType = state.gameQuestionEvent!.operationType;
     var newStats = state.currentGameStats.recordAttempt(false);
-    final tiers = DifficultyTiers.byMode[gameMode];
+    final tiers = DifficultyTiers.byMode[operationType];
 
-    if (_gameRulesPolicy.allowLevelDown && tiers != null && newStats.shouldLevelDown && newStats.currentTierIndex > 0) {
-      newStats = newStats.copyWith(currentTierIndex: newStats.currentTierIndex - 1).resetRegistry();
+    if (_gameRulesPolicy.allowLevelDown &&
+        tiers != null &&
+        newStats.shouldLevelDown &&
+        newStats.currentTierIndex > 0) {
+      newStats = newStats
+          .copyWith(currentTierIndex: newStats.currentTierIndex - 1)
+          .resetRegistry();
     }
 
-    _setNewStats(gameMode, newStats);
+    _setNewStats(operationType, newStats);
     _emitNextGamePhaseEvent(gamePhase: GamePhase.skipByIncorrect);
     pauseFor(
       () {
@@ -170,6 +203,14 @@ class GameCubit extends Cubit<GameState> with EventEmitter, PausableActions {
 
   void _continueAfterAttempt() {
     if (_gameRulesPolicy.shouldEndSession(state.gameSession)) {
+      // save stats
+      final currentStats = state.stats;
+      print('---- SAVED STATS------');
+      print(currentStats);
+      print('----------');
+
+      _saveGameStatsUseCase(currentStats);
+
       _emitNextGamePhaseEvent(gamePhase: GamePhase.finished);
     } else {
       generateNextLevel();
@@ -178,7 +219,9 @@ class GameCubit extends Cubit<GameState> with EventEmitter, PausableActions {
 
   Future<void> setErrorGamePhase() async {
     _emitNextGamePhaseEvent(gamePhase: GamePhase.error);
-    pauseFor(() => _emitNextGamePhaseEvent(gamePhase: GamePhase.repeatQuestion));
+    pauseFor(
+      () => _emitNextGamePhaseEvent(gamePhase: GamePhase.repeatQuestion),
+    );
   }
 
   Future<void> setFinishedGamePhase() async {
@@ -186,8 +229,8 @@ class GameCubit extends Cubit<GameState> with EventEmitter, PausableActions {
   }
 
   void _setNewStats(OperationType mode, GameStatsEntity newStats) {
-    final stats = Map<OperationType, GameStatsEntity>.from(state.stats)..[mode] = newStats;
+    final stats = Map<OperationType, GameStatsEntity>.from(state.stats)
+      ..[mode] = newStats;
     emit(state.copyWith(stats: stats));
-    _saveGameStatsUseCase(stats);
   }
 }

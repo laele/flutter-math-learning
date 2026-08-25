@@ -2,6 +2,8 @@ import 'package:flutter_math_app/core/constants/app_game.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_session_entity.dart';
 
 abstract interface class GameRulesPolicy {
+  // load and update stats after game session
+  bool get useStats;
   bool get allowLevelDown;
   bool get allowLevelUp;
 
@@ -26,6 +28,9 @@ class PracticeRulesPolicy implements GameRulesPolicy {
   bool shouldEndSession(GameSessionEntity session) {
     return session.isCompleted;
   }
+
+  @override
+  bool get useStats => true;
 }
 
 class ArcadeRulesPolicy implements GameRulesPolicy {
@@ -42,4 +47,7 @@ class ArcadeRulesPolicy implements GameRulesPolicy {
   bool shouldEndSession(GameSessionEntity session) {
     return false;
   }
+
+  @override
+  bool get useStats => false;
 }

@@ -118,7 +118,8 @@ class _ArcadeGameViewState extends State<ArcadeGameView> {
     return MultiBlocListener(
       listeners: [
         BlocListener<TimerCubit, TimerState>(
-          listenWhen: (previous, current) => previous.remainingTime != current.remainingTime,
+          listenWhen: (previous, current) =>
+              previous.remainingTime != current.remainingTime,
           listener: (context, state) {
             if (state.isCompleted) {
               // Game Ended
@@ -129,7 +130,8 @@ class _ArcadeGameViewState extends State<ArcadeGameView> {
         // Check if Character is ready TODO change if want to check more than 1 dependency
         BlocListener<CharacterCubit, CharacterState>(
           listenWhen: (previous, current) {
-            if (previous.controllerReady != current.controllerReady && current.controllerReady == true) {
+            if (previous.controllerReady != current.controllerReady &&
+                current.controllerReady == true) {
               return true;
             }
             return false;
@@ -140,7 +142,8 @@ class _ArcadeGameViewState extends State<ArcadeGameView> {
         ),
         BlocListener<GameCubit, GameState>(
           listenWhen: (previous, current) {
-            if ((previous.gamePhaseEvent != current.gamePhaseEvent) && current.gamePhaseEvent != null) {
+            if ((previous.gamePhaseEvent != current.gamePhaseEvent) &&
+                current.gamePhaseEvent != null) {
               return true;
             }
             return false;
@@ -149,23 +152,43 @@ class _ArcadeGameViewState extends State<ArcadeGameView> {
             final gamePhase = state.gamePhaseEvent!.gamePhase;
             switch (gamePhase) {
               case GamePhase.newQuestion:
-                context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.thinking);
-                context.read<DialogMessageCubit>().showMessageByKey(
-                  key: GameMessageMapper.messageKeyFor(state.gameQuestionEvent!.gameMode),
-                  upperMessage: state.gameQuestionEvent!.operationMessage,
-                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
+                context.read<CharacterCubit>().playCharacterAnimation(
+                  CharacterAnimationType.thinking,
                 );
-                context.read<ScoreCubit>().onQuestionShown(weight: state.gameQuestionEvent!.questionWeight);
+                context.read<DialogMessageCubit>().showMessageByKey(
+                  key: GameMessageMapper.messageKeyFor(
+                    state.gameQuestionEvent!.operationType,
+                  ),
+                  upperMessage: state.gameQuestionEvent!.operationMessage,
+                  playerName: context
+                      .read<PlayerProfileCubit>()
+                      .state
+                      .profile
+                      .playerName,
+                );
+                context.read<ScoreCubit>().onQuestionShown(
+                  weight: state.gameQuestionEvent!.questionWeight,
+                );
                 if (_firstCompleted) {
-                  context.read<TimerCubit>().startTimer(duration: Duration(seconds: 10));
+                  context.read<TimerCubit>().startTimer(
+                    duration: Duration(seconds: 10),
+                  );
                 }
                 break;
               case GamePhase.repeatQuestion:
-                context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.thinking);
+                context.read<CharacterCubit>().playCharacterAnimation(
+                  CharacterAnimationType.thinking,
+                );
                 context.read<DialogMessageCubit>().showMessageByKey(
-                  key: GameMessageMapper.messageKeyFor(state.gameQuestionEvent!.gameMode),
+                  key: GameMessageMapper.messageKeyFor(
+                    state.gameQuestionEvent!.operationType,
+                  ),
                   upperMessage: state.gameQuestionEvent!.operationMessage,
-                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
+                  playerName: context
+                      .read<PlayerProfileCubit>()
+                      .state
+                      .profile
+                      .playerName,
                 );
                 break;
               /*case GamePhase.checkingResult:
@@ -182,29 +205,57 @@ class _ArcadeGameViewState extends State<ArcadeGameView> {
               case GamePhase.correct:
                 if (!_firstCompleted) _firstCompleted = true;
                 context.read<ScoreCubit>().onCorrectAnswer();
-                context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.success);
+                context.read<CharacterCubit>().playCharacterAnimation(
+                  CharacterAnimationType.success,
+                );
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: MessageKeyType.correct,
-                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
+                  playerName: context
+                      .read<PlayerProfileCubit>()
+                      .state
+                      .profile
+                      .playerName,
                 );
-                context.read<EffectsCubit>().playEffect(effect: EffectsType.stars);
-                context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
-                context.read<AudioCubit>().playSound(soundType: SoundType.correct);
+                context.read<EffectsCubit>().playEffect(
+                  effect: EffectsType.stars,
+                );
+                context.read<EffectsCubit>().playEffect(
+                  effect: EffectsType.shake,
+                );
+                context.read<AudioCubit>().playSound(
+                  soundType: SoundType.correct,
+                );
                 context.read<TimerCubit>().pauseTimer();
                 break;
               case GamePhase.skipByIncorrect:
-                context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.failed);
+                context.read<CharacterCubit>().playCharacterAnimation(
+                  CharacterAnimationType.failed,
+                );
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: MessageKeyType.skipByIncorrect,
-                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
+                  playerName: context
+                      .read<PlayerProfileCubit>()
+                      .state
+                      .profile
+                      .playerName,
                 );
-                context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
-                context.read<AudioCubit>().playSound(soundType: SoundType.incorrect);
+                context.read<EffectsCubit>().playEffect(
+                  effect: EffectsType.shake,
+                );
+                context.read<AudioCubit>().playSound(
+                  soundType: SoundType.incorrect,
+                );
                 break;
               case GamePhase.error:
-                context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.failed);
-                context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
-                context.read<AudioCubit>().playSound(soundType: SoundType.incorrect);
+                context.read<CharacterCubit>().playCharacterAnimation(
+                  CharacterAnimationType.failed,
+                );
+                context.read<EffectsCubit>().playEffect(
+                  effect: EffectsType.shake,
+                );
+                context.read<AudioCubit>().playSound(
+                  soundType: SoundType.incorrect,
+                );
                 break;
               /*case GamePhase.explanation:
                 context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.thinking);
@@ -212,20 +263,36 @@ class _ArcadeGameViewState extends State<ArcadeGameView> {
                 break;*/
               case GamePhase.finished:
                 _firstCompleted = false;
-                context.read<CharacterCubit>().playCharacterAnimation(CharacterAnimationType.success);
+                context.read<CharacterCubit>().playCharacterAnimation(
+                  CharacterAnimationType.success,
+                );
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: MessageKeyType.finished,
-                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
+                  playerName: context
+                      .read<PlayerProfileCubit>()
+                      .state
+                      .profile
+                      .playerName,
                 );
-                context.read<EffectsCubit>().playEffect(effect: EffectsType.confetti);
-                context.read<EffectsCubit>().playEffect(effect: EffectsType.shake);
-                context.read<PlayerProfileCubit>().registerFinalScore(score: context.read<ScoreCubit>().state.currentScore);
+                context.read<EffectsCubit>().playEffect(
+                  effect: EffectsType.confetti,
+                );
+                context.read<EffectsCubit>().playEffect(
+                  effect: EffectsType.shake,
+                );
+                context.read<PlayerProfileCubit>().registerFinalScore(
+                  score: context.read<ScoreCubit>().state.currentScore,
+                );
                 break;
               case GamePhase.starting:
                 context.read<ScoreCubit>().startScore();
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: MessageKeyType.starting,
-                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
+                  playerName: context
+                      .read<PlayerProfileCubit>()
+                      .state
+                      .profile
+                      .playerName,
                 );
                 break;
               case (_):
@@ -251,12 +318,18 @@ class _ArcadeGameViewState extends State<ArcadeGameView> {
                             gradient: AppGradients.background,
                           ),
                         ),
-                        Align(alignment: AlignmentGeometry.center, child: GamePencilIndicator()),
+                        Align(
+                          alignment: AlignmentGeometry.center,
+                          child: GamePencilIndicator(),
+                        ),
                         Align(
                           alignment: AlignmentGeometry.center,
                           child: ArcadeResultOverlay(),
                         ),
-                        Align(alignment: AlignmentGeometry.bottomCenter, child: DialogMessageText()),
+                        Align(
+                          alignment: AlignmentGeometry.bottomCenter,
+                          child: DialogMessageText(),
+                        ),
                       ],
                     ),
                   ),

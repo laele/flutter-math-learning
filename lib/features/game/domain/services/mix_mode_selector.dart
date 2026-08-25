@@ -16,10 +16,12 @@ class MixModeSelector {
     required List<OperationType> candidates,
     required Map<OperationType, GameStatsEntity> stats,
   }) {
-    assert(candidates.isNotEmpty, 'selectedGameModes must not be null');
+    assert(candidates.isNotEmpty, 'selectedoperationTypes must not be null');
     if (candidates.length == 1) return candidates.first;
 
-    final weights = <OperationType, double>{for (final mode in candidates) mode: _weightFor(stats[mode])};
+    final weights = <OperationType, double>{
+      for (final mode in candidates) mode: _weightFor(stats[mode]),
+    };
 
     if (_rencentPicks.isNotEmpty) {
       final last = _rencentPicks.last;

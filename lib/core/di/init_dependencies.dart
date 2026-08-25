@@ -57,6 +57,7 @@ Future<void> initDependencies() async {
   // TODO CLEAR ISAR DATA
   await isarInstance.writeTxn(() async {
     await isarInstance.playerProfileModels.clear();
+    await isarInstance.gameStatsModels.clear();
   });
   //
 
@@ -78,15 +79,25 @@ Future<void> initDependencies() async {
 }
 
 Future<void> initGame() async {
-  sl.registerLazySingleton<GameStatsLocalDataSource>(() => GameStatsLocalDataSourceImpl(isar: sl()));
-  sl.registerLazySingleton<GameStatsRepository>(() => GameStatsRepositoryImpl(localDataSource: sl()));
+  sl.registerLazySingleton<GameStatsLocalDataSource>(
+    () => GameStatsLocalDataSourceImpl(isar: sl()),
+  );
+  sl.registerLazySingleton<GameStatsRepository>(
+    () => GameStatsRepositoryImpl(localDataSource: sl()),
+  );
   sl.registerFactory<GetGameStatsUseCase>(
     () => GetGameStatsUseCase(repository: sl()),
   );
-  sl.registerFactory<SaveGameStatsUseCase>(() => SaveGameStatsUseCase(repository: sl()));
+  sl.registerFactory<SaveGameStatsUseCase>(
+    () => SaveGameStatsUseCase(repository: sl()),
+  );
 
   sl.registerFactoryParam<GameCubit, GameRulesPolicy, void>(
-    (policy, _) => GameCubit(rulesPolicy: policy, getGameStatsUseCase: sl(), saveGameStatsUseCase: sl()),
+    (policy, _) => GameCubit(
+      rulesPolicy: policy,
+      getGameStatsUseCase: sl(),
+      saveGameStatsUseCase: sl(),
+    ),
   );
 }
 

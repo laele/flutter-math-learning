@@ -1,6 +1,6 @@
 import 'package:flutter_math_app/features/game/domain/enums/operation_type.dart';
 
-class GameModeWeights {
+class operationTypeWeights {
   static const Map<OperationType, double> _weights = {
     OperationType.add: 1.0,
     OperationType.div: 1.25,

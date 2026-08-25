@@ -10,11 +10,11 @@ class HomeLearnNumbers extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<GameCubit, GameState>(
       buildWhen: (previous, current) {
-        if (previous.currentGameMode != current.currentGameMode) {
+        if (previous.currentoperationType != current.currentoperationType) {
           return true;
         }
 
-        if (current.currentGameMode == GameMode.learnNumbers && previous.result != current.result) {
+        if (current.currentoperationType == operationType.learnNumbers && previous.result != current.result) {
           return true;
         }
         return false;
