@@ -4,8 +4,8 @@ class GameState extends Equatable {
   final GameSessionEntity gameSession;
   final GameQuestionEvent? gameQuestionEvent;
   final GamePhaseEvent? gamePhaseEvent;
-  final Map<GameMode, GameStatsEntity> stats;
-  final List<GameMode> selectedGameModes;
+  final Map<OperationType, GameStatsEntity> stats;
+  final List<OperationType> selectedGameModes;
 
   const GameState({
     required this.selectedGameModes,
@@ -16,14 +16,14 @@ class GameState extends Equatable {
   });
 
   GameStatsEntity get currentGameStats => stats[gameQuestionEvent!.gameMode] ?? GameStatsEntity();
-  GameStatsEntity gameStats(GameMode gameMode) => stats[gameMode] ?? GameStatsEntity();
+  GameStatsEntity gameStats(OperationType gameMode) => stats[gameMode] ?? GameStatsEntity();
 
   GameState copyWith({
     GameQuestionEvent? gameQuestionEvent,
     GamePhaseEvent? gamePhaseEvent,
     GameSessionEntity? gameSession,
-    Map<GameMode, GameStatsEntity>? stats,
-    List<GameMode>? selectedGameModes,
+    Map<OperationType, GameStatsEntity>? stats,
+    List<OperationType>? selectedGameModes,
   }) {
     return GameState(
       gamePhaseEvent: gamePhaseEvent ?? this.gamePhaseEvent,

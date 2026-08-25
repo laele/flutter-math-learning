@@ -65,40 +65,41 @@ class SplashScreen extends StatelessWidget {
               Align(
                 alignment: AlignmentGeometry.center,
                 child: AnimatedOverlay(
-                  child: BlocBuilder<SplashCubit, SplashState>(
-                    buildWhen: (previous, current) {
-                      if (previous.status != current.status) return true;
-                      return false;
-                    },
-                    builder: (context, state) {
-                      if (state.status == SplashStatus.loading) {
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(l10n.loading),
-                            SizedBox(height: 8),
-                            CircularProgressIndicator(
-                              color: Colors.deepOrange,
-                            ),
-                          ],
-                        );
-                      } else if (state.status == SplashStatus.criticalError) {
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: BlocBuilder<SplashCubit, SplashState>(
+                      buildWhen: (previous, current) {
+                        if (previous.status != current.status) return true;
+                        return false;
+                      },
+                      builder: (context, state) {
+                        if (state.status == SplashStatus.loading) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(l10n.loading),
+                              SizedBox(height: 8),
+                              CircularProgressIndicator(
+                                color: Colors.deepOrange,
+                              ),
+                            ],
+                          );
+                        } else if (state.status == SplashStatus.criticalError) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
 
-                          children: [
-                            Text(l10n.errorUnknown),
-                            AppFilledButton(
-                              title: l10n.retry,
-                              function: context
-                                  .read<SplashCubit>()
-                                  .retryInputRecognition,
-                            ),
-                          ],
-                        );
-                      }
-                      return SizedBox.shrink();
-                    },
+                            children: [
+                              Text(l10n.errorUnknown),
+                              AppFilledButton(
+                                title: l10n.retry,
+                                function: context.read<SplashCubit>().retryInputRecognition,
+                              ),
+                            ],
+                          );
+                        }
+                        return SizedBox.shrink();
+                      },
+                    ),
                   ),
                 ),
               ),

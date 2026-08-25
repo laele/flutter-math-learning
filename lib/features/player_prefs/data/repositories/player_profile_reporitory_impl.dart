@@ -15,8 +15,6 @@ class PlayerProfileReporitoryImpl implements PlayerProfileRepository {
   Future<Either<Failure, PlayerProfileEntity>> getPlayerProfile() async {
     try {
       final model = await _localDataSource.getPlayerProfile();
-      print('----------- loaded profile');
-      print(model?.toEntity());
       return right(model?.toEntity() ?? const PlayerProfileEntity());
     } on LocalStorageException catch (e) {
       return left(LocalStorageFailure(message: e.message));

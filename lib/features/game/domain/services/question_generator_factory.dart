@@ -1,14 +1,14 @@
-import 'package:flutter_math_app/features/game/domain/enums/game_mode.dart';
+import 'package:flutter_math_app/features/game/domain/enums/operation_type.dart';
 import 'package:flutter_math_app/features/game/domain/services/question_generator.dart';
 
 class QuestionGeneratorFactory {
-  static QuestionGenerator forMode(GameMode mode) {
+  static QuestionGenerator forMode(OperationType mode) {
     return switch (mode) {
-      //GameMode.learnNumbers => LearnNumbersQuestionGenerator(),
-      GameMode.add => AddQuestionGenerator(),
-      GameMode.sub => SubQuestionGenerator(),
-      GameMode.mult => MultQuestionGenerator(),
-      GameMode.div => DivQuestionGenerator(),
+      //OperationType.learnNumbers => LearnNumbersQuestionGenerator(),
+      OperationType.add => AddQuestionGenerator(),
+      OperationType.sub => SubQuestionGenerator(),
+      OperationType.mult => MultQuestionGenerator(),
+      OperationType.div => DivQuestionGenerator(),
     };
   }
 }

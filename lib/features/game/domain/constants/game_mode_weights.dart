@@ -1,12 +1,12 @@
-import 'package:flutter_math_app/features/game/domain/enums/game_mode.dart';
+import 'package:flutter_math_app/features/game/domain/enums/operation_type.dart';
 
 class GameModeWeights {
-  static const Map<GameMode, double> _weights = {
-    GameMode.add: 1.0,
-    GameMode.div: 1.25,
-    GameMode.sub: 1.0,
-    GameMode.mult: 1.25,
+  static const Map<OperationType, double> _weights = {
+    OperationType.add: 1.0,
+    OperationType.div: 1.25,
+    OperationType.sub: 1.0,
+    OperationType.mult: 1.25,
   };
 
-  static double of({required GameMode mode}) => _weights[mode] ?? 1.0;
+  static double of({required OperationType mode}) => _weights[mode] ?? 1.0;
 }

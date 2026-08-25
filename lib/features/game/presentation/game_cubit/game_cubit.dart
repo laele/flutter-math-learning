@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_math_app/core/mixins/event_emitter.dart';
 import 'package:flutter_math_app/core/mixins/pausable_actions.dart';
+import 'package:flutter_math_app/core/usecase/usecase.dart';
 import 'package:flutter_math_app/features/game/domain/constants/difficulty_tiers.dart';
 import 'package:flutter_math_app/features/game/domain/constants/game_modes.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_phase_event.dart';
@@ -9,12 +10,14 @@ import 'package:flutter_math_app/features/game/domain/entities/game_question_ent
 import 'package:flutter_math_app/features/game/domain/entities/game_question_event.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_session_entity.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_stats_entity.dart';
-import 'package:flutter_math_app/features/game/domain/enums/game_mode.dart';
+import 'package:flutter_math_app/features/game/domain/enums/operation_type.dart';
 import 'package:flutter_math_app/features/game/domain/enums/game_phase.dart';
 import 'package:flutter_math_app/features/game/domain/services/game_rules_policy.dart';
 import 'package:flutter_math_app/features/game/domain/services/mix_mode_selector.dart';
 import 'package:flutter_math_app/features/game/domain/services/question_generator_factory.dart';
 import 'package:flutter_math_app/features/game/domain/services/question_weight_calculator.dart';
+import 'package:flutter_math_app/features/game/domain/usecases/get_game_stats_usecase.dart';
+import 'package:flutter_math_app/features/game/domain/usecases/save_game_stats_usecase.dart';
 
 part 'game_state.dart';
 
@@ -22,10 +25,17 @@ class GameCubit extends Cubit<GameState> with EventEmitter, PausableActions {
   final MixModeSelector _mixModeSelector;
   final GameRulesPolicy _gameRulesPolicy;
 
+  final GetGameStatsUseCase _getGameStatsUseCase;
+  final SaveGameStatsUseCase _saveGameStatsUseCase;
+
   GameCubit({
     MixModeSelector? mixModeSelector,
     required GameRulesPolicy rulesPolicy,
+    required GetGameStatsUseCase getGameStatsUseCase,
+    required SaveGameStatsUseCase saveGameStatsUseCase,
   }) : _mixModeSelector = mixModeSelector ?? MixModeSelector(),
+       _getGameStatsUseCase = getGameStatsUseCase,
+       _saveGameStatsUseCase = saveGameStatsUseCase,
        _gameRulesPolicy = rulesPolicy,
        super(
          GameState(
@@ -35,7 +45,7 @@ class GameCubit extends Cubit<GameState> with EventEmitter, PausableActions {
 
   GameQuestionEvent _nextGameQuestionEvent({
     required GameQuestionEntity gameQuestion,
-    required GameMode gameMode,
+    required OperationType gameMode,
     required double questionWeight,
   }) {
     return GameQuestionEvent(
@@ -51,8 +61,15 @@ class GameCubit extends Cubit<GameState> with EventEmitter, PausableActions {
     emit(state.copyWith(gamePhaseEvent: gamePhaseEvent));
   }
 
-  void initGame() {
-    emit(state.copyWith(gameSession: GameSessionEntity(), stats: {})); // Cambiar pot stats del profile player
+  void initGame() async {
+    final statsResult = await _getGameStatsUseCase(NoParams());
+    final loadedStats = statsResult.fold((l) => <OperationType, GameStatsEntity>{}, (stats) {
+      print("--------------------------------------");
+      print(stats);
+      return stats;
+    });
+
+    emit(state.copyWith(gameSession: GameSessionEntity(), stats: loadedStats)); // Cambiar pot stats del profile player
     _emitNextGamePhaseEvent(gamePhase: GamePhase.starting);
     pauseFor(
       () {
@@ -168,8 +185,9 @@ class GameCubit extends Cubit<GameState> with EventEmitter, PausableActions {
     _emitNextGamePhaseEvent(gamePhase: GamePhase.finished);
   }
 
-  void _setNewStats(GameMode mode, GameStatsEntity newStats) {
-    final stats = Map<GameMode, GameStatsEntity>.from(state.stats)..[mode] = newStats;
+  void _setNewStats(OperationType mode, GameStatsEntity newStats) {
+    final stats = Map<OperationType, GameStatsEntity>.from(state.stats)..[mode] = newStats;
     emit(state.copyWith(stats: stats));
+    _saveGameStatsUseCase(stats);
   }
 }

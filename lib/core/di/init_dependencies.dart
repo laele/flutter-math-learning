@@ -12,7 +12,13 @@ import 'package:flutter_math_app/features/audio/domain/repositories/audio_reposi
 import 'package:flutter_math_app/features/audio/presentation/cubit/audio_cubit.dart';
 import 'package:flutter_math_app/features/character/presentation/cubit/character_cubit.dart';
 import 'package:flutter_math_app/features/dialog_message/presentation/cubit/dialog_message_cubit.dart';
+import 'package:flutter_math_app/features/game/data/datasources/game_stats_local_datasource.dart';
+import 'package:flutter_math_app/features/game/data/models/game_stats_model.dart';
+import 'package:flutter_math_app/features/game/data/repositories/game_stats_repository_impl.dart';
+import 'package:flutter_math_app/features/game/domain/repositories/game_stats_repository.dart';
 import 'package:flutter_math_app/features/game/domain/services/game_rules_policy.dart';
+import 'package:flutter_math_app/features/game/domain/usecases/get_game_stats_usecase.dart';
+import 'package:flutter_math_app/features/game/domain/usecases/save_game_stats_usecase.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
 import 'package:flutter_math_app/features/game/score/cubit/score_cubit.dart';
 import 'package:flutter_math_app/features/game/timer/presentation/cubit/timer_cubit.dart';
@@ -43,6 +49,7 @@ Future<void> initDependencies() async {
   final sharedPrefs = await SharedPreferences.getInstance();
   final isarInstance = await Isar.open([
     PlayerProfileModelSchema,
+    GameStatsModelSchema,
   ], directory: (await getApplicationDocumentsDirectory()).path);
 
   // TODO DELETE clear shared prefs
@@ -59,10 +66,8 @@ Future<void> initDependencies() async {
   await initPlayerProfile();
   await initDialogMessage();
   await initSettings(instance: sharedPrefs);
+  await initGame();
 
-  sl.registerFactoryParam<GameCubit, GameRulesPolicy, void>(
-    (policy, _) => GameCubit(rulesPolicy: policy),
-  );
   sl.registerFactory<EffectsCubit>(() => EffectsCubit()); // effect animaiton
   sl.registerFactory<CharacterCubit>(
     () => CharacterCubit(),
@@ -70,6 +75,19 @@ Future<void> initDependencies() async {
   sl.registerFactory<TimerCubit>(() => TimerCubit());
   sl.registerFactory<ScoreCubit>(() => ScoreCubit());
   sl.registerFactory<TutorialCubit>(() => TutorialCubit());
+}
+
+Future<void> initGame() async {
+  sl.registerLazySingleton<GameStatsLocalDataSource>(() => GameStatsLocalDataSourceImpl(isar: sl()));
+  sl.registerLazySingleton<GameStatsRepository>(() => GameStatsRepositoryImpl(localDataSource: sl()));
+  sl.registerFactory<GetGameStatsUseCase>(
+    () => GetGameStatsUseCase(repository: sl()),
+  );
+  sl.registerFactory<SaveGameStatsUseCase>(() => SaveGameStatsUseCase(repository: sl()));
+
+  sl.registerFactoryParam<GameCubit, GameRulesPolicy, void>(
+    (policy, _) => GameCubit(rulesPolicy: policy, getGameStatsUseCase: sl(), saveGameStatsUseCase: sl()),
+  );
 }
 
 Future<void> initPlayerProfile() async {

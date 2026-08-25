@@ -34,6 +34,7 @@ class _SetPlayerNameScreenState extends State<SetPlayerNameScreen> {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+
                 children: [
                   Text(
                     l10n.whatIsYourName,
@@ -58,7 +59,7 @@ class _SetPlayerNameScreenState extends State<SetPlayerNameScreen> {
                   SizedBox(height: 16.0),
                   AppCard(
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(16.0),
                       child: Row(
                         children: [
                           Flexible(
@@ -67,9 +68,7 @@ class _SetPlayerNameScreenState extends State<SetPlayerNameScreen> {
                           SizedBox(width: 8.0),
                           IconButton(
                             onPressed: () {
-                              final isValid =
-                                  _playerNameKey.currentState?.validate() ??
-                                  false;
+                              final isValid = _playerNameKey.currentState?.validate() ?? false;
 
                               if (!isValid) return;
                               Navigator.of(context).pushReplacement(
@@ -79,8 +78,7 @@ class _SetPlayerNameScreenState extends State<SetPlayerNameScreen> {
                               );
                             },
                             icon: CustomIcon(
-                              assetRoute:
-                                  'lib/core/assets/images/arrow_right.png',
+                              assetRoute: 'lib/core/assets/images/arrow_right.png',
                             ),
                           ),
                         ],

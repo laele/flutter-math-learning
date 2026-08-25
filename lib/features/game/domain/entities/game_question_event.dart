@@ -1,18 +1,18 @@
 import 'package:flutter_math_app/core/entities/domain_event.dart';
 import 'package:flutter_math_app/features/game/domain/entities/game_question_entity.dart';
-import 'package:flutter_math_app/features/game/domain/enums/game_mode.dart';
+import 'package:flutter_math_app/features/game/domain/enums/operation_type.dart';
 
 class GameQuestionEvent extends DomainEvent {
   final GameQuestionEntity gameQuestion;
-  final GameMode gameMode;
+  final OperationType gameMode;
 
   final double questionWeight;
 
   String get currentGameModeOperator => switch (gameMode) {
-    GameMode.add => '+',
-    GameMode.sub => '-',
-    GameMode.mult => '×',
-    GameMode.div => '÷',
+    OperationType.add => '+',
+    OperationType.sub => '-',
+    OperationType.mult => '×',
+    OperationType.div => '÷',
     _ => '',
   };
 
