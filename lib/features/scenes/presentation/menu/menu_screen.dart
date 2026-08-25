@@ -10,6 +10,7 @@ import 'package:flutter_math_app/features/scenes/presentation/arcade_game/arcade
 import 'package:flutter_math_app/features/scenes/presentation/menu/widgets/menu_button.dart';
 import 'package:flutter_math_app/features/scenes/presentation/menu/widgets/menu_canvas.dart';
 import 'package:flutter_math_app/features/scenes/presentation/practice_game/practice_game_screen.dart';
+import 'package:flutter_math_app/features/scenes/presentation/shared/widgets/banner_ad_widget.dart';
 import 'package:flutter_math_app/features/scenes/presentation/tutorial/tutorial_screen.dart';
 
 class MenuScreen extends StatelessWidget {
@@ -55,31 +56,40 @@ class MenuScreen extends StatelessWidget {
                           children: [
                             MenuButton(
                               title: l10n.play,
-                              assetIconRoute: 'lib/core/assets/images/play_icon.png',
+                              assetIconRoute:
+                                  'lib/core/assets/images/play_icon.png',
                               function: () {
                                 Navigator.pushReplacement(
                                   context,
-                                  MaterialPageRoute(builder: (_) => ArcadeGameScreen()),
+                                  MaterialPageRoute(
+                                    builder: (_) => ArcadeGameScreen(),
+                                  ),
                                 );
                               },
                             ),
                             MenuButton(
                               title: l10n.practiceMode,
-                              assetIconRoute: 'lib/core/assets/images/math_book.png',
+                              assetIconRoute:
+                                  'lib/core/assets/images/math_book.png',
                               function: () {
                                 Navigator.pushReplacement(
                                   context,
-                                  MaterialPageRoute(builder: (_) => PracticeGameScreen()),
+                                  MaterialPageRoute(
+                                    builder: (_) => PracticeGameScreen(),
+                                  ),
                                 );
                               },
                             ),
                             MenuButton(
                               title: l10n.tutorial,
-                              assetIconRoute: 'lib/core/assets/images/how_to_play_icon.png',
+                              assetIconRoute:
+                                  'lib/core/assets/images/how_to_play_icon.png',
                               function: () {
                                 Navigator.pushReplacement(
                                   context,
-                                  MaterialPageRoute(builder: (_) => TutorialScreen()),
+                                  MaterialPageRoute(
+                                    builder: (_) => TutorialScreen(),
+                                  ),
                                 );
                               },
                             ),

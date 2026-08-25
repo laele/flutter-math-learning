@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_math_app/core/widgets/app_main_title_text.dart';
 import 'package:flutter_math_app/core/widgets/custom_icon.dart';
 import 'package:flutter_math_app/features/player_prefs/presentation/widgets/player_prefs_card.dart';
+import 'package:flutter_math_app/features/scenes/presentation/shared/widgets/banner_ad_widget.dart';
 import 'package:flutter_math_app/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:flutter_math_app/features/settings/presentation/widgets/language_sheet.dart';
 
@@ -23,6 +24,8 @@ class MenuCanvas extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  BannerAdWidget(),
+                  SizedBox(height: 8),
                   // Profile Header
                   PlayerPrefsCard(),
 
