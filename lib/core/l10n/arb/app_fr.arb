@@ -1,0 +1,23 @@
+{
+  "whatIsYourName": "Quel est ton nom ?",
+  "bestScore": "Meilleur score !",
+  "hello": "Salut !",
+  "practiceMode": "Mode Entraînement",
+
+  "enterYourName": "Entre tu nom",
+  "minimumCharacters": "3 caractères minimum",
+  "play": "Jouer",
+  "tutorial": "Comment jouer ?",
+  
+  "gameOver": "Partie terminée !",
+  "yourScore": "Ton score",
+  "best": "Meilleur",
+  "newScore": "Nouveau record !",
+  "playAgain": "Rejouer",
+
+  "selectLanguage": "Choisir la langue",
+
+  "errorUnknown": "Un problème est survenu, réessaye",
+  "retry": "Réessayer",
+  "loading": "Chargement..."
+}

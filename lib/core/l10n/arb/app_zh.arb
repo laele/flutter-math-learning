@@ -1,0 +1,23 @@
+{
+  "whatIsYourName": "你叫什么名字？",
+  "bestScore": "最高分！",
+  "hello": "你好！",
+  "practiceMode": "练习模式",
+
+  "enterYourName": "输入你的名字",
+  "minimumCharacters": "至少3个字符",
+  "play": "开始游戏",
+  "tutorial": "怎么玩？",
+
+  "gameOver": "游戏结束！",
+  "yourScore": "你的得分",
+  "best": "最高分",
+  "newScore": "新的最高分！",
+  "playAgain": "再玩一次",
+
+  "selectLanguage": "选择语言",
+
+  "errorUnknown": "出了点问题，请再试一次",
+  "retry": "重试",
+  "loading": "加载中..."
+}

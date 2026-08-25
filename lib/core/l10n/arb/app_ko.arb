@@ -1,0 +1,23 @@
+{
+  "whatIsYourName": "이름이 무엇인가요?",
+  "bestScore": "최고 점수!",
+  "hello": "안녕하세요!",
+  "practiceMode": "연습 모드",
+
+  "enterYourName": "이름을 입력하세요",
+  "minimumCharacters": "최소 3글자",
+  "play": "플레이",
+  "tutorial": "게임 방법",
+  
+  "gameOver": "게임 종료!",
+  "yourScore": "당신의 점수",
+  "best": "최고",
+  "newScore": "새로운 최고 점수!",
+  "playAgain": "다시 하기",
+
+  "selectLanguage": "언어 선택",
+
+  "errorUnknown": "문제가 발생했습니다. 다시 시도해 주세요",
+  "retry": "다시 시도",
+  "loading": "로딩 중..."
+}

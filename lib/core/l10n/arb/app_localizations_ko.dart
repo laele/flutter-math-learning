@@ -1,0 +1,61 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for Korean (`ko`).
+class AppLocalizationsKo extends AppLocalizations {
+  AppLocalizationsKo([String locale = 'ko']) : super(locale);
+
+  @override
+  String get whatIsYourName => '이름이 무엇인가요?';
+
+  @override
+  String get bestScore => '최고 점수!';
+
+  @override
+  String get hello => '안녕하세요!';
+
+  @override
+  String get practiceMode => '연습 모드';
+
+  @override
+  String get enterYourName => '이름을 입력하세요';
+
+  @override
+  String get minimumCharacters => '최소 3글자';
+
+  @override
+  String get play => '플레이';
+
+  @override
+  String get tutorial => '게임 방법';
+
+  @override
+  String get gameOver => '게임 종료!';
+
+  @override
+  String get yourScore => '당신의 점수';
+
+  @override
+  String get best => '최고';
+
+  @override
+  String get newScore => '새로운 최고 점수!';
+
+  @override
+  String get playAgain => '다시 하기';
+
+  @override
+  String get selectLanguage => '언어 선택';
+
+  @override
+  String get errorUnknown => '문제가 발생했습니다. 다시 시도해 주세요';
+
+  @override
+  String get retry => '다시 시도';
+
+  @override
+  String get loading => '로딩 중...';
+}

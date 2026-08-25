@@ -2,7 +2,13 @@ import 'dart:io';
 
 import 'package:flutter_math_app/features/dialog_message/data/datasources/dialog_message_pool_en.dart';
 import 'package:flutter_math_app/features/dialog_message/data/datasources/dialog_message_pool_es.dart';
+import 'package:flutter_math_app/features/dialog_message/data/datasources/dialog_message_pool_fr.dart';
+import 'package:flutter_math_app/features/dialog_message/data/datasources/dialog_message_pool_hi.dart';
+import 'package:flutter_math_app/features/dialog_message/data/datasources/dialog_message_pool_ja.dart';
+import 'package:flutter_math_app/features/dialog_message/data/datasources/dialog_message_pool_ko.dart';
 import 'package:flutter_math_app/features/dialog_message/data/datasources/dialog_message_pool_pt.dart';
+import 'package:flutter_math_app/features/dialog_message/data/datasources/dialog_message_pool_tl.dart';
+import 'package:flutter_math_app/features/dialog_message/data/datasources/dialog_message_pool_zh.dart';
 import 'package:flutter_math_app/features/dialog_message/data/repositories/dialog_message_repository_impl.dart';
 import 'package:flutter_math_app/features/dialog_message/domain/repositories/dialog_message_repository.dart';
 import 'package:flutter_math_app/features/effects/presentation/cubit/effects_cubit.dart';
@@ -169,6 +175,12 @@ Future<void> initDialogMessage() async {
           'en': dialogMessagePoolEn, // 'en' as default first position
           'es': dialogMessagePoolEs,
           'pt': dialogMessagePoolPt,
+          'zh': dialogMessagePoolZh,
+          'fr': dialogMessagePoolFr,
+          'ja': dialogMessagePoolJa,
+          'ko': dialogMessagePoolKo,
+          'hi': dialogMessagePoolHi,
+          'tl': dialogMessagePoolTl,
         },
       ),
     )

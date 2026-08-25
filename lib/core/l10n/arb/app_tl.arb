@@ -1,0 +1,23 @@
+{
+  "whatIsYourName": "Ano ang pangalan mo?",
+  "bestScore": "Pinakamataas na Iskor!",
+  "hello": "Kumusta!",
+  "practiceMode": "Practice Mode",
+
+  "enterYourName": "Ilagay ang iyong pangalan",
+  "minimumCharacters": "Kailangang may hindi bababa sa 3 letra",
+  "play": "Maglaro",
+  "tutorial": "Paano Maglaro?",
+  
+  "gameOver": "Tapos na ang Laro!",
+  "yourScore": "Iyong Iskor",
+  "best": "Pinakamagaling",
+  "newScore": "Bagong Pinakamataas na Iskor!",
+  "playAgain": "Maglaro Muli",
+
+  "selectLanguage": "Pumili ng Wika",
+
+  "errorUnknown": "May nagkamali, subukan muli",
+  "retry": "Subukan muli",
+  "loading": "Naglo-load..."
+}

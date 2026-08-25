@@ -1,0 +1,23 @@
+{
+  "whatIsYourName": "आपका नाम क्या है?",
+  "bestScore": "सर्वश्रेष्ठ स्कोर!",
+  "hello": "नमस्ते!",
+  "practiceMode": "अभ्यास मोड",
+
+  "enterYourName": "अपना नाम दर्ज करें",
+  "minimumCharacters": "कम से कम 3 अक्षर",
+  "play": "खेलें",
+  "tutorial": "कैसे खेलें?",
+  
+  "gameOver": "खेल खत्म!",
+  "yourScore": "आपका स्कोर",
+  "best": "सर्वश्रेष्ठ",
+  "newScore": "नया सर्वश्रेष्ठ स्कोर!",
+  "playAgain": "फिर से खेलें",
+
+  "selectLanguage": "भाषा चुनें",
+
+  "errorUnknown": "कुछ गड़बड़ हुई, फिर से प्रयास करें",
+  "retry": "फिर से प्रयास करें",
+  "loading": "लोड हो रहा है..."
+}

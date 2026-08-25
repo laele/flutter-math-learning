@@ -1,0 +1,23 @@
+{
+  "whatIsYourName": "お名前は何ですか？",
+  "bestScore": "最高スコア！",
+  "hello": "こんにちは！",
+  "practiceMode": "練習モード",
+
+  "enterYourName": "名前を入力してください",
+  "minimumCharacters": "最低3文字",
+  "play": "プレイ",
+  "tutorial": "遊び方",
+  
+  "gameOver": "ゲームオーバー！",
+  "yourScore": "あなたのスコア",
+  "best": "ベスト",
+  "newScore": "新記録達成！",
+  "playAgain": "もう一度遊ぶ",
+
+  "selectLanguage": "言語選択",
+
+  "errorUnknown": "エラーが発生しました。もう一度お試しください",
+  "retry": "もう一度試す",
+  "loading": "読み込み中..."
+}
