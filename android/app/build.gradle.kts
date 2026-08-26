@@ -28,6 +28,9 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        manifestPlaceholders += [
+        ADMOB_APP_ID: project.findProperty('ADMOB_APP_ID') ?: "ca-app-pub-3940256099942544~3347511713" // Fallback al id de prueba si no existe
+    ]
     }
 
     buildTypes {
