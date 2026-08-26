@@ -9,3 +9,8 @@ class RemoteSyncException implements Exception {
 
   const RemoteSyncException({this.message = 'Remote storage operation failed'});
 }
+
+class AdLoadException implements Exception {
+  final String message;
+  AdLoadException({required this.message});
+}

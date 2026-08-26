@@ -1,4 +1,6 @@
+// presentation/widgets/banner_ad_widget.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_math_app/core/constants/ad_unit_ids.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class BannerAdWidget extends StatefulWidget {
@@ -12,29 +14,24 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
   BannerAd? _bannerAd;
   bool _isLoaded = false;
 
-  // ID de banner de prueba para Android (sustituir por el real en producción)
-  final String _adUnitId = 'ca-app-pub-3940256099942544/6300978111';
-
   @override
   void initState() {
     super.initState();
-    _loadAd();
+    _loadBanner();
   }
 
-  void _loadAd() {
+  void _loadBanner() {
     _bannerAd = BannerAd(
-      adUnitId: _adUnitId,
-      request: const AdRequest(),
+      adUnitId: AdUnitIds.banner,
       size: AdSize.banner,
+      request: const AdRequest(),
       listener: BannerAdListener(
-        onAdLoaded: (ad) {
-          setState(() {
-            _isLoaded = true;
-          });
+        onAdLoaded: (_) {
+          if (!mounted) return;
+          setState(() => _isLoaded = true);
         },
-        onAdFailedToLoad: (ad, err) {
+        onAdFailedToLoad: (ad, error) {
           ad.dispose();
-          debugPrint('Error al cargar el banner: $err');
         },
       ),
     )..load();
@@ -42,16 +39,13 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
 
   @override
   void dispose() {
-    _bannerAd?.dispose(); // Liberar memoria
+    _bannerAd?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!_isLoaded || _bannerAd == null) {
-      return const SizedBox.shrink();
-    }
-
+    if (!_isLoaded || _bannerAd == null) return const SizedBox.shrink();
     return SizedBox(
       width: _bannerAd!.size.width.toDouble(),
       height: _bannerAd!.size.height.toDouble(),

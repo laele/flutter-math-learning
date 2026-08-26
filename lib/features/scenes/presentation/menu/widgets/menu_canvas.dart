@@ -44,11 +44,7 @@ class MenuCanvas extends StatelessWidget {
                       LanguageSheet.show(context);
                     },
                     label: Text(
-                      context
-                          .read<SettingsCubit>()
-                          .state
-                          .locale!
-                          .languageCode, // current lang string,
+                      context.read<SettingsCubit>().state.locale!.languageCode, // current lang string,
                       maxLines: 1,
                       overflow: TextOverflow.fade,
                     ),

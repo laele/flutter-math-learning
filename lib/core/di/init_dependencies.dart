@@ -1,5 +1,9 @@
 import 'dart:io';
 
+import 'package:flutter_math_app/features/ads/data/datasources/admob_datasource.dart';
+import 'package:flutter_math_app/features/ads/data/repositories/ads_repository_impl.dart';
+import 'package:flutter_math_app/features/ads/domain/repositories/ads_repository.dart';
+import 'package:flutter_math_app/features/ads/presentation/cubit/ads_cubit.dart';
 import 'package:flutter_math_app/features/dialog_message/data/datasources/dialog_message_pool_en.dart';
 import 'package:flutter_math_app/features/dialog_message/data/datasources/dialog_message_pool_es.dart';
 import 'package:flutter_math_app/features/dialog_message/data/datasources/dialog_message_pool_fr.dart';
@@ -74,6 +78,7 @@ Future<void> initDependencies() async {
   await initDialogMessage();
   await initSettings(instance: sharedPrefs);
   await initGame();
+  await initAds();
 
   sl.registerFactory<EffectsCubit>(() => EffectsCubit()); // effect animaiton
   sl.registerFactory<CharacterCubit>(
@@ -82,6 +87,12 @@ Future<void> initDependencies() async {
   sl.registerFactory<TimerCubit>(() => TimerCubit());
   sl.registerFactory<ScoreCubit>(() => ScoreCubit());
   sl.registerFactory<TutorialCubit>(() => TutorialCubit());
+}
+
+Future<void> initAds() async {
+  sl.registerLazySingleton(() => AdmobDataSource());
+  sl.registerLazySingleton<AdsRepository>(() => AdsRepositoryImpl(dataSource: sl()));
+  sl.registerFactory(() => AdsCubit(repository: sl()));
 }
 
 Future<void> initGame() async {

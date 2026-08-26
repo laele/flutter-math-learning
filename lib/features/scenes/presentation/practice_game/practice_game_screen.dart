@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_math_app/core/di/init_dependencies.dart';
+import 'package:flutter_math_app/features/ads/presentation/cubit/ads_cubit.dart';
 import 'package:flutter_math_app/features/audio/domain/enums/sound_type.dart';
 import 'package:flutter_math_app/features/audio/presentation/cubit/audio_cubit.dart';
 import 'package:flutter_math_app/features/character/domain/enums/character_animation_type.dart';
@@ -117,8 +118,7 @@ class _PracticeGameViewState extends State<PracticeGameView> {
       listeners: [
         BlocListener<CharacterCubit, CharacterState>(
           listenWhen: (previous, current) {
-            if (previous.controllerReady != current.controllerReady &&
-                current.controllerReady == true) {
+            if (previous.controllerReady != current.controllerReady && current.controllerReady == true) {
               return true;
             }
             return false;
@@ -129,8 +129,7 @@ class _PracticeGameViewState extends State<PracticeGameView> {
         ),
         BlocListener<GameCubit, GameState>(
           listenWhen: (previous, current) {
-            if ((previous.gamePhaseEvent != current.gamePhaseEvent) &&
-                current.gamePhaseEvent != null) {
+            if ((previous.gamePhaseEvent != current.gamePhaseEvent) && current.gamePhaseEvent != null) {
               return true;
             }
             return false;
@@ -147,11 +146,7 @@ class _PracticeGameViewState extends State<PracticeGameView> {
                     state.gameQuestionEvent!.operationType,
                   ),
                   upperMessage: state.gameQuestionEvent!.operationMessage,
-                  playerName: context
-                      .read<PlayerProfileCubit>()
-                      .state
-                      .profile
-                      .playerName,
+                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
                 );
                 break;
               case GamePhase.repeatQuestion:
@@ -163,11 +158,7 @@ class _PracticeGameViewState extends State<PracticeGameView> {
                     state.gameQuestionEvent!.operationType,
                   ),
                   upperMessage: state.gameQuestionEvent!.operationMessage,
-                  playerName: context
-                      .read<PlayerProfileCubit>()
-                      .state
-                      .profile
-                      .playerName,
+                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
                 );
                 break;
               case GamePhase.checkingResult:
@@ -176,11 +167,7 @@ class _PracticeGameViewState extends State<PracticeGameView> {
                 );
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: MessageKeyType.thinking,
-                  playerName: context
-                      .read<PlayerProfileCubit>()
-                      .state
-                      .profile
-                      .playerName,
+                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
                 );
                 break;
               case GamePhase.incorrect:
@@ -189,11 +176,7 @@ class _PracticeGameViewState extends State<PracticeGameView> {
                 );
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: MessageKeyType.incorrect,
-                  playerName: context
-                      .read<PlayerProfileCubit>()
-                      .state
-                      .profile
-                      .playerName,
+                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
                 );
                 context.read<EffectsCubit>().playEffect(
                   effect: EffectsType.shake,
@@ -209,11 +192,7 @@ class _PracticeGameViewState extends State<PracticeGameView> {
                 );
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: MessageKeyType.correct,
-                  playerName: context
-                      .read<PlayerProfileCubit>()
-                      .state
-                      .profile
-                      .playerName,
+                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
                 );
                 context.read<EffectsCubit>().playEffect(
                   effect: EffectsType.stars,
@@ -231,11 +210,7 @@ class _PracticeGameViewState extends State<PracticeGameView> {
                 );
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: MessageKeyType.skipByIncorrect,
-                  playerName: context
-                      .read<PlayerProfileCubit>()
-                      .state
-                      .profile
-                      .playerName,
+                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
                 );
                 context.read<EffectsCubit>().playEffect(
                   effect: EffectsType.shake,
@@ -250,11 +225,7 @@ class _PracticeGameViewState extends State<PracticeGameView> {
                 );
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: MessageKeyType.error,
-                  playerName: context
-                      .read<PlayerProfileCubit>()
-                      .state
-                      .profile
-                      .playerName,
+                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
                 );
                 context.read<EffectsCubit>().playEffect(
                   effect: EffectsType.shake,
@@ -270,11 +241,7 @@ class _PracticeGameViewState extends State<PracticeGameView> {
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: MessageKeyType.explanation,
                   upperMessage: state.gameQuestionEvent!.resultExplained,
-                  playerName: context
-                      .read<PlayerProfileCubit>()
-                      .state
-                      .profile
-                      .playerName,
+                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
                 );
                 break;
               case GamePhase.finished:
@@ -284,11 +251,7 @@ class _PracticeGameViewState extends State<PracticeGameView> {
                 );
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: MessageKeyType.finished,
-                  playerName: context
-                      .read<PlayerProfileCubit>()
-                      .state
-                      .profile
-                      .playerName,
+                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
                 );
                 context.read<EffectsCubit>().playEffect(
                   effect: EffectsType.confetti,
@@ -296,15 +259,12 @@ class _PracticeGameViewState extends State<PracticeGameView> {
                 context.read<EffectsCubit>().playEffect(
                   effect: EffectsType.shake,
                 );
+                context.read<AdsCubit>().showInterstitialAtNaturalBreak();
                 break;
               case GamePhase.starting:
                 context.read<DialogMessageCubit>().showMessageByKey(
                   key: MessageKeyType.starting,
-                  playerName: context
-                      .read<PlayerProfileCubit>()
-                      .state
-                      .profile
-                      .playerName,
+                  playerName: context.read<PlayerProfileCubit>().state.profile.playerName,
                 );
                 break;
               case (_):
