@@ -11,6 +11,9 @@ class AdmobDataSource {
     final requestConfiguration = RequestConfiguration(
       ageRestrictedTreatment: AgeRestrictedTreatment.child,
       maxAdContentRating: MaxAdContentRating.g,
+      testDeviceIds: [
+        '581202C278272890FB42E56420EFEE4B', // SAMSUNG TABLET
+      ],
     );
     await MobileAds.instance.updateRequestConfiguration(requestConfiguration);
     await MobileAds.instance.initialize();
