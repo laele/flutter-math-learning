@@ -5,6 +5,7 @@ import 'package:flutter_math_app/core/mixins/pausable_actions.dart';
 import 'package:flutter_math_app/features/tutorial/domain/constants/tutorial_sequence.dart';
 import 'package:flutter_math_app/features/tutorial/domain/entities/tutorial_phase_event.dart';
 import 'package:flutter_math_app/features/tutorial/domain/entities/tutorial_step_entity.dart';
+import 'package:flutter_math_app/features/tutorial/domain/entities/tutorial_step_event.dart';
 import 'package:flutter_math_app/features/tutorial/domain/enums/tutorial_phase.dart';
 
 part 'tutorial_state.dart';
@@ -24,6 +25,17 @@ class TutorialCubit extends Cubit<TutorialState>
     );
   }
 
+  void _emitNextTutorialStepEvent({required TutorialStepEntity step}) {
+    emit(
+      state.copyWith(
+        currentStepEvent: TutorialStepEvent(
+          id: nextEventId(),
+          step: step,
+        ),
+      ),
+    );
+  }
+
   void startTutorial() {
     _emitNextTutorialPhaseEvent(phase: TutorialPhase.starting);
     _showCurrentStep();
@@ -35,7 +47,7 @@ class TutorialCubit extends Cubit<TutorialState>
       return;
     }
     final step = TutorialSequence.steps[state.currentStepIndex];
-    emit(state.copyWith(currentStep: step));
+    _emitNextTutorialStepEvent(step: step);
 
     if (step.requiresInput) {
       _emitNextTutorialPhaseEvent(phase: TutorialPhase.waitingInput);
@@ -47,7 +59,7 @@ class TutorialCubit extends Cubit<TutorialState>
 
   void submitAnswer({required int result}) {
     emit(state.copyWith(numberRecognized: result));
-    final step = state.currentStep;
+    final step = state.currentStepEvent?.step;
     if (step == null || !step.requiresInput) return;
 
     if (step.expectedResult == null) {

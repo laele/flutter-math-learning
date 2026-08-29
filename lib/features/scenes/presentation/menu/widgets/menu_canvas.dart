@@ -24,7 +24,9 @@ class MenuCanvas extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  //BannerAdWidget(),
+                  // Banner Ad
+                  BannerAdWidget(),
+
                   SizedBox(height: 8),
                   // Profile Header
                   PlayerPrefsCard(),

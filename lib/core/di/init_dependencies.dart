@@ -62,15 +62,6 @@ Future<void> initDependencies() async {
     GameStatsModelSchema,
   ], directory: (await getApplicationDocumentsDirectory()).path);
 
-  // TODO DELETE clear shared prefs
-  await sharedPrefs.clear();
-  // TODO CLEAR ISAR DATA
-  await isarInstance.writeTxn(() async {
-    await isarInstance.playerProfileModels.clear();
-    await isarInstance.gameStatsModels.clear();
-  });
-  //
-
   sl.registerLazySingleton<Isar>(() => isarInstance);
   await initInputRecognizer();
   await initAudio();
@@ -91,7 +82,9 @@ Future<void> initDependencies() async {
 
 Future<void> initAds() async {
   sl.registerLazySingleton(() => AdmobDataSource());
-  sl.registerLazySingleton<AdsRepository>(() => AdsRepositoryImpl(dataSource: sl()));
+  sl.registerLazySingleton<AdsRepository>(
+    () => AdsRepositoryImpl(dataSource: sl()),
+  );
   sl.registerFactory(() => AdsCubit(repository: sl()));
 }
 

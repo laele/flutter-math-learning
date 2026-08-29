@@ -2,13 +2,13 @@ part of 'tutorial_cubit.dart';
 
 class TutorialState extends Equatable {
   final TutorialPhaseEvent? tutorialPhaseEvent;
-  final TutorialStepEntity? currentStep;
+  final TutorialStepEvent? currentStepEvent;
   final int? numberRecognized;
   final int currentStepIndex;
 
   const TutorialState({
     this.tutorialPhaseEvent,
-    this.currentStep,
+    this.currentStepEvent,
     this.numberRecognized,
     this.currentStepIndex = 0,
   });
@@ -19,22 +19,22 @@ class TutorialState extends Equatable {
   int get tutorialSteps => TutorialSequence.steps.length;
   TutorialState copyWith({
     TutorialPhaseEvent? tutorialPhaseEvent,
-    TutorialStepEntity? currentStep,
+    TutorialStepEvent? currentStepEvent,
     int? numberRecognized,
     int? currentStepIndex,
   }) {
     return TutorialState(
+      currentStepEvent: currentStepEvent ?? this.currentStepEvent,
       currentStepIndex: currentStepIndex ?? this.currentStepIndex,
       numberRecognized: numberRecognized ?? this.numberRecognized,
       tutorialPhaseEvent: tutorialPhaseEvent ?? this.tutorialPhaseEvent,
-      currentStep: currentStep ?? this.currentStep,
     );
   }
 
   @override
   List<Object?> get props => [
     tutorialPhaseEvent,
-    currentStep,
+    currentStepEvent,
     numberRecognized,
     currentStepIndex,
   ];

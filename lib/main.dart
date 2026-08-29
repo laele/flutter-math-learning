@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppSupportedLocales.locales,
           debugShowCheckedModeBanner: false,
-          title: 'Froggy Math',
+          title: 'MathScrib',
           theme: AppTheme.light(),
           home: SplashScreen(),
           builder: (context, child) {
