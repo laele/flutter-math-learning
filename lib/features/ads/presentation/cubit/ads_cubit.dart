@@ -6,10 +6,12 @@ part 'ads_state.dart';
 
 class AdsCubit extends Cubit<AdsState> {
   final AdsRepository _repository;
-  int _sessionsSinceLastAd = 0;
-  static const int _sessionPerAd = 8;
+  static const int _sessionPerAd = 5;
+  static const Duration _minTimeinterval = Duration(minutes: 3);
 
-  AdsCubit({required AdsRepository repository}) : _repository = repository, super(AdsState());
+  AdsCubit({required AdsRepository repository})
+    : _repository = repository,
+      super(AdsState());
 
   Future<void> initialize() async {
     final result = await _repository.initialize();
@@ -23,6 +25,7 @@ class AdsCubit extends Cubit<AdsState> {
   }
 
   void preloadIntersticial() async {
+    if (state.interstitialReady) return;
     final result = await _repository.loadInterstitial();
     result.fold(
       (l) => emit(state.copyWith(interstitialReady: false)),
@@ -31,15 +34,32 @@ class AdsCubit extends Cubit<AdsState> {
   }
 
   Future<void> showInterstitialAtNaturalBreak() async {
-    _sessionsSinceLastAd++;
-    if (_sessionsSinceLastAd < _sessionPerAd) return;
-    if (!state.interstitialReady) return;
-    final result = await _repository.showInterstitialIfReady();
-    result.fold(
+    await _repository.recordSessionCompleted();
+
+    final sessionsCounterResult = await _repository.getSessionsSinceLastAd();
+    final lastSessionShownResult = await _repository.getLastShownAt();
+
+    final sessionsCounter = sessionsCounterResult.getOrElse(() => 0);
+    final lastSessionShown = lastSessionShownResult.getOrElse(() => null);
+
+    final showAdSession = sessionsCounter >= _sessionPerAd;
+    final showAdTimePassed =
+        lastSessionShown == null ||
+        DateTime.now().difference(lastSessionShown) >= _minTimeinterval;
+
+    if (!showAdSession || !showAdTimePassed) return;
+    if (!state.interstitialReady) {
+      preloadIntersticial();
+      return;
+    }
+
+    final shownResult = await _repository.showInterstitialIfReady();
+    shownResult.fold(
       (l) {},
-      (shown) {
+      (shown) async {
         emit(state.copyWith(interstitialReady: false));
-        if (shown) preloadIntersticial();
+        await _repository.recordAdShown();
+        preloadIntersticial();
       },
     );
   }

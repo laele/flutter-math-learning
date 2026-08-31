@@ -5,4 +5,10 @@ abstract interface class AdsRepository {
   Future<Either<Failure, void>> initialize();
   Future<Either<Failure, void>> loadInterstitial();
   Future<Either<Failure, bool>> showInterstitialIfReady();
+
+  // SAVED AD INFO
+  Future<Either<Failure, int>> getSessionsSinceLastAd();
+  Future<Either<Failure, DateTime?>> getLastShownAt();
+  Future<Either<Failure, void>> recordSessionCompleted();
+  Future<Either<Failure, void>> recordAdShown();
 }

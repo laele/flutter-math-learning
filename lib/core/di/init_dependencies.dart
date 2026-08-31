@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_math_app/features/ads/data/datasources/admob_datasource.dart';
+import 'package:flutter_math_app/features/ads/data/datasources/ads_local_datasource.dart';
 import 'package:flutter_math_app/features/ads/data/repositories/ads_repository_impl.dart';
 import 'package:flutter_math_app/features/ads/domain/repositories/ads_repository.dart';
 import 'package:flutter_math_app/features/ads/presentation/cubit/ads_cubit.dart';
@@ -81,9 +82,15 @@ Future<void> initDependencies() async {
 }
 
 Future<void> initAds() async {
-  sl.registerLazySingleton(() => AdmobDataSource());
+  sl.registerLazySingleton<AdsLocalDataSource>(
+    () => AdsLocalDataSourceImpl(prefs: sl()),
+  );
+  sl.registerLazySingleton<AdmobDataSource>(() => AdmobDataSource());
   sl.registerLazySingleton<AdsRepository>(
-    () => AdsRepositoryImpl(dataSource: sl()),
+    () => AdsRepositoryImpl(
+      dataSource: sl(),
+      localDataSource: sl(),
+    ),
   );
   sl.registerFactory(() => AdsCubit(repository: sl()));
 }
