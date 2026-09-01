@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_math_app/core/l10n/arb/app_localizations.dart';
@@ -91,7 +89,6 @@ class MenuCanvas extends StatelessWidget {
                         },
                         child: const Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          //mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(Icons.open_in_new, color: Colors.blue),
                             SizedBox(width: 6),

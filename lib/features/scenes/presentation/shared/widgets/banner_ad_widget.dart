@@ -14,16 +14,33 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
   BannerAd? _bannerAd;
   bool _isLoaded = false;
 
-  @override
+  /* @override
   void initState() {
     super.initState();
     _loadBanner();
+  }*/
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    _loadBanner();
   }
 
-  void _loadBanner() {
+  void _loadBanner() async {
+    final MediaQueryData mediaQuery = MediaQuery.of(context);
+    final int width = mediaQuery.size.width.truncate();
+
+    final AnchoredAdaptiveBannerAdSize? size = await AdSize.getLargeAnchoredAdaptiveBannerAdSize(width);
+
+    if (size == null) {
+      debugPrint('There was a problem to calculate adaptative banner Ad Size');
+      return;
+    }
+
     _bannerAd = BannerAd(
       adUnitId: AdUnitIds.banner,
-      size: AdSize.banner,
+      size: size,
       request: const AdRequest(),
       listener: BannerAdListener(
         onAdLoaded: (_) {

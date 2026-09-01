@@ -12,6 +12,7 @@ import 'package:flutter_math_app/features/player_prefs/presentation/cubit/player
 import 'package:flutter_math_app/features/scenes/presentation/splash/splash_screen.dart';
 import 'package:flutter_math_app/features/input_recognition/presentation/input_recognition_cubit/input_recognition_cubit.dart';
 import 'package:flutter_math_app/features/settings/presentation/cubit/settings_cubit.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:rive/rive.dart';
 
 void registerThirdPartyLicenses() {
@@ -34,6 +35,7 @@ Adaptation Note: The character has been adapted and integrated as a graphic asse
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await RiveNative.init();
+  await MobileAds.instance.initialize(); // Mobile Ads Adbmob
   await initDependencies();
 
   // regitser Third Party Licenses
