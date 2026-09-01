@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_math_app/features/game/presentation/widgets/practice_number_indicator_row.dart';
 import 'package:flutter_math_app/features/game/presentation/widgets/session_progress/game_session_progress_indicator_bar.dart';
 import 'package:flutter_math_app/features/game/presentation/widgets/strike_indicator/incorrect_streak_indicator.dart';
+import 'package:flutter_math_app/features/scenes/presentation/shared/widgets/banner_ad_widget.dart';
 
 class PracticeGameTopBar extends StatelessWidget {
   const PracticeGameTopBar({super.key});
@@ -13,20 +14,27 @@ class PracticeGameTopBar extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: SizedBox(
           width: double.infinity,
-          child: Stack(
+          child: Column(
             children: [
-              Align(
-                alignment: AlignmentGeometry.topCenter,
-                child: Column(
-                  children: [
-                    PracticeNumberIndicatorRow(),
-                    SizedBox(height: 8),
+              // Banner Ad
+              BannerAdWidget(),
+              SizedBox(height: 8),
+              Stack(
+                children: [
+                  Align(
+                    alignment: AlignmentGeometry.topCenter,
+                    child: Column(
+                      children: [
+                        PracticeNumberIndicatorRow(),
+                        SizedBox(height: 8),
 
-                    GameSessionProgressIndicatorBar(),
-                    SizedBox(height: 16),
-                    StrikeIndicatorSection(),
-                  ],
-                ),
+                        GameSessionProgressIndicatorBar(),
+                        SizedBox(height: 16),
+                        StrikeIndicatorSection(),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

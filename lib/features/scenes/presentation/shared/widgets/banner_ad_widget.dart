@@ -29,18 +29,23 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
 
   void _loadBanner() async {
     final MediaQueryData mediaQuery = MediaQuery.of(context);
-    final int width = mediaQuery.size.width.truncate();
+    final double screenWidth = mediaQuery.size.width;
+    final double screenHeight = mediaQuery.size.height;
 
-    final AnchoredAdaptiveBannerAdSize? size = await AdSize.getLargeAnchoredAdaptiveBannerAdSize(width);
+    AdSize adSize;
 
-    if (size == null) {
-      debugPrint('There was a problem to calculate adaptative banner Ad Size');
-      return;
+    if (screenHeight >= 950) {
+      final int widthInDp = mediaQuery.size.width.truncate();
+      final AnchoredAdaptiveBannerAdSize? adaptiveSize = await AdSize.getLargeAnchoredAdaptiveBannerAdSize(widthInDp);
+
+      adSize = adaptiveSize ?? AdSize.banner;
+    } else {
+      adSize = AdSize.banner;
     }
 
     _bannerAd = BannerAd(
       adUnitId: AdUnitIds.banner,
-      size: size,
+      size: adSize,
       request: const AdRequest(),
       listener: BannerAdListener(
         onAdLoaded: (_) {
