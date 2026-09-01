@@ -58,4 +58,8 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get loading => '加载中...';
+
+  @override
+  String get riveAssetCredits =>
+      '主角 \"Greg the frog\" 由 chrisb-RJXXQ 在 Rive 上创作，并在 CC BY 4.0 许可下使用。';
 }

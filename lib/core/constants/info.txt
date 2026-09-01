@@ -1,0 +1,44 @@
+Antes de compartirte la infomracion quiero mencionar que la ficha predeterminada la definire en ingles, creare diferentes fichas para los idiomas de ja, ko, zh, es, en, pt, tl, fr, hi, 
+pero quiero que me crees por lo mientras las fichas en español e ingles, cumpliendo el formato de metadatos para que sea optimo y visibile par alos usuarios en la play store
+
+1.Nombre base o marca de tu app: ¿Tienes ya un nombre definido o quieres propuestas de nombres con palabras clave integradas? - nombre : "MathScrib: Write, Solve & Play" (esta en ingles, deberia cambiar la parte de "write, solve & play" a español ?)
+
+2.-Concepto principal y mecánica: ¿De qué trata el juego? (Ej. "Juego interactivo donde un personaje animado indica qué operación matemática resolver y el usuario dibuja el resultado").   el juego y la mecanica principal es dibujar numeros en pantalla, mi juego detecta que numeros dibuja el usuario, 
+lo que lo hace interactivo es que implemento una animacion de un personaje que reacciona dependiendo si el resultado es correcto, o incorrecto,
+es una ranita, por ahora tiene 2 modos de juego, uno donde el usuario debe dibujar con limite de tiempo operaciones
+matematicas que la ranita le va diciendo , mientras el resultado 
+este dentro del tiempo entonces estara puntuando y el objetivo es romper record anterior, y el otro es un modo de practica,
+el mecanismo es el mismo que el anterior pero aqui no hay limite de tiempo, puedes fallar, si lo haces 3 veces seguidas entonces
+la ranita te dice el resultado y pasa a la siguiente pregunta, ambos modos tienen implementada una funcion de dificultad progresiva
+en la de arcade al iniciar cada juego la dificultad empieza de 0 y va incrementando, y en el modo practica ese si guarda progreso
+entonces si el usuario vuelve a jugar una partida leera su progreso y empezara diciendo operaciones de acuerdo al nivel donde se haya quedado,
+si empieza a fallar la dificultad se adapta , esto lo hace una manera practica de repasar operaciones de matematicas al usuario,
+y uno ultimo que es el tutorial que solo te dice como jugar, que es cuando el icono de dibujar aparece, entonces eso quiere decir que 
+puede dibujar, la rana dice la operacion y el usuario dibuja, la rana decide si esta mal o bien, y da un mensaje, (tiene un sistema de dialogos para cada fase),
+tengo efectos como estrellitas al completar una operacion bien, la rana salta y da el mensaje, y aparte aparece confetti cuando termina el juego, (Ttal  vez pueda seguir
+desarrollando diferentes modos de juego en el futuro).
+
+3.- Público objetivo y nivel escolar: ¿Para qué edades/grados está diseñado principalmente? (Ej. niños de 6 a 12 años, primaria, o público general que busque agilidad mental). 
+por el tipo de juego y nivel que acepta de momento que son operaciones matematicas de 2 digitos como (suma, resta, multiplicacion, division),
+y el maximo nivel son numeros random del 1 - 100 (ya que creo que numeros mas grandes son muy dificiles para niños y jovenes, o cinluso cualquier persona),
+creo que va dirigido a niños de primaria, sin emabrgo me gustaria crear un modo de juego donde se enfonque en el aprendizaje de los numeros como tal,
+que incluso podrian ser niños mas pqueeños, pero es un modo que aun no implemento y no esta en mi aplicacion en esta version, ademas
+tiene un personaje animado el cual es una rana, y mi UI maneja colores infantiles.
+
+4.-Tipos de operaciones o temas incluidos: (Ej. sumas, restas, multiplicaciones, divisiones, cálculo mental, trazo de números). 
+ maneja sumas, restas, multiplicaciones, divisiones, si tiene calculo mental ya que tienes que escribir el resultado sin escribir
+un procedimiento en una parte, el calculo lo hace mental y luego dibujas el resultado, y si trazo de numeros, si no es numero no reconoce
+que escribio el usuario
+
+5.- Modos de juego o características especiales: (Ej. modo arcade para romper récords, personajes desbloqueables, práctica sin límite de tiempo, juego sin conexión/offline, sin recopilación de datos).
+el juego es offline no es necesario tener internet, mas que al inicio del juego para descargar el paquete de ml kit parqa reconocer los numeros,
+pero al volver a la app en otro momento ya no es necesario, integre publicidad para mostrar banners y intersticiales, adecuados para todo tipo de publico, 
+todo el progreso lo guarda en local, tiene modo arcade para romper records y modo de practica donde no penaliza equivocaciones.
+
+6.-Beneficios pedagógicos o de entretenimiento: ¿Qué logra el usuario? (Ej. aprender matemáticas jugando, mejorar agilidad mental, practicar caligrafía/escritura de números) 
+ el usuario logra practicar matematicas de cierta forma jugando , ya que la ranita impulsa al usuario a seguir jugando con el sistema de dialogos
+que integre, mejora su agilidad ya que tiene que pensar rapido, practica caligrafia y escritura de numeros
+
+7.- Idioma y región principal: Confirmar si la ficha predeterminada será en Español (Latinoamérica) u otro idioma/región., la ficha predeterminada sera en ingles, sin embargo en mi aplicacion puedes cambiar de idioma, el juego detecta que idioma tiene el dispositivo
+si es alguno de estos ja, ko, zh, es, en, pt, tl, fr, hi, entonces en ese se mostrara el juego y puedes cambiar el idioma desde el menu,
+por lo cual quiero invertir en tener una ficha para cada uno de estos idiomas asi usuarios de esas regiones pueden encontrar mi app 

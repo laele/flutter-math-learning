@@ -58,4 +58,8 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get loading => 'लोड हो रहा है...';
+
+  @override
+  String get riveAssetCredits =>
+      'मुख्य पात्र \"Greg the frog\" Rive पर chrisb-RJXXQ द्वारा बनाया गया था और CC BY 4.0 लाइसेंस के तहत उपयोग किया जाता है।';
 }

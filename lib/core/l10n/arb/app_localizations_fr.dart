@@ -58,4 +58,8 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get loading => 'Chargement...';
+
+  @override
+  String get riveAssetCredits =>
+      'Le personnage principal \"Greg the frog\" a été créé par chrisb-RJXXQ sur Rive et est utilisé sous la licence CC BY 4.0.';
 }

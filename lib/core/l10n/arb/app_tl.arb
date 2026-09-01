@@ -19,5 +19,7 @@
 
   "errorUnknown": "May nagkamali, subukan muli",
   "retry": "Subukan muli",
-  "loading": "Naglo-load..."
+  "loading": "Naglo-load...",
+
+  "riveAssetCredits": "Ang pangunahing karakter na \"Greg the frog\" ay ginawa ni chrisb-RJXXQ sa Rive at ginagamit sa ilalim ng lisensyang CC BY 4.0."
 }

@@ -19,5 +19,7 @@
 
   "errorUnknown": "Un problème est survenu, réessaye",
   "retry": "Réessayer",
-  "loading": "Chargement..."
+  "loading": "Chargement...",
+
+  "riveAssetCredits": "Le personnage principal \"Greg the frog\" a été créé par chrisb-RJXXQ sur Rive et est utilisé sous la licence CC BY 4.0."
 }

@@ -58,4 +58,8 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get loading => '로딩 중...';
+
+  @override
+  String get riveAssetCredits =>
+      '주인공 \"Greg the frog\"은(는) Rive의 chrisb-RJXXQ님이 제작하였으며 CC BY 4.0 라이선스에 따라 사용됩니다.';
 }

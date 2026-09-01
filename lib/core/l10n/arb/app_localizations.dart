@@ -213,6 +213,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Loading...'**
   String get loading;
+
+  /// No description provided for @riveAssetCredits.
+  ///
+  /// In en, this message translates to:
+  /// **'The main character \"Greg the frog\" was created by chrisb-RJXXQ on Rive and is used under the CC BY 4.0 license.'**
+  String get riveAssetCredits;
 }
 
 class _AppLocalizationsDelegate

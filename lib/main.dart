@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_math_app/core/di/init_dependencies.dart';
@@ -13,10 +14,31 @@ import 'package:flutter_math_app/features/input_recognition/presentation/input_r
 import 'package:flutter_math_app/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:rive/rive.dart';
 
+void registerThirdPartyLicenses() {
+  LicenseRegistry.addLicense(() async* {
+    yield const LicenseEntryWithLineBreaks(
+      ['Rive Assets'],
+      '''
+"Greg the frog" by chrisb-RJXXQ
+Original URL: https://rive.app/marketplace/22403-41949-greg-the-frog/
+
+Licensed under Creative Commons Attribution 4.0 International (CC BY 4.0)
+https://creativecommons.org/licenses/by/4.0/
+
+Adaptation Note: The character has been adapted and integrated as a graphic asset and main app icon for this application.
+''',
+    );
+  });
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await RiveNative.init();
   await initDependencies();
+
+  // regitser Third Party Licenses
+  registerThirdPartyLicenses();
+
   runApp(const MyApp());
 }
 

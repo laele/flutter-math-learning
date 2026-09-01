@@ -58,4 +58,8 @@ class AppLocalizationsTl extends AppLocalizations {
 
   @override
   String get loading => 'Naglo-load...';
+
+  @override
+  String get riveAssetCredits =>
+      'Ang pangunahing karakter na \"Greg the frog\" ay ginawa ni chrisb-RJXXQ sa Rive at ginagamit sa ilalim ng lisensyang CC BY 4.0.';
 }

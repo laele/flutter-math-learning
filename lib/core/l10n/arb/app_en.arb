@@ -19,5 +19,7 @@
 
   "errorUnknown": "Something went wrong, try again",
   "retry": "Retry",
-  "loading": "Loading..."
+  "loading": "Loading...",
+
+  "riveAssetCredits": "The main character \"Greg the frog\" was created by chrisb-RJXXQ on Rive and is used under the CC BY 4.0 license."
 }
