@@ -30,6 +30,8 @@ class _ArcadeResultOverlayState extends State<ArcadeResultOverlay> {
     return BlocBuilder<GameCubit, GameState>(
       buildWhen: (previous, current) => (previous.gamePhaseEvent != current.gamePhaseEvent) && current.gamePhaseEvent != null,
       builder: (context, state) {
+        final currentScore = context.read<ScoreCubit>().state.currentScore;
+        final bestScore = context.read<PlayerProfileCubit>().state.profile.bestArcadeScore;
         return (state.gamePhaseEvent?.gamePhase == GamePhase.finished)
             ? AnimatedOverlay(
                 key: _animatedOverlayKey,
@@ -65,7 +67,7 @@ class _ArcadeResultOverlayState extends State<ArcadeResultOverlay> {
                       ),
                     ),
                     SizedBox(height: 8.0),
-                    context.read<PlayerProfileCubit>().state.profile.bestArcadeScore == context.read<ScoreCubit>().state.currentScore
+                    bestScore <= currentScore
                         ? FittedBox(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -104,7 +106,7 @@ class _ArcadeResultOverlayState extends State<ArcadeResultOverlay> {
                           showBackground: true,
                           widthSize: 50,
                           heightSize: 50,
-                          text: context.read<ScoreCubit>().state.currentScore.toString(),
+                          text: currentScore.toString(),
                         ),
                       ],
                     ),
@@ -122,7 +124,7 @@ class _ArcadeResultOverlayState extends State<ArcadeResultOverlay> {
                           showBackground: true,
                           widthSize: 50,
                           heightSize: 50,
-                          text: context.read<PlayerProfileCubit>().state.profile.bestArcadeScore.toString(),
+                          text: currentScore < bestScore ? bestScore.toString() : currentScore.toString(),
                         ),
                       ],
                     ),

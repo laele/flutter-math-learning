@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_math_app/core/theme/app_gradients.dart';
 import 'package:flutter_math_app/features/character/domain/enums/character_animation_type.dart';
 import 'package:flutter_math_app/features/character/presentation/cubit/character_cubit.dart';
 import 'package:rive/rive.dart';
@@ -67,8 +68,17 @@ class _CharacterRiveState extends State<CharacterRive> {
           child: RiveWidgetBuilder(
             fileLoader: fileLoader,
             builder: (context, state) => switch (state) {
-              RiveLoading() => Center(child: CircularProgressIndicator()),
-              RiveFailed() => SizedBox.shrink(),
+              RiveLoading() => Container(
+                decoration: BoxDecoration(
+                  gradient: AppGradients.loadingBackgroundRive,
+                ),
+                child: Center(child: CircularProgressIndicator()),
+              ),
+              RiveFailed() => Container(
+                decoration: BoxDecoration(
+                  gradient: AppGradients.loadingBackgroundRive,
+                ),
+              ),
               RiveLoaded() => Builder(
                 builder: (context) {
                   if (_controller != state.controller) {

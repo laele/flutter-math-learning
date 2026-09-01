@@ -39,9 +39,7 @@ class GameCubit extends Cubit<GameState> with EventEmitter, PausableActions {
        _gameRulesPolicy = rulesPolicy,
        super(
          GameState(
-           selectedoperationTypes: operationTypes.items
-               .map((e) => e.operationType)
-               .toList(),
+           selectedoperationTypes: operationTypes.items.map((e) => e.operationType).toList(),
          ),
        );
 
@@ -121,8 +119,7 @@ class GameCubit extends Cubit<GameState> with EventEmitter, PausableActions {
 
   void checkResult({required int result}) async {
     _emitNextGamePhaseEvent(gamePhase: GamePhase.checkingResult);
-    final wasCorrect =
-        (result == state.gameQuestionEvent!.gameQuestion.resultNum);
+    final wasCorrect = (result == state.gameQuestionEvent!.gameQuestion.resultNum);
 
     final updatedGameSession = state.gameSession.recordAttempt(
       wasCorrect: wasCorrect,
@@ -144,15 +141,9 @@ class GameCubit extends Cubit<GameState> with EventEmitter, PausableActions {
     final cleanedSession = state.gameSession.cleanIncorrectStreak();
     emit(state.copyWith(gameSession: cleanedSession));
 
-    final isLevelUp =
-        _gameRulesPolicy.allowLevelUp &&
-        tiers != null &&
-        newStats.shouldLevelUp &&
-        newStats.currentTierIndex < tiers.length - 1;
+    final isLevelUp = _gameRulesPolicy.allowLevelUp && tiers != null && newStats.shouldLevelUp && newStats.currentTierIndex < tiers.length - 1;
     if (isLevelUp) {
-      newStats = newStats
-          .copyWith(currentTierIndex: newStats.currentTierIndex + 1)
-          .resetRegistry();
+      newStats = newStats.copyWith(currentTierIndex: newStats.currentTierIndex + 1).resetRegistry();
     }
     _setNewStats(operationType, newStats);
     _emitNextGamePhaseEvent(gamePhase: GamePhase.correct);
@@ -175,13 +166,8 @@ class GameCubit extends Cubit<GameState> with EventEmitter, PausableActions {
     var newStats = state.currentGameStats.recordAttempt(false);
     final tiers = DifficultyTiers.byMode[operationType];
 
-    if (_gameRulesPolicy.allowLevelDown &&
-        tiers != null &&
-        newStats.shouldLevelDown &&
-        newStats.currentTierIndex > 0) {
-      newStats = newStats
-          .copyWith(currentTierIndex: newStats.currentTierIndex - 1)
-          .resetRegistry();
+    if (_gameRulesPolicy.allowLevelDown && tiers != null && newStats.shouldLevelDown && newStats.currentTierIndex > 0) {
+      newStats = newStats.copyWith(currentTierIndex: newStats.currentTierIndex - 1).resetRegistry();
     }
 
     _setNewStats(operationType, newStats);
@@ -222,8 +208,7 @@ class GameCubit extends Cubit<GameState> with EventEmitter, PausableActions {
   }
 
   void _setNewStats(OperationType mode, GameStatsEntity newStats) {
-    final stats = Map<OperationType, GameStatsEntity>.from(state.stats)
-      ..[mode] = newStats;
+    final stats = Map<OperationType, GameStatsEntity>.from(state.stats)..[mode] = newStats;
     emit(state.copyWith(stats: stats));
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   static const appBackground = Color.fromARGB(255, 249, 249, 249);
+  static const appBackgroundGradientBottom = Color.fromRGBO(31, 51, 58, 1);
   static const appBackgroundGradient = Color.fromRGBO(47, 81, 91, 1);
   static const appBackgroundGradientVariant = Color.fromRGBO(0, 195, 255, 1);
   static const appSplashBackground = appBackgroundGradientVariant;

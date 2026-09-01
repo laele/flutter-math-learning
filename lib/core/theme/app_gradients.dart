@@ -15,4 +15,18 @@ class AppGradients {
       AppColors.appBackgroundGradientVariant,
     ],
   );
+
+  static const LinearGradient loadingBackgroundRive = LinearGradient(
+    begin: AlignmentGeometry.topCenter,
+    end: AlignmentDirectional.bottomCenter,
+    stops: [
+      0.1,
+      0.55,
+    ],
+
+    colors: [
+      AppColors.appBackgroundGradient,
+      AppColors.appBackgroundGradientBottom,
+    ],
+  );
 }
