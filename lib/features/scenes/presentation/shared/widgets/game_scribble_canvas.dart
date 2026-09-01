@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_math_app/features/game/domain/entities/game_phase_event.dart';
 import 'package:flutter_math_app/features/game/domain/enums/game_phase.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
 import 'package:flutter_math_app/features/input_recognition/presentation/input_recognition_cubit/input_recognition_cubit.dart';
@@ -79,31 +78,53 @@ class _GameScribbleCanvas extends State<GameScribbleCanvas> with SingleTickerPro
     final inputRecognitionCubit = context.read<InputRecognitionCubit>();
     final canvasWidth = MediaQuery.sizeOf(context).width;
     final canvasHeight = MediaQuery.sizeOf(context).height;
-    return BlocListener<InputRecognitionCubit, InputRecognitionState>(
-      listenWhen: (previous, current) {
-        if (previous.status != current.status) {
-          return true;
-        }
-        return false;
-      },
-      listener: (context, state) async {
-        final isQuestionGamePhase =
-            (context.read<GameCubit>().state.gamePhaseEvent?.gamePhase == GamePhase.newQuestion ||
-            context.read<GameCubit>().state.gamePhaseEvent?.gamePhase == GamePhase.repeatQuestion);
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<GameCubit, GameState>(
+          listenWhen: (previous, current) {
+            if (previous.gamePhaseEvent != current.gamePhaseEvent &&
+                current.gamePhaseEvent != null &&
+                current.gamePhaseEvent?.gamePhase == GamePhase.finished) {
+              return true;
+            }
+            return false;
+          },
+          listener: (context, state) async {
+            await playOutAnimation();
+            if (!mounted) return;
+            context.read<InputRecognitionCubit>().clearCanvas();
+            resetAnimation();
+          },
+        ),
 
-        if (state.status == InputRecognitionStatus.processing) {
-          await playOutAnimation();
-          if (!mounted) return;
-          context.read<InputRecognitionCubit>().clearCanvas();
-          resetAnimation();
-        }
-        if (state.isStatusFailure && isQuestionGamePhase) {
-          context.read<GameCubit>().setErrorGamePhase();
-        }
-        if (state.status == InputRecognitionStatus.success && isQuestionGamePhase) {
-          context.read<GameCubit>().checkResult(result: state.numberRecognized!);
-        }
-      },
+        BlocListener<InputRecognitionCubit, InputRecognitionState>(
+          listenWhen: (previous, current) {
+            if (previous.status != current.status) {
+              return true;
+            }
+            return false;
+          },
+          listener: (context, state) async {
+            final isQuestionGamePhase =
+                (context.read<GameCubit>().state.gamePhaseEvent?.gamePhase == GamePhase.newQuestion ||
+                context.read<GameCubit>().state.gamePhaseEvent?.gamePhase == GamePhase.repeatQuestion);
+
+            if (state.status == InputRecognitionStatus.processing) {
+              await playOutAnimation();
+              if (!mounted) return;
+              context.read<InputRecognitionCubit>().clearCanvas();
+              resetAnimation();
+            }
+            if (state.isStatusFailure && isQuestionGamePhase) {
+              context.read<GameCubit>().setErrorGamePhase();
+            }
+            if (state.status == InputRecognitionStatus.success && isQuestionGamePhase) {
+              context.read<GameCubit>().checkResult(result: state.numberRecognized!);
+            }
+          },
+        ),
+      ],
+
       child: Listener(
         onPointerDown: (_) {
           inputRecognitionCubit.onStartedStroke();
