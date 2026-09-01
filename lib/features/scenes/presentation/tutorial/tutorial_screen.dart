@@ -18,7 +18,7 @@ import 'package:flutter_math_app/features/effects/presentation/effects_layer.dar
 import 'package:flutter_math_app/features/effects/presentation/widgets/shake_widget.dart';
 import 'package:flutter_math_app/features/input_recognition/presentation/input_recognition_cubit/input_recognition_cubit.dart';
 import 'package:flutter_math_app/features/player_prefs/presentation/cubit/player_profile_cubit.dart';
-import 'package:flutter_math_app/features/scenes/presentation/arcade_game/widgets/game_fab.dart';
+import 'package:flutter_math_app/features/scenes/presentation/arcade_game/widgets/arcade_fab.dart';
 import 'package:flutter_math_app/features/scenes/presentation/menu/menu_screen.dart';
 import 'package:flutter_math_app/features/scenes/presentation/shared/widgets/tutorial_scribble_canvas.dart';
 import 'package:flutter_math_app/features/scenes/presentation/tutorial/tutorial_message_maper.dart';
@@ -104,8 +104,7 @@ class _TutorialViewState extends State<TutorialView> {
       listeners: [
         BlocListener<CharacterCubit, CharacterState>(
           listenWhen: (previous, current) {
-            if (previous.controllerReady != current.controllerReady &&
-                current.controllerReady == true) {
+            if (previous.controllerReady != current.controllerReady && current.controllerReady == true) {
               return true;
             }
             return false;
@@ -117,21 +116,14 @@ class _TutorialViewState extends State<TutorialView> {
 
         BlocListener<TutorialCubit, TutorialState>(
           listenWhen: (previous, current) {
-            final bool isTutorialPhaseChanged =
-                previous.tutorialPhaseEvent != current.tutorialPhaseEvent;
-            if ((isTutorialPhaseChanged) &&
-                current.tutorialPhaseEvent != null &&
-                current.currentStepEvent != null) {
+            final bool isTutorialPhaseChanged = previous.tutorialPhaseEvent != current.tutorialPhaseEvent;
+            if ((isTutorialPhaseChanged) && current.tutorialPhaseEvent != null && current.currentStepEvent != null) {
               return true;
             }
             return false;
           },
           listener: (context, state) async {
-            final playerName = context
-                .read<PlayerProfileCubit>()
-                .state
-                .profile
-                .playerName;
+            final playerName = context.read<PlayerProfileCubit>().state.profile.playerName;
 
             switch (state.tutorialPhaseEvent!.phase) {
               case TutorialPhase.inputError:
@@ -211,8 +203,7 @@ class _TutorialViewState extends State<TutorialView> {
                 _waitForNextAction();
                 return;
               case TutorialPhase.finished:
-                if (state.currentStepEvent?.step.type ==
-                    TutorialStepType.ready) {
+                if (state.currentStepEvent?.step.type == TutorialStepType.ready) {
                   await Future.delayed(Duration(seconds: 2));
                   if (!mounted) return;
                   Navigator.pushReplacement(
@@ -222,8 +213,7 @@ class _TutorialViewState extends State<TutorialView> {
                 }
                 return;
               case TutorialPhase.showingStep:
-                if (state.currentStepEvent?.step.type ==
-                    TutorialStepType.ready) {
+                if (state.currentStepEvent?.step.type == TutorialStepType.ready) {
                   _waitForNextAction();
                 }
               case (_):
@@ -234,20 +224,14 @@ class _TutorialViewState extends State<TutorialView> {
 
         BlocListener<TutorialCubit, TutorialState>(
           listenWhen: (previous, current) {
-            final bool isTutorialStepChanged =
-                (previous.currentStepEvent != current.currentStepEvent) &&
-                current.currentStepEvent != null;
+            final bool isTutorialStepChanged = (previous.currentStepEvent != current.currentStepEvent) && current.currentStepEvent != null;
             if ((isTutorialStepChanged) && current.tutorialPhaseEvent != null) {
               return true;
             }
             return false;
           },
           listener: (context, state) {
-            final playerName = context
-                .read<PlayerProfileCubit>()
-                .state
-                .profile
-                .playerName;
+            final playerName = context.read<PlayerProfileCubit>().state.profile.playerName;
 
             switch (state.currentStepEvent?.step.type) {
               case TutorialStepType.welcome:
@@ -370,8 +354,7 @@ class _TutorialViewState extends State<TutorialView> {
                             context.read<TutorialCubit>().continueAction();
                           },
                           child: CustomIcon(
-                            assetRoute:
-                                'lib/core/assets/images/arrow_right.png',
+                            assetRoute: 'lib/core/assets/images/arrow_right.png',
                           ),
                         ),
                       ),
@@ -382,7 +365,7 @@ class _TutorialViewState extends State<TutorialView> {
           ),
         ),
 
-        floatingActionButton: GameFloatingActionButtons(),
+        floatingActionButton: ArcadeFloatingActionButtons(),
       ),
     );
   }

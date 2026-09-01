@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_math_app/core/widgets/custom_icon.dart';
 import 'package:flutter_math_app/features/scenes/presentation/menu/menu_screen.dart';
 
-class GameFloatingActionButtons extends StatelessWidget {
-  const GameFloatingActionButtons({super.key});
+class ArcadeFloatingActionButtons extends StatelessWidget {
+  const ArcadeFloatingActionButtons({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +19,15 @@ class GameFloatingActionButtons extends StatelessWidget {
                 child: FloatingActionButton(
                   heroTag: 'backHomeButton',
 
-                  onPressed: () {
+                  onPressed: () async {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (_) => MenuScreen()),
+                      MaterialPageRoute(
+                        builder: (_) => MenuScreen(),
+                      ),
                     );
                   },
-                  child: CustomIcon(assetRoute: 'lib/core/assets/images/menu_icon.png'),
+                  child: CustomIcon(assetRoute: 'lib/core/assets/images/arrow_left.png'),
                 ),
               ),
             ),

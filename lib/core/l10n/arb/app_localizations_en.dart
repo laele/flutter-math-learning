@@ -62,4 +62,17 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get riveAssetCredits =>
       'The main character \"Greg the frog\" was created by chrisb-RJXXQ on Rive and is used under the CC BY 4.0 license.';
+
+  @override
+  String get exitGame => 'Exit the game?';
+
+  @override
+  String get progressNotWillSave =>
+      'If you exit now, your current progress will not be saved.';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get exit => 'Exit';
 }

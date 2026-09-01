@@ -219,6 +219,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The main character \"Greg the frog\" was created by chrisb-RJXXQ on Rive and is used under the CC BY 4.0 license.'**
   String get riveAssetCredits;
+
+  /// No description provided for @exitGame.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit the game?'**
+  String get exitGame;
+
+  /// No description provided for @progressNotWillSave.
+  ///
+  /// In en, this message translates to:
+  /// **'If you exit now, your current progress will not be saved.'**
+  String get progressNotWillSave;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @exit.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit'**
+  String get exit;
 }
 
 class _AppLocalizationsDelegate

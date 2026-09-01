@@ -62,4 +62,16 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get riveAssetCredits =>
       '주인공 \"Greg the frog\"은(는) Rive의 chrisb-RJXXQ님이 제작하였으며 CC BY 4.0 라이선스에 따라 사용됩니다.';
+
+  @override
+  String get exitGame => '게임을 종료하시겠습니까?';
+
+  @override
+  String get progressNotWillSave => '지금 나가면 현재 진행 상황이 저장되지 않습니다.';
+
+  @override
+  String get cancel => '취소';
+
+  @override
+  String get exit => '나가기';
 }

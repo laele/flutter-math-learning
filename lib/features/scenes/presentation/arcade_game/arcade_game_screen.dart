@@ -22,12 +22,12 @@ import 'package:flutter_math_app/features/game/domain/enums/game_phase.dart';
 import 'package:flutter_math_app/features/game/domain/services/game_rules_policy.dart';
 import 'package:flutter_math_app/features/game/presentation/game_cubit/game_cubit.dart';
 import 'package:flutter_math_app/features/game/score/cubit/score_cubit.dart';
+import 'package:flutter_math_app/features/scenes/presentation/arcade_game/widgets/arcade_fab.dart';
 import 'package:flutter_math_app/features/scenes/presentation/shared/widgets/game_message_mapper.dart';
 import 'package:flutter_math_app/features/scenes/presentation/shared/widgets/arcade_result_overlay.dart';
 import 'package:flutter_math_app/features/game/timer/presentation/cubit/timer_cubit.dart';
 import 'package:flutter_math_app/features/input_recognition/presentation/input_recognition_cubit/input_recognition_cubit.dart';
 import 'package:flutter_math_app/features/player_prefs/presentation/cubit/player_profile_cubit.dart';
-import 'package:flutter_math_app/features/scenes/presentation/arcade_game/widgets/game_fab.dart';
 import 'package:flutter_math_app/features/scenes/presentation/arcade_game/widgets/game_top_bar.dart';
 import 'package:flutter_math_app/features/scenes/presentation/shared/widgets/game_scribble_canvas.dart';
 import 'package:flutter_math_app/features/game/presentation/widgets/game_pencil_indicator.dart';
@@ -319,7 +319,7 @@ class _ArcadeGameViewState extends State<ArcadeGameView> {
           ),
         ),
 
-        floatingActionButton: GameFloatingActionButtons(),
+        floatingActionButton: ArcadeFloatingActionButtons(),
       ),
     );
   }

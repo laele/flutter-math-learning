@@ -62,4 +62,16 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get riveAssetCredits =>
       '主角 \"Greg the frog\" 由 chrisb-RJXXQ 在 Rive 上创作，并在 CC BY 4.0 许可下使用。';
+
+  @override
+  String get exitGame => '退出游戏？';
+
+  @override
+  String get progressNotWillSave => '如果现在退出，当前的进度将不会保存。';
+
+  @override
+  String get cancel => '取消';
+
+  @override
+  String get exit => '退出';
 }

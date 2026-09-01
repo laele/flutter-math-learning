@@ -62,4 +62,17 @@ class AppLocalizationsTl extends AppLocalizations {
   @override
   String get riveAssetCredits =>
       'Ang pangunahing karakter na \"Greg the frog\" ay ginawa ni chrisb-RJXXQ sa Rive at ginagamit sa ilalim ng lisensyang CC BY 4.0.';
+
+  @override
+  String get exitGame => 'Lumabas sa laro?';
+
+  @override
+  String get progressNotWillSave =>
+      'Kapag lumabas ka ngayon, hindi mai-save ang kasalukuyang progress mo.';
+
+  @override
+  String get cancel => 'Kanselahin';
+
+  @override
+  String get exit => 'Lumabas';
 }

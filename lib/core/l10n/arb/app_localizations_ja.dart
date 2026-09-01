@@ -62,4 +62,16 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get riveAssetCredits =>
       'メインキャラクターの「Greg the frog」はRiveのchrisb-RJXXQによって作成され、CC BY 4.0ライセンスに基づいて me使用されています。';
+
+  @override
+  String get exitGame => 'ゲームを終了しますか？';
+
+  @override
+  String get progressNotWillSave => '今終了すると、現在の進行状況は保存されません。';
+
+  @override
+  String get cancel => 'キャンセル';
+
+  @override
+  String get exit => '終了';
 }

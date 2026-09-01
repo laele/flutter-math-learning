@@ -21,5 +21,10 @@
   "retry": "Réessayer",
   "loading": "Chargement...",
 
-  "riveAssetCredits": "Le personnage principal \"Greg the frog\" a été créé par chrisb-RJXXQ sur Rive et est utilisé sous la licence CC BY 4.0."
+  "riveAssetCredits": "Le personnage principal \"Greg the frog\" a été créé par chrisb-RJXXQ sur Rive et est utilisé sous la licence CC BY 4.0.",
+
+  "exitGame": "Quitter la partie ?",
+  "progressNotWillSave": "Si vous quittez maintenant, votre progression actuelle ne sera pas sauvegardée.",
+  "cancel": "Annuler",
+  "exit": "Quitter"
 }
