@@ -21,7 +21,7 @@ class AudioDataSourceImpl implements AudioDataSource {
   final Map<SoundType, AudioSource> _sfx = {};
 
   static const _songsAssets = {
-    SongType.gameplay: 'assets/music/background_song.mp3',
+    //SongType.gameplay: 'assets/music/background_song.mp3',
   };
   static const _sfxAssets = {
     SoundType.correct: 'assets/sfx/correct_sound_2.mp3',

@@ -46,3 +46,4 @@ app.*.map.json
 lib/core/assets/images/*.exe
 
 lib/core/constants/ad_unit_ids.dart
+**/android/key.properties

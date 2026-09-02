@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_math_app/core/di/init_dependencies.dart';
 import 'package:flutter_math_app/core/l10n/app_supported_locales.dart';
@@ -41,7 +42,13 @@ void main() async {
   // regitser Third Party Licenses
   registerThirdPartyLicenses();
 
-  runApp(const MyApp());
+  // - Set Only Vertical Orientation -
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]).then((_) {
+    runApp(const MyApp());
+  });
+  // -- ** --
 }
 
 class MyApp extends StatelessWidget {

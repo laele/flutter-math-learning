@@ -1,4 +1,4 @@
-package com.example.flutter_math_app
+package com.luissoriano.mathscrib
 
 import io.flutter.embedding.android.FlutterActivity
 
