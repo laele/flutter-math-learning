@@ -95,7 +95,7 @@ flutter:
   assets:
     - lib/core/assets/images/
     - lib/core/assets/rive/
-    - assets/music/
+    #- assets/music/
     - assets/sfx/
     - assets/images/
     - assets/images/app_icon/

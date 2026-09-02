@@ -45,7 +45,11 @@ class MenuCanvas extends StatelessWidget {
                   LanguageSheet.show(context);
                 },
                 label: Text(
-                  context.read<SettingsCubit>().state.locale!.languageCode, // current lang string,
+                  context
+                      .read<SettingsCubit>()
+                      .state
+                      .locale!
+                      .languageCode, // current lang string,
                   maxLines: 1,
                   overflow: TextOverflow.fade,
                 ),
@@ -82,9 +86,14 @@ class MenuCanvas extends StatelessWidget {
 
                       InkWell(
                         onTap: () async {
-                          final url = Uri.parse('https://rive.app/marketplace/22403-41949-greg-the-frog/');
+                          final url = Uri.parse(
+                            'https://rive.app/marketplace/22403-41949-greg-the-frog/',
+                          );
                           if (await canLaunchUrl(url)) {
-                            await launchUrl(url, mode: LaunchMode.externalApplication);
+                            await launchUrl(
+                              url,
+                              mode: LaunchMode.externalApplication,
+                            );
                           }
                         },
                         child: const Row(

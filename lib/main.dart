@@ -42,13 +42,12 @@ void main() async {
   // regitser Third Party Licenses
   registerThirdPartyLicenses();
 
-  // - Set Only Vertical Orientation -
-  SystemChrome.setPreferredOrientations([
+  await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
-  ]).then((_) {
-    runApp(const MyApp());
-  });
-  // -- ** --
+    DeviceOrientation.portraitDown,
+  ]);
+
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
