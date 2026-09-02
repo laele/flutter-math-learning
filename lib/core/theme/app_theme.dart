@@ -33,6 +33,8 @@ class AppTheme {
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         //enableFeedback: false,
       ),
+
+      dialogTheme: DialogThemeData(constraints: BoxConstraints(maxWidth: 400)),
     );
   }
 }

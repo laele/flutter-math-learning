@@ -65,56 +65,58 @@ class MenuCanvas extends StatelessWidget {
               alignment: AlignmentGeometry.bottomRight,
               child: FilledButton.icon(
                 onPressed: () {
-                  showAboutDialog(
+                  showDialog(
                     context: context,
-                    applicationName: 'MathScrib',
-                    applicationVersion: '1.0.0',
-                    applicationIcon: ClipRRect(
-                      borderRadius: BorderRadiusGeometry.circular(15.0),
-                      child: Image.asset(
-                        'assets/images/app_icon/app_icon.png',
-                        width: 48,
-                        height: 48,
-                      ),
-                    ),
-                    applicationLegalese: '© 2026 Luis Soriano',
-                    children: [
-                      SizedBox(height: 16),
-                      Divider(),
-                      Text(l10n.riveAssetCredits),
-                      const SizedBox(height: 8),
-
-                      InkWell(
-                        onTap: () async {
-                          final url = Uri.parse(
-                            'https://rive.app/marketplace/22403-41949-greg-the-frog/',
-                          );
-                          if (await canLaunchUrl(url)) {
-                            await launchUrl(
-                              url,
-                              mode: LaunchMode.externalApplication,
-                            );
-                          }
-                        },
-                        child: const Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(Icons.open_in_new, color: Colors.blue),
-                            SizedBox(width: 6),
-                            Expanded(
-                              child: Text(
-                                'https://rive.app/marketplace/22403-41949-greg-the-frog/',
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                  fontSize: 12,
-                                  decoration: TextDecoration.underline,
-                                ),
-                              ),
-                            ),
-                          ],
+                    builder: (context) => AboutDialog(
+                      applicationName: 'MathScrib',
+                      applicationVersion: '1.0.0',
+                      applicationIcon: ClipRRect(
+                        borderRadius: BorderRadiusGeometry.circular(15.0),
+                        child: Image.asset(
+                          'assets/images/app_icon/app_icon.png',
+                          width: 48,
+                          height: 48,
                         ),
                       ),
-                    ],
+                      applicationLegalese: '© 2026 Luis Soriano',
+                      children: [
+                        SizedBox(height: 16),
+                        Divider(),
+                        Text(l10n.riveAssetCredits),
+                        const SizedBox(height: 8),
+
+                        InkWell(
+                          onTap: () async {
+                            final url = Uri.parse(
+                              'https://rive.app/marketplace/22403-41949-greg-the-frog/',
+                            );
+                            if (await canLaunchUrl(url)) {
+                              await launchUrl(
+                                url,
+                                mode: LaunchMode.externalApplication,
+                              );
+                            }
+                          },
+                          child: const Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Icon(Icons.open_in_new, color: Colors.blue),
+                              SizedBox(width: 6),
+                              Expanded(
+                                child: Text(
+                                  'https://rive.app/marketplace/22403-41949-greg-the-frog/',
+                                  style: TextStyle(
+                                    color: Colors.blue,
+                                    fontSize: 12,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   );
                 },
                 label: CustomIcon(

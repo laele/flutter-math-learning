@@ -26,28 +26,37 @@ class LanguageSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: SizedBox(
-        width: double.infinity,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(AppLocalizations.of(context)!.selectLanguage, style: Theme.of(context).textTheme.titleLarge),
-                ],
-              ),
-              for (var item in AppSupportedLocales.codes.entries.toList())
-                ListTile(
-                  title: Text('${item.value} (${item.key})'),
-                  onTap: () {
-                    context.read<SettingsCubit>().changeLocale(localeCode: item.key);
-                  },
+    return SafeArea(
+      bottom: true,
+      child: SingleChildScrollView(
+        child: SizedBox(
+          width: double.infinity,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.selectLanguage,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                  ],
                 ),
-            ],
+                for (var item in AppSupportedLocales.codes.entries.toList())
+                  ListTile(
+                    title: Text('${item.value} (${item.key})'),
+                    onTap: () {
+                      context.read<SettingsCubit>().changeLocale(
+                        localeCode: item.key,
+                      );
+                      //Navigator.pop(context);
+                    },
+                  ),
+              ],
+            ),
           ),
         ),
       ),
